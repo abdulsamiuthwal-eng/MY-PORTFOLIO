@@ -35,13 +35,22 @@ const ChatPanel: React.FC<ChatPanelProps> = ({ onClose }) => {
   const scrollToSection = (hash: string) => {
     onClose();
     setTimeout(() => {
-      window.location.hash = hash;
-    }, 200);
+      if (window.location.hash && window.location.hash !== '#home') {
+        window.location.hash = '';
+      }
+      requestAnimationFrame(() => {
+        const el = document.querySelector(hash);
+        if (el) {
+          el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+        history.replaceState(null, '', hash);
+      });
+    }, 300);
   };
 
   const isAffirmativeReply = (text: string) => {
     const normalized = text.trim().toLowerCase();
-    return /\b(han|haan|yes|sure|open|karo|kr ?do|theek|thik|please)\b/.test(normalized);
+    return /\b(han|haan|hn|yes|sure|open|karo|kr ?do|theek|thik|please)\b/.test(normalized);
   };
 
   const addMessage = async (userText: string) => {

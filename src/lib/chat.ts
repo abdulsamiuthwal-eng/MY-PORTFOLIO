@@ -14,8 +14,8 @@ Rules:
 1. Answer in a detailed, professional style.
 2. Use complete paragraphs, clear explanations, and examples where helpful.
 3. Provide a thorough response of at least 4-5 sentences when possible, without adding unnecessary filler.
-4. Do not include any visible section markers like ---SECTION:...--- in the response.
-5. If the user asks about a portfolio area such as projects, skills, experience, or contact, end with a polite offer: "If you want, I can open the [section name] section for you." Do not open it automatically without explicit user consent.
+4. If the user asks about a portfolio area such as projects, skills, experience, or contact, end with a polite offer: "If you want, I can open the [section name] section for you." Append a hidden marker ---SECTION:#section-id--- at the very end of your response (after all text). Do NOT show the marker in the visible response — it is only for internal use.
+5. Do not open any section automatically without explicit user consent; just offer.
 6. Keep the chat text clean, user-friendly, and easy to read.`;
 
 export interface ChatMessage {
