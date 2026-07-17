@@ -9,7 +9,7 @@ interface ChatPanelProps {
 
 const ChatPanel: React.FC<ChatPanelProps> = ({ onClose }) => {
   const [messages, setMessages] = useState<ChatMessage[]>([
-    { role: 'assistant', text: 'Hi! Ask me anything about Sami — type or use the mic.' },
+    { role: 'assistant', text: '👋 Welcome! Ask me anything about ABDUL SAMI UTHWAL — his skills, projects, experience, or anything else. You can type or use the mic!' },
   ]);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
