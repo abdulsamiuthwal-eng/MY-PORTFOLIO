@@ -16,13 +16,10 @@ export default async function handler(req, res) {
     return;
   }
 
-  const contents = [
-    { role: 'system', parts: [{ text: systemPrompt || '' }] },
-    ...messages.map((msg) => ({
-      role: msg.role === 'assistant' ? 'model' : 'user',
-      parts: [{ text: msg.text }],
-    })),
-  ];
+  const contents = messages.map((msg) => ({
+    role: msg.role === 'assistant' ? 'model' : 'user',
+    parts: [{ text: msg.text }],
+  }));
 
   try {
     const response = await fetch(
@@ -33,7 +30,10 @@ export default async function handler(req, res) {
           'Content-Type': 'application/json',
           'x-goog-api-key': apiKey,
         },
-        body: JSON.stringify({ contents }),
+        body: JSON.stringify({
+          system_instruction: { parts: [{ text: systemPrompt || '' }] },
+          contents,
+        }),
       }
     );
 
