@@ -16,24 +16,24 @@ export default async function handler(req, res) {
     return;
   }
 
-  const contents = messages.map((msg) => ({
-    role: msg.role === 'assistant' ? 'model' : 'user',
-    parts: [{ text: msg.text }],
-  }));
+  const contents = [
+    ...(systemPrompt ? [{ role: 'user', parts: [{ text: systemPrompt }] }] : []),
+    ...messages.map((msg) => ({
+      role: msg.role === 'assistant' ? 'model' : 'user',
+      parts: [{ text: msg.text }],
+    })),
+  ];
 
   try {
     const response = await fetch(
-      'https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent',
+      'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent',
       {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'x-goog-api-key': apiKey,
         },
-        body: JSON.stringify({
-          system_instruction: { parts: [{ text: systemPrompt || '' }] },
-          contents,
-        }),
+        body: JSON.stringify({ contents }),
       }
     );
 
