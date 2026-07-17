@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Send, X, Bot, User, Mic, MicOff } from 'lucide-react';
+import { Send, X, Bot, User, Mic, MicOff, Volume2, VolumeX } from 'lucide-react';
 import type { ChatMessage } from '../lib/chat';
 import { sendMessage } from '../lib/chat';
 
@@ -14,9 +14,19 @@ const ChatPanel: React.FC<ChatPanelProps> = ({ onClose }) => {
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
   const [listening, setListening] = useState(false);
+  const [voiceEnabled, setVoiceEnabled] = useState(false);
   const [pendingSection, setPendingSection] = useState<string | null>(null);
   const listRef = useRef<HTMLDivElement>(null);
   const recognitionRef = useRef<any>(null);
+
+  const speakText = (text: string) => {
+    if (!voiceEnabled) return;
+    window.speechSynthesis.cancel();
+    const utterance = new SpeechSynthesisUtterance(text.replace(/[#*`]/g, ''));
+    utterance.rate = 0.9;
+    utterance.pitch = 1;
+    window.speechSynthesis.speak(utterance);
+  };
 
   useEffect(() => {
     listRef.current?.scrollTo({ top: listRef.current.scrollHeight, behavior: 'smooth' });
@@ -49,6 +59,7 @@ const ChatPanel: React.FC<ChatPanelProps> = ({ onClose }) => {
     try {
       const result = await sendMessage(updated);
       setMessages((prev) => [...prev, { role: 'assistant', text: result.text }]);
+      speakText(result.text);
       setPendingSection(result.section || null);
     } catch {
       setMessages((prev) => [...prev, { role: 'assistant', text: 'Sorry, something went wrong. Try again.' }]);
@@ -131,21 +142,39 @@ const ChatPanel: React.FC<ChatPanelProps> = ({ onClose }) => {
         color: 'var(--ptf-white-color)',
       }}>
         <span style={{ fontSize: '14px', fontWeight: 600 }}>AI Assistant</span>
-        <button
-          onClick={onClose}
-          style={{
-            background: 'none',
-            border: 'none',
-            color: 'var(--ptf-white-color)',
-            cursor: 'pointer',
-            display: 'flex',
-            padding: '4px',
-            opacity: 0.7,
-          }}
-          aria-label="Close chat"
-        >
-          <X size={18} />
-        </button>
+        <div style={{ display: 'flex', gap: '4px' }}>
+          <button
+            onClick={() => { setVoiceEnabled(!voiceEnabled); window.speechSynthesis.cancel(); }}
+            style={{
+              background: 'none',
+              border: 'none',
+              color: voiceEnabled ? 'var(--ptf-accent-1)' : 'var(--ptf-white-color)',
+              cursor: 'pointer',
+              display: 'flex',
+              padding: '4px',
+              opacity: voiceEnabled ? 1 : 0.6,
+            }}
+            aria-label="Toggle voice"
+            title={voiceEnabled ? 'Voice on' : 'Voice off'}
+          >
+            {voiceEnabled ? <Volume2 size={16} /> : <VolumeX size={16} />}
+          </button>
+          <button
+            onClick={onClose}
+            style={{
+              background: 'none',
+              border: 'none',
+              color: 'var(--ptf-white-color)',
+              cursor: 'pointer',
+              display: 'flex',
+              padding: '4px',
+              opacity: 0.7,
+            }}
+            aria-label="Close chat"
+          >
+            <X size={18} />
+          </button>
+        </div>
       </div>
 
       {/* Messages */}
