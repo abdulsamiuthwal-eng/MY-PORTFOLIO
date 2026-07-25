@@ -116,6 +116,13 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
       setMessages((prev) => [...prev, { role: 'assistant', text: result.text }]);
       speakText(result.text);
       setPendingSection(result.section || null);
+
+      if (result.section) {
+        // Automatically close panel and scroll to requested section
+        setTimeout(() => {
+          scrollToSection(result.section!);
+        }, 1000);
+      }
     } catch {
       setLastFailedMessage(userText);
       setMessages((prev) => [...prev, { role: 'assistant', text: '⚠️ Oops! Something went wrong. Please check your connection and try again.' }]);
