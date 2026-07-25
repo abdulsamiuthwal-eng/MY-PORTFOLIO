@@ -1,7 +1,15 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { ArrowUpRight } from 'lucide-react';
+import AOS from 'aos';
 
 const ContactPage: React.FC = () => {
+  useEffect(() => {
+    window.scrollTo(0, 0);
+    const timer = setTimeout(() => {
+      AOS.refreshHard();
+    }, 60);
+    return () => clearTimeout(timer);
+  }, []);
   const [formData, setFormData] = useState({
     name: '',
     organization: '',

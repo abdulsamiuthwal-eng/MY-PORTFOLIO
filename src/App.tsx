@@ -79,25 +79,21 @@ const App: React.FC = () => {
   useEffect(() => {
     if (currentHash === '#contact-page') {
       window.scrollTo(0, 0);
-      const animatedElements = document.querySelectorAll('.aos-init');
-      animatedElements.forEach(el => el.classList.remove('aos-animate'));
       setTimeout(() => {
-        AOS.refresh();
-      }, 150);
+        AOS.refreshHard();
+      }, 60);
     } else if (currentHash === '#home' || currentHash === '') {
       window.scrollTo({ top: 0, behavior: 'smooth' });
-      // Reset AOS animations on the homepage so they replay
-      const animatedElements = document.querySelectorAll('.aos-init');
-      animatedElements.forEach(el => el.classList.remove('aos-animate'));
       setTimeout(() => {
-        AOS.refresh();
-      }, 150);
+        AOS.refreshHard();
+      }, 60);
     } else if (currentHash && !currentHash.startsWith('#project/')) {
       try {
         const element = document.querySelector(currentHash);
         if (element) {
           const delay = setTimeout(() => {
             element.scrollIntoView({ behavior: 'smooth' });
+            AOS.refresh();
           }, 50);
           return () => clearTimeout(delay);
         }
