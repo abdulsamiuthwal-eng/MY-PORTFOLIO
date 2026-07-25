@@ -14,6 +14,9 @@ const Testimonials: React.FC = () => {
   const [dragOffset, setDragOffset] = useState(0);
 
   const dragStartXRef = useRef(0);
+  const dragStartYRef = useRef(0);
+  const isHorizontalSwipeRef = useRef<boolean | null>(null);
+
   const isDraggingRef = useRef(false);
   const wheelCooldownRef = useRef(false);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -44,14 +47,45 @@ const Testimonials: React.FC = () => {
 
   const numSlides = testimonials.length;
 
-  const handleStart = (clientX: number) => {
+  const handleStart = (clientX: number, clientY?: number) => {
     isDraggingRef.current = true;
     setIsDragging(true);
     dragStartXRef.current = clientX;
+    if (clientY !== undefined) {
+      dragStartYRef.current = clientY;
+      isHorizontalSwipeRef.current = null;
+    }
     setDragOffset(0);
   };
 
-  const handleMove = (clientX: number) => {
+  const handleTouchMove = (e: React.TouchEvent) => {
+    if (!isDraggingRef.current) return;
+    const clientX = e.touches[0].clientX;
+    const clientY = e.touches[0].clientY;
+    const deltaX = clientX - dragStartXRef.current;
+    const deltaY = clientY - dragStartYRef.current;
+
+    // Lock direction intent on first significant movement
+    if (isHorizontalSwipeRef.current === null) {
+      if (Math.abs(deltaX) > 8 || Math.abs(deltaY) > 8) {
+        isHorizontalSwipeRef.current = Math.abs(deltaX) > Math.abs(deltaY);
+      }
+    }
+
+    // If user intended vertical page scroll, cancel slider drag
+    if (isHorizontalSwipeRef.current === false) {
+      isDraggingRef.current = false;
+      setIsDragging(false);
+      setDragOffset(0);
+      return;
+    }
+
+    if (isHorizontalSwipeRef.current === true) {
+      setDragOffset(deltaX);
+    }
+  };
+
+  const handleMouseMove = (clientX: number) => {
     if (!isDraggingRef.current) return;
     const deltaX = clientX - dragStartXRef.current;
     setDragOffset(deltaX);
@@ -68,30 +102,32 @@ const Testimonials: React.FC = () => {
       setActiveDot((prev) => prev - 1);
     }
     setDragOffset(0);
+    isHorizontalSwipeRef.current = null;
   };
 
   // 2-Finger Trackpad & Mouse Wheel Horizontal Scroll
   const handleWheel = (e: React.WheelEvent) => {
-    const delta = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY;
-    if (Math.abs(delta) < 20 || wheelCooldownRef.current) return;
+    // Strictly isolate horizontal trackpad scroll; ignore vertical page scrolling
+    if (Math.abs(e.deltaX) <= Math.abs(e.deltaY)) return;
+    if (Math.abs(e.deltaX) < 15 || wheelCooldownRef.current) return;
 
     wheelCooldownRef.current = true;
     setTimeout(() => {
       wheelCooldownRef.current = false;
     }, 450);
 
-    if (delta > 0 && activeDot < numSlides - 1) {
+    if (e.deltaX > 0 && activeDot < numSlides - 1) {
       setActiveDot((prev) => prev + 1);
-    } else if (delta < 0 && activeDot > 0) {
+    } else if (e.deltaX < 0 && activeDot > 0) {
       setActiveDot((prev) => prev - 1);
     }
   };
 
-  // Global mouse move & mouse up listeners during drag
+  // Global mouse move & mouse up listeners during mouse drag
   useEffect(() => {
     if (!isDragging) return;
 
-    const onMouseMove = (e: MouseEvent) => handleMove(e.clientX);
+    const onMouseMove = (e: MouseEvent) => handleMouseMove(e.clientX);
     const onMouseUp = () => handleEnd();
 
     document.addEventListener('mousemove', onMouseMove);
@@ -114,8 +150,8 @@ const Testimonials: React.FC = () => {
           className="ptf-testimonials-slider"
           onWheel={handleWheel}
           onMouseDown={(e) => handleStart(e.clientX)}
-          onTouchStart={(e) => handleStart(e.touches[0].clientX)}
-          onTouchMove={(e) => handleMove(e.touches[0].clientX)}
+          onTouchStart={(e) => handleStart(e.touches[0].clientX, e.touches[0].clientY)}
+          onTouchMove={handleTouchMove}
           onTouchEnd={handleEnd}
           style={{
             overflow: 'hidden',

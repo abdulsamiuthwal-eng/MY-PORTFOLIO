@@ -108,6 +108,8 @@ const Projects: React.FC = () => {
 
   const isDraggingRef = useRef(false);
   const dragStartRef = useRef(0);
+  const dragStartYRef = useRef(0);
+  const isHorizontalSwipeRef = useRef<boolean | null>(null);
   const dragOffsetRef = useRef(0);
   const wasDraggedRef = useRef(false);
   const wheelCooldownRef = useRef(false);
@@ -227,32 +229,55 @@ const Projects: React.FC = () => {
     if ((e.target as HTMLElement).closest('button')) {
       return;
     }
+    isHorizontalSwipeRef.current = null;
+    dragStartYRef.current = e.touches[0].clientY;
     handleStart(e.touches[0].clientX);
   };
 
   const handleTouchMove = (e: React.TouchEvent) => {
     if (!isDraggingRef.current) return;
     const deltaX = e.touches[0].clientX - dragStartRef.current;
-    setDragOffset(deltaX);
-    if (Math.abs(deltaX) > 20) {
-      wasDraggedRef.current = true;
+    const deltaY = e.touches[0].clientY - dragStartYRef.current;
+
+    // Lock direction intent on first significant movement
+    if (isHorizontalSwipeRef.current === null) {
+      if (Math.abs(deltaX) > 8 || Math.abs(deltaY) > 8) {
+        isHorizontalSwipeRef.current = Math.abs(deltaX) > Math.abs(deltaY);
+      }
+    }
+
+    // If vertical scroll was intended, cancel slider drag so page scrolls smoothly
+    if (isHorizontalSwipeRef.current === false) {
+      isDraggingRef.current = false;
+      setIsDragging(false);
+      setDragOffset(0);
+      return;
+    }
+
+    if (isHorizontalSwipeRef.current === true) {
+      setDragOffset(deltaX);
+      if (Math.abs(deltaX) > 20) {
+        wasDraggedRef.current = true;
+      }
     }
   };
 
   const handleTouchEnd = () => {
+    isHorizontalSwipeRef.current = null;
     handleDragEnd();
   };
 
   const handleWheel = (e: React.WheelEvent) => {
-    const delta = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY;
-    if (Math.abs(delta) < 20 || wheelCooldownRef.current) return;
+    // Strictly isolate horizontal trackpad scroll; ignore vertical page scrolling
+    if (Math.abs(e.deltaX) <= Math.abs(e.deltaY)) return;
+    if (Math.abs(e.deltaX) < 15 || wheelCooldownRef.current) return;
 
     wheelCooldownRef.current = true;
     setTimeout(() => {
       wheelCooldownRef.current = false;
     }, 450);
 
-    if (delta > 0) {
+    if (e.deltaX > 0) {
       setCurrentIndex((prev) => prev + 1);
     } else {
       setCurrentIndex((prev) => prev - 1);
