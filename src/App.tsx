@@ -20,6 +20,17 @@ const App: React.FC = () => {
   const [currentHash, setCurrentHash] = useState(window.location.hash);
 
   useEffect(() => {
+    // Prevent mobile browsers from automatically restoring previous scroll position down the page on refresh
+    if ('scrollRestoration' in window.history) {
+      window.history.scrollRestoration = 'manual';
+    }
+    // Scroll to top on page refresh unless viewing project details
+    if (!window.location.hash.startsWith('#project/') && currentHash !== '#contact-page') {
+      window.scrollTo(0, 0);
+    }
+  }, []);
+
+  useEffect(() => {
     AOS.init({
       duration: 1000,
       once: false,
