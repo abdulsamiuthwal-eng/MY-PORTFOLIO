@@ -14,7 +14,6 @@ const ChatIcon: React.FC = () => {
   const [messages, setMessages] = useState<ChatMessage[]>([
     { role: 'assistant', text: '👋 Welcome! Ask me anything about ABDUL SAMI UTHWAL — his skills, projects, experience, or anything else. You can type or use the mic!' },
   ]);
-  const [showSuggestions, setShowSuggestions] = useState(true);
   const [lastFailedMessage, setLastFailedMessage] = useState<string | null>(null);
   const [pendingSection, setPendingSection] = useState<string | null>(null);
 
@@ -64,8 +63,6 @@ const ChatIcon: React.FC = () => {
           onClose={() => setIsOpen(false)}
           messages={messages}
           setMessages={setMessages}
-          showSuggestions={showSuggestions}
-          setShowSuggestions={setShowSuggestions}
           lastFailedMessage={lastFailedMessage}
           setLastFailedMessage={setLastFailedMessage}
           pendingSection={pendingSection}

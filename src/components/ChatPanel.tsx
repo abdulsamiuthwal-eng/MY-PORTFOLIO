@@ -7,8 +7,6 @@ interface ChatPanelProps {
   onClose: () => void;
   messages: ChatMessage[];
   setMessages: React.Dispatch<React.SetStateAction<ChatMessage[]>>;
-  showSuggestions: boolean;
-  setShowSuggestions: (show: boolean) => void;
   lastFailedMessage: string | null;
   setLastFailedMessage: (msg: string | null) => void;
   pendingSection: string | null;
@@ -27,8 +25,6 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
   onClose,
   messages,
   setMessages,
-  showSuggestions,
-  setShowSuggestions,
   lastFailedMessage,
   setLastFailedMessage,
   pendingSection,
@@ -111,7 +107,6 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
     const userMsg: ChatMessage = { role: 'user', text: userText };
     const updated = [...messages, userMsg];
     setMessages(updated);
-    setShowSuggestions(false);
     setLastFailedMessage(null);
 
     if (pendingSection && isAffirmativeReply(userText)) {
@@ -360,31 +355,6 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
             </div>
           </div>
         ))}
-        {/* Suggested Questions */}
-        {showSuggestions && messages.length === 1 && (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', marginTop: '4px' }}>
-            <span style={{ fontSize: '11px', color: '#6c757d', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em' }}>Quick Questions</span>
-            {SUGGESTED_QUESTIONS.map((q, i) => (
-              <button
-                key={i}
-                onClick={() => addMessage(q)}
-                style={{
-                  textAlign: 'left',
-                  background: '#fff',
-                  border: '1px solid #e9ecef',
-                  borderRadius: '8px',
-                  padding: '7px 12px',
-                  fontSize: '12px',
-                  color: '#212529',
-                  cursor: 'pointer',
-                  transition: 'all 0.2s ease',
-                }}
-              >
-                {q}
-              </button>
-            ))}
-          </div>
-        )}
 
         {/* Retry Button on Error */}
         {lastFailedMessage && (
