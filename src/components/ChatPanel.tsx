@@ -123,21 +123,39 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
 
     try {
       const result = await sendMessage(updated);
-      setMessages((prev) => [...prev, { role: 'assistant', text: result.text }]);
+      setLoading(false);
       speakText(result.text);
       setPendingSection(result.section || null);
 
-      if (result.section) {
-        // Automatically close panel and scroll to requested section
-        setTimeout(() => {
-          scrollToSection(result.section!);
-        }, 1000);
-      }
+      // Typewriter Effect: character-by-character smooth streaming
+      const fullText = result.text;
+      let currIndex = 0;
+
+      setMessages((prev) => [...prev, { role: 'assistant', text: '' }]);
+
+      const typeInterval = setInterval(() => {
+        currIndex += 3;
+        const chunk = fullText.slice(0, currIndex);
+
+        setMessages((prev) => {
+          const next = [...prev];
+          next[next.length - 1] = { role: 'assistant', text: chunk };
+          return next;
+        });
+
+        if (currIndex >= fullText.length) {
+          clearInterval(typeInterval);
+          if (result.section) {
+            setTimeout(() => {
+              scrollToSection(result.section!);
+            }, 1000);
+          }
+        }
+      }, 16);
     } catch {
       setLastFailedMessage(userText);
       setMessages((prev) => [...prev, { role: 'assistant', text: '⚠️ Oops! Something went wrong. Please check your connection and try again.' }]);
       setPendingSection(null);
-    } finally {
       setLoading(false);
     }
   };
@@ -338,7 +356,7 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
             whiteSpace: 'pre-wrap',
             wordBreak: 'break-word',
           }}>
-              {msg.text}
+              {msg.role === 'assistant' ? <FormattedText text={msg.text} /> : msg.text}
             </div>
           </div>
         ))}
@@ -360,10 +378,7 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
                   color: '#212529',
                   cursor: 'pointer',
                   transition: 'all 0.2s ease',
-                  fontFamily: 'inherit',
                 }}
-                onMouseEnter={(e) => { e.currentTarget.style.borderColor = 'var(--ptf-accent-1)'; e.currentTarget.style.color = 'var(--ptf-accent-1)'; }}
-                onMouseLeave={(e) => { e.currentTarget.style.borderColor = '#e9ecef'; e.currentTarget.style.color = '#212529'; }}
               >
                 {q}
               </button>
@@ -371,41 +386,36 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
           </div>
         )}
 
-        {/* Retry button on error */}
-        {lastFailedMessage && !loading && (
+        {/* Retry Button on Error */}
+        {lastFailedMessage && (
           <div style={{ display: 'flex', justifyContent: 'center', marginTop: '4px' }}>
             <button
-              onClick={() => { setLastFailedMessage(null); addMessage(lastFailedMessage); }}
+              onClick={() => addMessage(lastFailedMessage)}
               style={{
-                background: 'none',
-                border: '1px solid var(--ptf-accent-1)',
-                borderRadius: '6px',
-                padding: '5px 14px',
                 fontSize: '12px',
+                padding: '6px 14px',
+                borderRadius: '20px',
+                border: '1px solid var(--ptf-accent-1)',
+                backgroundColor: 'rgba(250, 69, 41, 0.08)',
                 color: 'var(--ptf-accent-1)',
                 cursor: 'pointer',
-                fontFamily: 'inherit',
                 fontWeight: 600,
               }}
             >
-              🔄 Retry
+              🔄 Retry last message
             </button>
           </div>
         )}
 
+        {/* Loading Indicator */}
         {loading && (
-          <div style={{ display: 'flex', gap: '8px', alignItems: 'center', padding: '8px 0' }}>
-            <div style={{ width: '28px', height: '28px', borderRadius: '50%', backgroundColor: '#e9ecef', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-              <Bot size={14} color="#495057" />
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#6c757d', fontSize: '12px', fontStyle: 'italic', paddingLeft: '4px' }}>
+            <div style={{ display: 'flex', gap: '4px' }}>
+              <span className="dot" style={{ width: '6px', height: '6px', backgroundColor: '#6c757d', borderRadius: '50%', animation: 'pulse 1s infinite' }} />
+              <span className="dot" style={{ width: '6px', height: '6px', backgroundColor: '#6c757d', borderRadius: '50%', animation: 'pulse 1s infinite 0.2s' }} />
+              <span className="dot" style={{ width: '6px', height: '6px', backgroundColor: '#6c757d', borderRadius: '50%', animation: 'pulse 1s infinite 0.4s' }} />
             </div>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '3px' }}>
-              <div style={{ display: 'flex', gap: '4px', alignItems: 'center' }}>
-                <span style={{ width: '6px', height: '6px', borderRadius: '50%', backgroundColor: '#adb5bd', animation: 'pulse 1.2s infinite' }} />
-                <span style={{ width: '6px', height: '6px', borderRadius: '50%', backgroundColor: '#adb5bd', animation: 'pulse 1.2s infinite 0.2s' }} />
-                <span style={{ width: '6px', height: '6px', borderRadius: '50%', backgroundColor: '#adb5bd', animation: 'pulse 1.2s infinite 0.4s' }} />
-              </div>
-              <span style={{ fontSize: '10px', color: '#adb5bd' }}>AI is thinking...</span>
-            </div>
+            AI is thinking...
           </div>
         )}
       </div>
@@ -427,15 +437,16 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
             height: '36px',
             borderRadius: '50%',
             border: 'none',
-            backgroundColor: listening ? 'var(--ptf-accent-1)' : '#f0f0f0',
-            color: listening ? '#fff' : '#666',
+            backgroundColor: listening ? 'rgba(250, 69, 41, 0.15)' : '#f1f3f5',
+            color: listening ? 'var(--ptf-accent-1)' : '#495057',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
             cursor: 'pointer',
             flexShrink: 0,
           }}
-          aria-label={listening ? 'Stop recording' : 'Start voice input'}
+          aria-label={listening ? 'Stop listening' : 'Start voice input'}
+          title={listening ? 'Listening...' : 'Use microphone'}
         >
           {listening ? <MicOff size={16} /> : <Mic size={16} />}
         </button>
@@ -477,6 +488,52 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
     </div>
     </>
   );
+};
+
+// Formatted Markdown text renderer (Headings, Bold text, Bullet lists)
+const FormattedText: React.FC<{ text: string }> = ({ text }) => {
+  const lines = text.split('\n');
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+      {lines.map((line, idx) => {
+        const trimmed = line.trim();
+        if (!trimmed) return <div key={idx} style={{ height: '4px' }} />;
+
+        // Headings: ### Header or ## Header
+        if (/^#+\s/.test(trimmed)) {
+          const headingText = trimmed.replace(/^#+\s*/, '');
+          return (
+            <div key={idx} style={{ marginTop: '6px', marginBottom: '2px', fontSize: '13px', fontWeight: 700, color: 'var(--ptf-accent-1)' }}>
+              {renderBoldText(headingText)}
+            </div>
+          );
+        }
+
+        // Bullet points: - item, * item, • item
+        if (/^[-*•]\s/.test(trimmed)) {
+          const bulletContent = trimmed.replace(/^[-*•]\s*/, '');
+          return (
+            <div key={idx} style={{ display: 'flex', gap: '6px', alignItems: 'flex-start', paddingLeft: '2px' }}>
+              <span style={{ color: 'var(--ptf-accent-1)', fontWeight: 'bold', fontSize: '13px' }}>•</span>
+              <span style={{ flex: 1 }}>{renderBoldText(bulletContent)}</span>
+            </div>
+          );
+        }
+
+        return <div key={idx}>{renderBoldText(trimmed)}</div>;
+      })}
+    </div>
+  );
+};
+
+const renderBoldText = (str: string) => {
+  const parts = str.split(/(\*\*.*?\*\*)/g);
+  return parts.map((part, i) => {
+    if (part.startsWith('**') && part.endsWith('**')) {
+      return <strong key={i} style={{ fontWeight: 700 }}>{part.slice(2, -2)}</strong>;
+    }
+    return part;
+  });
 };
 
 export default ChatPanel;
