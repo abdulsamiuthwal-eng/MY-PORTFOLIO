@@ -79,16 +79,26 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
   const scrollToSection = (hash: string) => {
     onClose();
     setTimeout(() => {
-      if (window.location.hash && window.location.hash !== '#home') {
-        window.location.hash = '';
+      if (hash === '#contact-page') {
+        window.location.hash = '#contact-page';
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        return;
       }
-      requestAnimationFrame(() => {
-        const el = document.querySelector(hash);
-        if (el) {
-          el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }
+
+      // If switching from contact page or project detail page back to homepage sections
+      if (window.location.hash === '#contact-page' || window.location.hash.startsWith('#project/')) {
+        window.location.hash = hash;
+        return;
+      }
+
+      // In-page section scrolling (#biography, #skills, #timeline, #project, #home)
+      const el = document.querySelector(hash);
+      if (el) {
+        el.scrollIntoView({ behavior: 'smooth', block: 'start' });
         history.replaceState(null, '', hash);
-      });
+      } else {
+        window.location.hash = hash;
+      }
     }, 300);
   };
 
