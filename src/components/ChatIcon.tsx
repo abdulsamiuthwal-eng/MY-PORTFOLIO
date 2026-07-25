@@ -47,8 +47,6 @@ const ChatIcon: React.FC = () => {
     : 1;
 
   const buttonSize = isMobile ? '46px' : '50px';
-  const wrapperRight = isMobile ? '16px' : '30px';
-  const wrapperBottom = isMobile ? '20px' : undefined;
 
   return (
     <>
@@ -58,14 +56,12 @@ const ChatIcon: React.FC = () => {
         className="ptf-chat-wrapper"
         style={{
           position: 'fixed',
-          right: wrapperRight,
-          bottom: wrapperBottom,
           zIndex: 9999,
           display: 'flex',
           alignItems: 'center',
           flexDirection: 'row-reverse',
           gap: '12px',
-          transition: 'bottom 0.25s cubic-bezier(0.25, 0.46, 0.45, 0.94)',
+          transition: 'bottom 0.25s cubic-bezier(0.25, 0.46, 0.45, 0.94), right 0.25s ease',
         }}
       >
         <button

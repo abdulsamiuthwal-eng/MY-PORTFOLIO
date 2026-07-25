@@ -1450,6 +1450,8 @@ body {
 
 /* Chat Icon Wrapper */
 .ptf-chat-wrapper {
+  position: fixed;
+  right: 30px;
   bottom: calc(104px + var(--footer-push, 0px));
 }
 
@@ -1458,8 +1460,20 @@ body {
   z-index: 9999;
 }
 
-/* Hide chat tooltip on mobile (width < 768px) */
+/* Mobile Adjustments (width < 768px) */
 @media (max-width: 767.98px) {
+  .ptf-floating-back-to-top {
+    right: 16px;
+    bottom: calc(20px + var(--footer-push, 0px));
+    width: 44px;
+    height: 44px;
+  }
+  
+  .ptf-chat-wrapper {
+    right: 16px;
+    bottom: calc(74px + var(--footer-push, 0px));
+  }
+
   .ptf-chat-tooltip {
     display: none !important;
   }
