@@ -102,12 +102,26 @@ const Timeline: React.FC = () => {
             </h3>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '40px' }}>
               <TimelineItem 
+                year="Jul 2026 - Present"
+                title="Python Developer Intern"
+                institution="DecodeLabs (Online Internship)"
+                description="Designed & developed Python-based applications with a strong focus on clean code, object-oriented programming (OOP), and problem-solving. Built rule-based chatbot solutions, file handling tools, modular project structures, debugging workflows, and version control using Git."
+                delay="0"
+              />
+              <TimelineItem 
+                year="Jul 2026 - Present"
+                title="AI/ML Intern"
+                institution="DEVFORGE (Online Internship)"
+                description="Developed an end-to-end Sentiment Analysis web application using Python, Scikit-learn, Pandas, NumPy, NLTK, TF-IDF, and FastAPI. Trained & evaluated ML models, built REST APIs, integrated frontend/backend, and deployed AI solutions following industry best practices."
+                delay="100"
+              />
+              <TimelineItem 
                 year="Apr 2026 - Jun 2026"
                 title="AI/ML Intern"
                 institution="Developer Hub (Online Internship)"
                 institutionLink="https://developershubcorp.com/"
-                description="Worked on ML model training and AI workflows using Python, Scikit-learn, Pandas & NumPy. Explored LangChain, RAG pipelines, NLP techniques, and TensorFlow."
-                delay="0"
+                description="Worked on machine learning model development and AI workflows using Python, Scikit-learn, Pandas & NumPy. Built LLM-powered applications with LangChain and RAG pipelines, applied NLP techniques, and explored TensorFlow to improve model performance."
+                delay="200"
               />
             </div>
           </div>
