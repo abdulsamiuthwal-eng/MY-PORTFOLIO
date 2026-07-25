@@ -5,7 +5,6 @@ const CircularCTA: React.FC = () => {
 
   const handleClick = () => {
     setIsClicked(true);
-    sessionStorage.setItem('fromCallSami', 'true');
     setTimeout(() => {
       setIsClicked(false);
     }, 600);

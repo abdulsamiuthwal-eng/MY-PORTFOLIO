@@ -75,17 +75,16 @@ const App: React.FC = () => {
     };
   }, []);
 
-  // Handle smooth scrolling for home page section anchors
+  // Handle smooth scrolling for home page section anchors and page transitions
   useEffect(() => {
-    if (currentHash === '#home' || currentHash === '') {
-      if (sessionStorage.getItem('fromCallSami') === 'true') {
-        sessionStorage.removeItem('fromCallSami');
-        // Let the homepage layout render first, then scroll to bottom smoothly
-        const delay = setTimeout(() => {
-          window.scrollTo({ top: document.documentElement.scrollHeight, behavior: 'smooth' });
-        }, 100);
-        return () => clearTimeout(delay);
-      }
+    if (currentHash === '#contact-page') {
+      window.scrollTo(0, 0);
+      const animatedElements = document.querySelectorAll('.aos-init');
+      animatedElements.forEach(el => el.classList.remove('aos-animate'));
+      setTimeout(() => {
+        AOS.refresh();
+      }, 150);
+    } else if (currentHash === '#home' || currentHash === '') {
       window.scrollTo({ top: 0, behavior: 'smooth' });
       // Reset AOS animations on the homepage so they replay
       const animatedElements = document.querySelectorAll('.aos-init');
@@ -93,12 +92,10 @@ const App: React.FC = () => {
       setTimeout(() => {
         AOS.refresh();
       }, 150);
-    } else if (currentHash && currentHash !== '#contact-page' && !currentHash.startsWith('#project/')) {
-      sessionStorage.removeItem('fromCallSami');
+    } else if (currentHash && !currentHash.startsWith('#project/')) {
       try {
         const element = document.querySelector(currentHash);
         if (element) {
-          // Use a small timeout to let the home layout render when switching back from contact page
           const delay = setTimeout(() => {
             element.scrollIntoView({ behavior: 'smooth' });
           }, 50);
