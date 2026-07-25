@@ -110,6 +110,7 @@ const Projects: React.FC = () => {
   const dragStartRef = useRef(0);
   const dragOffsetRef = useRef(0);
   const wasDraggedRef = useRef(false);
+  const wheelCooldownRef = useRef(false);
 
   const updateScrollAmount = () => {
     if (scrollRef.current && scrollRef.current.firstElementChild) {
@@ -242,6 +243,22 @@ const Projects: React.FC = () => {
     handleDragEnd();
   };
 
+  const handleWheel = (e: React.WheelEvent) => {
+    const delta = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY;
+    if (Math.abs(delta) < 20 || wheelCooldownRef.current) return;
+
+    wheelCooldownRef.current = true;
+    setTimeout(() => {
+      wheelCooldownRef.current = false;
+    }, 450);
+
+    if (delta > 0) {
+      setCurrentIndex((prev) => prev + 1);
+    } else {
+      setCurrentIndex((prev) => prev - 1);
+    }
+  };
+
   const handleScrollLeft = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
@@ -306,7 +323,7 @@ const Projects: React.FC = () => {
             <ChevronRight size={22} />
           </button>
 
-          <div className="ptf-portfolio-slider-container">
+          <div className="ptf-portfolio-slider-container" onWheel={handleWheel}>
             <div 
               className="ptf-portfolio-slider-track" 
               ref={scrollRef}

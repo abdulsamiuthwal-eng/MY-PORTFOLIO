@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 
 interface TestimonialItem {
   quote: string;
@@ -10,6 +10,13 @@ interface TestimonialItem {
 
 const Testimonials: React.FC = () => {
   const [activeDot, setActiveDot] = useState(0);
+  const [isDragging, setIsDragging] = useState(false);
+  const [dragOffset, setDragOffset] = useState(0);
+
+  const dragStartXRef = useRef(0);
+  const isDraggingRef = useRef(false);
+  const wheelCooldownRef = useRef(false);
+  const containerRef = useRef<HTMLDivElement>(null);
 
   const testimonials: TestimonialItem[] = [
     {
@@ -35,20 +42,96 @@ const Testimonials: React.FC = () => {
     }
   ];
 
+  const numSlides = testimonials.length;
+
+  const handleStart = (clientX: number) => {
+    isDraggingRef.current = true;
+    setIsDragging(true);
+    dragStartXRef.current = clientX;
+    setDragOffset(0);
+  };
+
+  const handleMove = (clientX: number) => {
+    if (!isDraggingRef.current) return;
+    const deltaX = clientX - dragStartXRef.current;
+    setDragOffset(deltaX);
+  };
+
+  const handleEnd = () => {
+    if (!isDraggingRef.current) return;
+    isDraggingRef.current = false;
+    setIsDragging(false);
+
+    if (dragOffset < -50 && activeDot < numSlides - 1) {
+      setActiveDot((prev) => prev + 1);
+    } else if (dragOffset > 50 && activeDot > 0) {
+      setActiveDot((prev) => prev - 1);
+    }
+    setDragOffset(0);
+  };
+
+  // 2-Finger Trackpad & Mouse Wheel Horizontal Scroll
+  const handleWheel = (e: React.WheelEvent) => {
+    const delta = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY;
+    if (Math.abs(delta) < 20 || wheelCooldownRef.current) return;
+
+    wheelCooldownRef.current = true;
+    setTimeout(() => {
+      wheelCooldownRef.current = false;
+    }, 450);
+
+    if (delta > 0 && activeDot < numSlides - 1) {
+      setActiveDot((prev) => prev + 1);
+    } else if (delta < 0 && activeDot > 0) {
+      setActiveDot((prev) => prev - 1);
+    }
+  };
+
+  // Global mouse move & mouse up listeners during drag
+  useEffect(() => {
+    if (!isDragging) return;
+
+    const onMouseMove = (e: MouseEvent) => handleMove(e.clientX);
+    const onMouseUp = () => handleEnd();
+
+    document.addEventListener('mousemove', onMouseMove);
+    document.addEventListener('mouseup', onMouseUp);
+
+    return () => {
+      document.removeEventListener('mousemove', onMouseMove);
+      document.removeEventListener('mouseup', onMouseUp);
+    };
+  }, [isDragging, activeDot, dragOffset]);
+
   return (
     <section id="testimonials" className="ptf-testimonials-section" style={{ backgroundColor: 'var(--ptf-white-color)' }}>
       <div className="container-xxl">
         <div className="ptf-divider" data-aos="draw-line"></div>
         <div className="ptf-spacer" style={{ height: '180px' }}></div>
         {/* Testimonial Slider */}
-        <div className="ptf-testimonials-slider" style={{ overflow: 'hidden', width: '100%' }}>
+        <div
+          ref={containerRef}
+          className="ptf-testimonials-slider"
+          onWheel={handleWheel}
+          onMouseDown={(e) => handleStart(e.clientX)}
+          onTouchStart={(e) => handleStart(e.touches[0].clientX)}
+          onTouchMove={(e) => handleMove(e.touches[0].clientX)}
+          onTouchEnd={handleEnd}
+          style={{
+            overflow: 'hidden',
+            width: '100%',
+            cursor: isDragging ? 'grabbing' : 'grab',
+            userSelect: 'none',
+            WebkitUserSelect: 'none',
+          }}
+        >
           <div 
             className="ptf-testimonials-track" 
             style={{ 
               display: 'flex', 
               width: '300%', 
-              transform: `translateX(-${activeDot * 33.3333}%)`, 
-              transition: 'transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94)' 
+              transform: `translateX(calc(-${activeDot * 33.3333}% + ${dragOffset}px))`, 
+              transition: isDragging ? 'none' : 'transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94)',
             }}
           >
             {testimonials.map((t, idx) => (
