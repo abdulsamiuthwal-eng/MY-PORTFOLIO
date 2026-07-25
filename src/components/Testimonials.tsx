@@ -9,18 +9,6 @@ interface TestimonialItem {
 }
 
 const Testimonials: React.FC = () => {
-  const [activeDot, setActiveDot] = useState(0);
-  const [isDragging, setIsDragging] = useState(false);
-  const [dragOffset, setDragOffset] = useState(0);
-
-  const dragStartXRef = useRef(0);
-  const dragStartYRef = useRef(0);
-  const isHorizontalSwipeRef = useRef<boolean | null>(null);
-
-  const isDraggingRef = useRef(false);
-  const wheelCooldownRef = useRef(false);
-  const containerRef = useRef<HTMLDivElement>(null);
-
   const testimonials: TestimonialItem[] = [
     {
       quote: "“Awarded Certificate of Participation for active participation in the national-level event 'INNOVATIVE PAKISTAN 2026' (THINK. BUILD. LEAD.), collaborating with IEEE, HEC, and leading academic institutions to showcase innovative solutions.”",
@@ -45,7 +33,50 @@ const Testimonials: React.FC = () => {
     }
   ];
 
-  const numSlides = testimonials.length;
+  const N = testimonials.length; // 3
+  const clonedTestimonials = [...testimonials, ...testimonials, ...testimonials]; // 9 items
+
+  const [currentIndex, setCurrentIndex] = useState(N); // Start at middle set (index 3)
+  const [isTransitioning, setIsTransitioning] = useState(true);
+  const [isDragging, setIsDragging] = useState(false);
+  const [dragOffset, setDragOffset] = useState(0);
+
+  const dragStartXRef = useRef(0);
+  const dragStartYRef = useRef(0);
+  const isHorizontalSwipeRef = useRef<boolean | null>(null);
+
+  const isDraggingRef = useRef(false);
+  const wheelCooldownRef = useRef(false);
+  const trackRef = useRef<HTMLDivElement>(null);
+
+  const activeDot = ((currentIndex % N) + N) % N;
+
+  const handleTransitionEnd = () => {
+    if (currentIndex >= 2 * N) {
+      if (trackRef.current) {
+        trackRef.current.style.transition = 'none';
+        const newIndex = currentIndex - N;
+        setCurrentIndex(newIndex);
+        setIsTransitioning(false);
+      }
+    } else if (currentIndex < N) {
+      if (trackRef.current) {
+        trackRef.current.style.transition = 'none';
+        const newIndex = currentIndex + N;
+        setCurrentIndex(newIndex);
+        setIsTransitioning(false);
+      }
+    }
+  };
+
+  useEffect(() => {
+    if (!isTransitioning) {
+      if (trackRef.current) {
+        trackRef.current.offsetHeight; // Force reflow
+      }
+      setIsTransitioning(true);
+    }
+  }, [isTransitioning]);
 
   const handleStart = (clientX: number, clientY?: number) => {
     isDraggingRef.current = true;
@@ -65,14 +96,12 @@ const Testimonials: React.FC = () => {
     const deltaX = clientX - dragStartXRef.current;
     const deltaY = clientY - dragStartYRef.current;
 
-    // Lock direction intent on first significant movement
     if (isHorizontalSwipeRef.current === null) {
       if (Math.abs(deltaX) > 8 || Math.abs(deltaY) > 8) {
         isHorizontalSwipeRef.current = Math.abs(deltaX) > Math.abs(deltaY);
       }
     }
 
-    // If user intended vertical page scroll, cancel slider drag
     if (isHorizontalSwipeRef.current === false) {
       isDraggingRef.current = false;
       setIsDragging(false);
@@ -96,10 +125,12 @@ const Testimonials: React.FC = () => {
     isDraggingRef.current = false;
     setIsDragging(false);
 
-    if (dragOffset < -50 && activeDot < numSlides - 1) {
-      setActiveDot((prev) => prev + 1);
-    } else if (dragOffset > 50 && activeDot > 0) {
-      setActiveDot((prev) => prev - 1);
+    if (dragOffset < -50) {
+      setIsTransitioning(true);
+      setCurrentIndex((prev) => prev + 1);
+    } else if (dragOffset > 50) {
+      setIsTransitioning(true);
+      setCurrentIndex((prev) => prev - 1);
     }
     setDragOffset(0);
     isHorizontalSwipeRef.current = null;
@@ -107,7 +138,6 @@ const Testimonials: React.FC = () => {
 
   // 2-Finger Trackpad & Mouse Wheel Horizontal Scroll
   const handleWheel = (e: React.WheelEvent) => {
-    // Strictly isolate horizontal trackpad scroll; ignore vertical page scrolling
     if (Math.abs(e.deltaX) <= Math.abs(e.deltaY)) return;
     if (Math.abs(e.deltaX) < 15 || wheelCooldownRef.current) return;
 
@@ -116,14 +146,14 @@ const Testimonials: React.FC = () => {
       wheelCooldownRef.current = false;
     }, 450);
 
-    if (e.deltaX > 0 && activeDot < numSlides - 1) {
-      setActiveDot((prev) => prev + 1);
-    } else if (e.deltaX < 0 && activeDot > 0) {
-      setActiveDot((prev) => prev - 1);
+    setIsTransitioning(true);
+    if (e.deltaX > 0) {
+      setCurrentIndex((prev) => prev + 1);
+    } else if (e.deltaX < 0) {
+      setCurrentIndex((prev) => prev - 1);
     }
   };
 
-  // Global mouse move & mouse up listeners during mouse drag
   useEffect(() => {
     if (!isDragging) return;
 
@@ -137,7 +167,11 @@ const Testimonials: React.FC = () => {
       document.removeEventListener('mousemove', onMouseMove);
       document.removeEventListener('mouseup', onMouseUp);
     };
-  }, [isDragging, activeDot, dragOffset]);
+  }, [isDragging, currentIndex, dragOffset]);
+
+  const slideWidthPct = 100 / (3 * N); // 11.11111%
+  const trackWidthPct = 3 * N * 100; // 900%
+  const translateXVal = (currentIndex * 100) / (3 * N);
 
   return (
     <section id="testimonials" className="ptf-testimonials-section" style={{ backgroundColor: 'var(--ptf-white-color)' }}>
@@ -146,7 +180,6 @@ const Testimonials: React.FC = () => {
         <div className="ptf-spacer" style={{ height: '180px' }}></div>
         {/* Testimonial Slider */}
         <div
-          ref={containerRef}
           className="ptf-testimonials-slider"
           onWheel={handleWheel}
           onMouseDown={(e) => handleStart(e.clientX)}
@@ -162,18 +195,20 @@ const Testimonials: React.FC = () => {
           }}
         >
           <div 
+            ref={trackRef}
             className="ptf-testimonials-track" 
+            onTransitionEnd={handleTransitionEnd}
             style={{ 
               display: 'flex', 
-              width: '300%', 
-              transform: `translateX(calc(-${activeDot * 33.3333}% + ${dragOffset}px))`, 
-              transition: isDragging ? 'none' : 'transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94)',
+              width: `${trackWidthPct}%`, 
+              transform: `translateX(calc(-${translateXVal}% + ${dragOffset}px))`, 
+              transition: isDragging || !isTransitioning ? 'none' : 'transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94)',
             }}
           >
-            {testimonials.map((t, idx) => (
+            {clonedTestimonials.map((t, idx) => (
               <div 
                 key={idx} 
-                style={{ width: '33.3333%', padding: '0 15px', textAlign: 'center' }}
+                style={{ width: `${slideWidthPct}%`, padding: '0 15px', textAlign: 'center' }}
                 className="ptf-animated-block"
                 data-aos="fade-up"
               >
@@ -198,11 +233,14 @@ const Testimonials: React.FC = () => {
 
         {/* Testimonial Style Dots Pagination */}
         <div className="ptf-testimonials-dots ptf-animated-block" data-aos="fade-up" style={{ display: 'flex', justifyContent: 'center', marginTop: '50px' }}>
-          {[0, 1, 2].map((i) => (
+          {Array.from({ length: N }).map((_, i) => (
             <button
               key={i}
               className={`ptf-pagination-dot ${activeDot === i ? 'active' : ''}`}
-              onClick={() => setActiveDot(i)}
+              onClick={() => {
+                setIsTransitioning(true);
+                setCurrentIndex(N + i);
+              }}
               aria-label={`Go to slide ${i + 1}`}
             />
           ))}

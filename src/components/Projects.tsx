@@ -183,8 +183,10 @@ const Projects: React.FC = () => {
     if (currentScrollAmount > 0) {
       const dragThreshold = currentScrollAmount * 0.15; // 15% card drag threshold
       if (finalOffset < -dragThreshold) {
+        setIsTransitioning(true);
         setCurrentIndex((prev) => prev + 1);
       } else if (finalOffset > dragThreshold) {
+        setIsTransitioning(true);
         setCurrentIndex((prev) => prev - 1);
       }
     }
@@ -277,6 +279,7 @@ const Projects: React.FC = () => {
       wheelCooldownRef.current = false;
     }, 450);
 
+    setIsTransitioning(true);
     if (e.deltaX > 0) {
       setCurrentIndex((prev) => prev + 1);
     } else {
@@ -287,14 +290,14 @@ const Projects: React.FC = () => {
   const handleScrollLeft = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    if (!isTransitioning || currentIndex < N) return;
+    setIsTransitioning(true);
     setCurrentIndex((prev) => prev - 1);
   };
 
   const handleScrollRight = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    if (!isTransitioning || currentIndex >= 2 * N) return;
+    setIsTransitioning(true);
     setCurrentIndex((prev) => prev + 1);
   };
 
