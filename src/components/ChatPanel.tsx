@@ -420,6 +420,43 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
         )}
       </div>
 
+      {/* Persistent Quick Questions Pill Bar */}
+      <div style={{
+        display: 'flex',
+        gap: '6px',
+        overflowX: 'auto',
+        padding: '8px 12px',
+        borderTop: '1px solid #e9ecef',
+        backgroundColor: '#f8f9fa',
+        WebkitOverflowScrolling: 'touch',
+        scrollbarWidth: 'none',
+        flexShrink: 0,
+      }}>
+        {SUGGESTED_QUESTIONS.map((q, i) => (
+          <button
+            key={i}
+            onClick={() => addMessage(q)}
+            disabled={loading}
+            style={{
+              whiteSpace: 'nowrap',
+              background: '#ffffff',
+              border: '1px solid #dee2e6',
+              borderRadius: '16px',
+              padding: '5px 12px',
+              fontSize: '11px',
+              fontWeight: 500,
+              color: '#343a40',
+              cursor: loading ? 'default' : 'pointer',
+              boxShadow: '0 1px 3px rgba(0,0,0,0.04)',
+              flexShrink: 0,
+              transition: 'all 0.2s ease',
+            }}
+          >
+            {q}
+          </button>
+        ))}
+      </div>
+
       {/* Input */}
       <div style={{
         display: 'flex',
