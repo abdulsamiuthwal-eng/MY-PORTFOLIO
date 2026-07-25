@@ -137,11 +137,25 @@ const Projects: React.FC = () => {
     };
   }, []);
 
-  const handleTransitionEnd = () => {
+  const handleTransitionEnd = (e?: React.TransitionEvent) => {
+    if (e && e.target !== scrollRef.current) return;
+
     if (currentIndex >= 2 * N) {
+      if (scrollRef.current) {
+        scrollRef.current.style.transition = 'none';
+        const newIndex = currentIndex - N;
+        scrollRef.current.style.transform = `translateX(-${newIndex * scrollAmount}px)`;
+        void scrollRef.current.offsetHeight; // Force layout recalculation in same frame
+      }
       setIsTransitioning(false);
       setCurrentIndex(currentIndex - N);
     } else if (currentIndex < N) {
+      if (scrollRef.current) {
+        scrollRef.current.style.transition = 'none';
+        const newIndex = currentIndex + N;
+        scrollRef.current.style.transform = `translateX(-${newIndex * scrollAmount}px)`;
+        void scrollRef.current.offsetHeight;
+      }
       setIsTransitioning(false);
       setCurrentIndex(currentIndex + N);
     }

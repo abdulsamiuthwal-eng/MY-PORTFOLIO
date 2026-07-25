@@ -51,21 +51,29 @@ const Testimonials: React.FC = () => {
 
   const activeDot = ((currentIndex % N) + N) % N;
 
-  const handleTransitionEnd = () => {
+  const handleTransitionEnd = (e?: React.TransitionEvent) => {
+    if (e && e.target !== trackRef.current) return;
+
     if (currentIndex >= 2 * N) {
       if (trackRef.current) {
         trackRef.current.style.transition = 'none';
         const newIndex = currentIndex - N;
-        setCurrentIndex(newIndex);
-        setIsTransitioning(false);
+        const translateXVal = (newIndex * 100) / (3 * N);
+        trackRef.current.style.transform = `translateX(-${translateXVal}%)`;
+        void trackRef.current.offsetHeight; // Force layout recalculation in same frame
       }
+      setIsTransitioning(false);
+      setCurrentIndex(currentIndex - N);
     } else if (currentIndex < N) {
       if (trackRef.current) {
         trackRef.current.style.transition = 'none';
         const newIndex = currentIndex + N;
-        setCurrentIndex(newIndex);
-        setIsTransitioning(false);
+        const translateXVal = (newIndex * 100) / (3 * N);
+        trackRef.current.style.transform = `translateX(-${translateXVal}%)`;
+        void trackRef.current.offsetHeight;
       }
+      setIsTransitioning(false);
+      setCurrentIndex(currentIndex + N);
     }
   };
 
