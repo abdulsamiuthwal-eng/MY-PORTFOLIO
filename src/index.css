@@ -1307,6 +1307,20 @@ body {
   color: var(--ptf-accent-1);
 }
 
+/* Contact Page View - Prevent mobile AOS white screen */
+.ptf-contact-page-view,
+.ptf-contact-page-view * {
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+.ptf-contact-page-view [data-aos] {
+  opacity: 1 !important;
+  transform: none !important;
+  transition: none !important;
+  visibility: visible !important;
+}
+
 /* Footer Section */
 .ptf-footer {
   border-top: 1px solid var(--ptf-border-color);
