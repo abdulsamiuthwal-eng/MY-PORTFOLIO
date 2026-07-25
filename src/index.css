@@ -14,6 +14,12 @@
   --ptf-image-height: 90px;
 }
 
+html, body, #root, main {
+  width: 100%;
+  max-width: 100vw;
+  overflow-x: hidden !important;
+}
+
 html {
   scroll-behavior: smooth;
 }
@@ -24,9 +30,6 @@ html {
   padding: 0;
 }
 
-
-
-
 body {
   font-family: var(--ptf-font-sans);
   color: var(--ptf-text-color);
@@ -34,7 +37,6 @@ body {
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  overflow-x: hidden;
 }
 
 /* Custom Cursor Styles */
