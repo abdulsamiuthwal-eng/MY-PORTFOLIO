@@ -7,6 +7,14 @@ interface ChatPanelProps {
   onClose: () => void;
 }
 
+const SUGGESTED_QUESTIONS = [
+  '🛠️ What are his skills?',
+  '💼 Tell me about his projects',
+  '🎓 Education & experience?',
+  '📞 How to contact him?',
+  '🤝 Is he available for hire?',
+];
+
 const ChatPanel: React.FC<ChatPanelProps> = ({ onClose }) => {
   const [messages, setMessages] = useState<ChatMessage[]>([
     { role: 'assistant', text: '👋 Welcome! Ask me anything about ABDUL SAMI UTHWAL — his skills, projects, experience, or anything else. You can type or use the mic!' },
@@ -16,8 +24,17 @@ const ChatPanel: React.FC<ChatPanelProps> = ({ onClose }) => {
   const [listening, setListening] = useState(false);
   const [voiceEnabled, setVoiceEnabled] = useState(false);
   const [pendingSection, setPendingSection] = useState<string | null>(null);
+  const [showSuggestions, setShowSuggestions] = useState(true);
+  const [lastFailedMessage, setLastFailedMessage] = useState<string | null>(null);
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 480);
   const listRef = useRef<HTMLDivElement>(null);
   const recognitionRef = useRef<any>(null);
+
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth <= 480);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   const speakText = (text: string) => {
     if (!voiceEnabled) return;
@@ -57,6 +74,8 @@ const ChatPanel: React.FC<ChatPanelProps> = ({ onClose }) => {
     const userMsg: ChatMessage = { role: 'user', text: userText };
     const updated = [...messages, userMsg];
     setMessages(updated);
+    setShowSuggestions(false);
+    setLastFailedMessage(null);
 
     if (pendingSection && isAffirmativeReply(userText)) {
       setPendingSection(null);
@@ -71,7 +90,8 @@ const ChatPanel: React.FC<ChatPanelProps> = ({ onClose }) => {
       speakText(result.text);
       setPendingSection(result.section || null);
     } catch {
-      setMessages((prev) => [...prev, { role: 'assistant', text: 'Sorry, something went wrong. Try again.' }]);
+      setLastFailedMessage(userText);
+      setMessages((prev) => [...prev, { role: 'assistant', text: '⚠️ Oops! Something went wrong. Please check your connection and try again.' }]);
       setPendingSection(null);
     } finally {
       setLoading(false);
@@ -123,34 +143,75 @@ const ChatPanel: React.FC<ChatPanelProps> = ({ onClose }) => {
     setListening(true);
   };
 
+  // Mobile: full-width bottom sheet, Desktop: side panel
+  const panelStyle: React.CSSProperties = isMobile ? {
+    position: 'fixed',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    width: '100%',
+    height: '85vh',
+    maxHeight: '85vh',
+    borderRadius: '16px 16px 0 0',
+    backgroundColor: '#ffffff',
+    boxShadow: '0 -8px 40px rgba(0,0,0,0.18)',
+    zIndex: 10000,
+    display: 'flex',
+    flexDirection: 'column',
+    overflow: 'hidden',
+    fontFamily: 'var(--ptf-font-sans)',
+    border: 'none',
+    borderTop: '1px solid var(--ptf-border-color)',
+  } : {
+    position: 'fixed',
+    bottom: '166px',
+    right: '30px',
+    width: '340px',
+    maxHeight: '480px',
+    borderRadius: '12px',
+    backgroundColor: '#ffffff',
+    boxShadow: '0 20px 60px rgba(0,0,0,0.15)',
+    zIndex: 10000,
+    display: 'flex',
+    flexDirection: 'column',
+    overflow: 'hidden',
+    fontFamily: 'var(--ptf-font-sans)',
+    border: '1px solid var(--ptf-border-color)',
+  };
+
   return (
-    <div style={{
-      position: 'fixed',
-      bottom: '166px',
-      right: '30px',
-      width: '340px',
-      maxHeight: '480px',
-      borderRadius: '12px',
-      backgroundColor: '#ffffff',
-      boxShadow: '0 20px 60px rgba(0,0,0,0.15)',
-      zIndex: 10000,
-      display: 'flex',
-      flexDirection: 'column',
-      overflow: 'hidden',
-      fontFamily: 'var(--ptf-font-sans)',
-      border: '1px solid var(--ptf-border-color)',
-    }}>
+    <>
+      {/* Mobile backdrop overlay */}
+      {isMobile && (
+        <div
+          onClick={onClose}
+          style={{
+            position: 'fixed',
+            inset: 0,
+            backgroundColor: 'rgba(0,0,0,0.4)',
+            zIndex: 9999,
+            backdropFilter: 'blur(2px)',
+          }}
+        />
+      )}
+    <div style={panelStyle}>
       {/* Header */}
       <div style={{
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between',
-        padding: '14px 16px',
+        padding: isMobile ? '16px 20px' : '14px 16px',
         borderBottom: '1px solid var(--ptf-border-color)',
         backgroundColor: 'var(--ptf-black-color)',
         color: 'var(--ptf-white-color)',
+        flexShrink: 0,
       }}>
-        <span style={{ fontSize: '14px', fontWeight: 600 }}>AI Assistant</span>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          {isMobile && (
+            <div style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: '#22c55e', flexShrink: 0 }} />
+          )}
+          <span style={{ fontSize: isMobile ? '15px' : '14px', fontWeight: 600 }}>AI Assistant</span>
+        </div>
         <div style={{ display: 'flex', gap: '4px' }}>
           <button
             onClick={() => { setVoiceEnabled(!voiceEnabled); window.speechSynthesis.cancel(); }}
@@ -190,11 +251,12 @@ const ChatPanel: React.FC<ChatPanelProps> = ({ onClose }) => {
       <div ref={listRef} style={{
         flex: 1,
         overflowY: 'auto',
-        padding: '12px 16px',
+        padding: isMobile ? '16px 20px' : '12px 16px',
         display: 'flex',
         flexDirection: 'column',
         gap: '10px',
         backgroundColor: '#f8f9fa',
+        WebkitOverflowScrolling: 'touch',
       }}>
         {messages.map((msg, i) => (
           <div key={i} style={{
@@ -217,30 +279,84 @@ const ChatPanel: React.FC<ChatPanelProps> = ({ onClose }) => {
               {msg.role === 'user' ? <User size={14} /> : <Bot size={14} />}
             </div>
             <div style={{
-              maxWidth: '80%',
-              padding: '10px 14px',
-              borderRadius: '12px',
-              fontSize: '13px',
-              lineHeight: '1.5',
-              color: msg.role === 'user' ? '#fff' : '#212529',
-              backgroundColor: msg.role === 'user' ? 'var(--ptf-accent-1)' : '#ffffff',
-              border: msg.role === 'user' ? 'none' : '1px solid #e9ecef',
-              whiteSpace: 'pre-wrap',
-              wordBreak: 'break-word',
-            }}>
+            maxWidth: isMobile ? '85%' : '80%',
+            padding: isMobile ? '12px 16px' : '10px 14px',
+            borderRadius: '12px',
+            fontSize: isMobile ? '14px' : '13px',
+            lineHeight: '1.5',
+            color: msg.role === 'user' ? '#fff' : '#212529',
+            backgroundColor: msg.role === 'user' ? 'var(--ptf-accent-1)' : '#ffffff',
+            border: msg.role === 'user' ? 'none' : '1px solid #e9ecef',
+            whiteSpace: 'pre-wrap',
+            wordBreak: 'break-word',
+          }}>
               {msg.text}
             </div>
           </div>
         ))}
+        {/* Suggested Questions */}
+        {showSuggestions && messages.length === 1 && (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', marginTop: '4px' }}>
+            <span style={{ fontSize: '11px', color: '#6c757d', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em' }}>Quick Questions</span>
+            {SUGGESTED_QUESTIONS.map((q, i) => (
+              <button
+                key={i}
+                onClick={() => addMessage(q)}
+                style={{
+                  textAlign: 'left',
+                  background: '#fff',
+                  border: '1px solid #e9ecef',
+                  borderRadius: '8px',
+                  padding: '7px 12px',
+                  fontSize: '12px',
+                  color: '#212529',
+                  cursor: 'pointer',
+                  transition: 'all 0.2s ease',
+                  fontFamily: 'inherit',
+                }}
+                onMouseEnter={(e) => { e.currentTarget.style.borderColor = 'var(--ptf-accent-1)'; e.currentTarget.style.color = 'var(--ptf-accent-1)'; }}
+                onMouseLeave={(e) => { e.currentTarget.style.borderColor = '#e9ecef'; e.currentTarget.style.color = '#212529'; }}
+              >
+                {q}
+              </button>
+            ))}
+          </div>
+        )}
+
+        {/* Retry button on error */}
+        {lastFailedMessage && !loading && (
+          <div style={{ display: 'flex', justifyContent: 'center', marginTop: '4px' }}>
+            <button
+              onClick={() => { setLastFailedMessage(null); addMessage(lastFailedMessage); }}
+              style={{
+                background: 'none',
+                border: '1px solid var(--ptf-accent-1)',
+                borderRadius: '6px',
+                padding: '5px 14px',
+                fontSize: '12px',
+                color: 'var(--ptf-accent-1)',
+                cursor: 'pointer',
+                fontFamily: 'inherit',
+                fontWeight: 600,
+              }}
+            >
+              🔄 Retry
+            </button>
+          </div>
+        )}
+
         {loading && (
           <div style={{ display: 'flex', gap: '8px', alignItems: 'center', padding: '8px 0' }}>
             <div style={{ width: '28px', height: '28px', borderRadius: '50%', backgroundColor: '#e9ecef', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
               <Bot size={14} color="#495057" />
             </div>
-            <div style={{ display: 'flex', gap: '4px' }}>
-              <span style={{ width: '6px', height: '6px', borderRadius: '50%', backgroundColor: '#adb5bd', animation: 'pulse 1.2s infinite' }} />
-              <span style={{ width: '6px', height: '6px', borderRadius: '50%', backgroundColor: '#adb5bd', animation: 'pulse 1.2s infinite 0.2s' }} />
-              <span style={{ width: '6px', height: '6px', borderRadius: '50%', backgroundColor: '#adb5bd', animation: 'pulse 1.2s infinite 0.4s' }} />
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '3px' }}>
+              <div style={{ display: 'flex', gap: '4px', alignItems: 'center' }}>
+                <span style={{ width: '6px', height: '6px', borderRadius: '50%', backgroundColor: '#adb5bd', animation: 'pulse 1.2s infinite' }} />
+                <span style={{ width: '6px', height: '6px', borderRadius: '50%', backgroundColor: '#adb5bd', animation: 'pulse 1.2s infinite 0.2s' }} />
+                <span style={{ width: '6px', height: '6px', borderRadius: '50%', backgroundColor: '#adb5bd', animation: 'pulse 1.2s infinite 0.4s' }} />
+              </div>
+              <span style={{ fontSize: '10px', color: '#adb5bd' }}>AI is thinking...</span>
             </div>
           </div>
         )}
@@ -251,9 +367,10 @@ const ChatPanel: React.FC<ChatPanelProps> = ({ onClose }) => {
         display: 'flex',
         alignItems: 'center',
         gap: '8px',
-        padding: '10px 12px',
+        padding: isMobile ? '12px 16px 20px' : '10px 12px',
         borderTop: '1px solid var(--ptf-border-color)',
         backgroundColor: '#fff',
+        flexShrink: 0,
       }}>
         <button
           onClick={toggleMic}
@@ -283,8 +400,8 @@ const ChatPanel: React.FC<ChatPanelProps> = ({ onClose }) => {
             flex: 1,
             border: '1px solid #e9ecef',
             borderRadius: '8px',
-            padding: '10px 12px',
-            fontSize: '13px',
+            padding: isMobile ? '12px 14px' : '10px 12px',
+            fontSize: isMobile ? '16px' : '13px',
             outline: 'none',
             fontFamily: 'inherit',
           }}
@@ -310,6 +427,7 @@ const ChatPanel: React.FC<ChatPanelProps> = ({ onClose }) => {
         </button>
       </div>
     </div>
+    </>
   );
 };
 

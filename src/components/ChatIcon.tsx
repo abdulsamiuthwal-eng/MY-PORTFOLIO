@@ -6,9 +6,19 @@ const ChatIcon: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
   const [tooltipState, setTooltipState] = useState<'hidden' | 'fade-in' | 'visible' | 'fade-out'>('hidden');
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 480);
   const scrollDismissed = useRef(false);
 
   useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth <= 480);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  useEffect(() => {
+    // Don't show tooltip on mobile (no hover)
+    if (isMobile) return;
+
     const timeouts: ReturnType<typeof setTimeout>[] = [];
     const onScroll = () => {
       if (scrollDismissed.current) return;
@@ -29,24 +39,41 @@ const ChatIcon: React.FC = () => {
       timeouts.forEach(clearTimeout);
       window.removeEventListener('scroll', onScroll);
     };
-  }, []);
+  }, [isMobile]);
 
   const tooltipOpacity = tooltipState === 'hidden' ? 0
     : tooltipState === 'fade-in' ? '0.6'
     : tooltipState === 'fade-out' ? '0'
     : 1;
 
+  const buttonSize = isMobile ? '46px' : '50px';
+  const wrapperRight = isMobile ? '16px' : '30px';
+  const wrapperBottom = isMobile ? '20px' : undefined;
+
   return (
     <>
       {isOpen && <ChatPanel onClose={() => setIsOpen(false)} />}
 
-      <div className="ptf-chat-wrapper" style={{ position: 'fixed', right: '30px', zIndex: 9999, display: 'flex', alignItems: 'center', flexDirection: 'row-reverse', gap: '12px', transition: 'bottom 0.25s cubic-bezier(0.25, 0.46, 0.45, 0.94)' }}>
+      <div
+        className="ptf-chat-wrapper"
+        style={{
+          position: 'fixed',
+          right: wrapperRight,
+          bottom: wrapperBottom,
+          zIndex: 9999,
+          display: 'flex',
+          alignItems: 'center',
+          flexDirection: 'row-reverse',
+          gap: '12px',
+          transition: 'bottom 0.25s cubic-bezier(0.25, 0.46, 0.45, 0.94)',
+        }}
+      >
         <button
           aria-label={isOpen ? 'Close AI Assistant' : 'Open AI Assistant'}
           className="ptf-chat-icon"
           style={{
-            width: '50px',
-            height: '50px',
+            width: buttonSize,
+            height: buttonSize,
             borderRadius: '50%',
             backgroundColor: isHovered ? 'var(--ptf-accent-1)' : 'var(--ptf-black-color)',
             color: 'var(--ptf-white-color)',
@@ -69,7 +96,8 @@ const ChatIcon: React.FC = () => {
           {isOpen ? <X size={20} /> : <MessageCircle size={20} />}
         </button>
 
-        {!isOpen && (
+        {/* Tooltip — only on desktop */}
+        {!isOpen && !isMobile && (
           <div
             className="ptf-chat-tooltip"
             style={{
