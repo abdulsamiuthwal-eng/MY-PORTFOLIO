@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { MessageCircle, X } from 'lucide-react';
+import type { ChatMessage } from '../lib/chat';
 import ChatPanel from './ChatPanel';
 
 const ChatIcon: React.FC = () => {
@@ -8,6 +9,14 @@ const ChatIcon: React.FC = () => {
   const [tooltipState, setTooltipState] = useState<'hidden' | 'fade-in' | 'visible' | 'fade-out'>('hidden');
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 480);
   const scrollDismissed = useRef(false);
+
+  // Preserved chat state across open/close
+  const [messages, setMessages] = useState<ChatMessage[]>([
+    { role: 'assistant', text: '👋 Welcome! Ask me anything about ABDUL SAMI UTHWAL — his skills, projects, experience, or anything else. You can type or use the mic!' },
+  ]);
+  const [showSuggestions, setShowSuggestions] = useState(true);
+  const [lastFailedMessage, setLastFailedMessage] = useState<string | null>(null);
+  const [pendingSection, setPendingSection] = useState<string | null>(null);
 
   useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth <= 480);
@@ -50,7 +59,19 @@ const ChatIcon: React.FC = () => {
 
   return (
     <>
-      {isOpen && <ChatPanel onClose={() => setIsOpen(false)} />}
+      {isOpen && (
+        <ChatPanel
+          onClose={() => setIsOpen(false)}
+          messages={messages}
+          setMessages={setMessages}
+          showSuggestions={showSuggestions}
+          setShowSuggestions={setShowSuggestions}
+          lastFailedMessage={lastFailedMessage}
+          setLastFailedMessage={setLastFailedMessage}
+          pendingSection={pendingSection}
+          setPendingSection={setPendingSection}
+        />
+      )}
 
       <div
         className="ptf-chat-wrapper"

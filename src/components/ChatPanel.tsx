@@ -5,6 +5,14 @@ import { sendMessage } from '../lib/chat';
 
 interface ChatPanelProps {
   onClose: () => void;
+  messages: ChatMessage[];
+  setMessages: React.Dispatch<React.SetStateAction<ChatMessage[]>>;
+  showSuggestions: boolean;
+  setShowSuggestions: (show: boolean) => void;
+  lastFailedMessage: string | null;
+  setLastFailedMessage: (msg: string | null) => void;
+  pendingSection: string | null;
+  setPendingSection: (section: string | null) => void;
 }
 
 const SUGGESTED_QUESTIONS = [
@@ -15,17 +23,21 @@ const SUGGESTED_QUESTIONS = [
   '🤝 Is he available for hire?',
 ];
 
-const ChatPanel: React.FC<ChatPanelProps> = ({ onClose }) => {
-  const [messages, setMessages] = useState<ChatMessage[]>([
-    { role: 'assistant', text: '👋 Welcome! Ask me anything about ABDUL SAMI UTHWAL — his skills, projects, experience, or anything else. You can type or use the mic!' },
-  ]);
+const ChatPanel: React.FC<ChatPanelProps> = ({
+  onClose,
+  messages,
+  setMessages,
+  showSuggestions,
+  setShowSuggestions,
+  lastFailedMessage,
+  setLastFailedMessage,
+  pendingSection,
+  setPendingSection,
+}) => {
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
   const [listening, setListening] = useState(false);
   const [voiceEnabled, setVoiceEnabled] = useState(false);
-  const [pendingSection, setPendingSection] = useState<string | null>(null);
-  const [showSuggestions, setShowSuggestions] = useState(true);
-  const [lastFailedMessage, setLastFailedMessage] = useState<string | null>(null);
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 480);
   const listRef = useRef<HTMLDivElement>(null);
   const recognitionRef = useRef<any>(null);
