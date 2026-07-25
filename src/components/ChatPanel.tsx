@@ -36,6 +36,21 @@ const ChatPanel: React.FC<ChatPanelProps> = ({ onClose }) => {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
+  // Lock background body scroll on mobile when chat panel is active
+  useEffect(() => {
+    if (isMobile) {
+      const originalOverflow = document.body.style.overflow;
+      const originalTouchAction = document.body.style.touchAction;
+      document.body.style.overflow = 'hidden';
+      document.body.style.touchAction = 'none';
+
+      return () => {
+        document.body.style.overflow = originalOverflow;
+        document.body.style.touchAction = originalTouchAction;
+      };
+    }
+  }, [isMobile]);
+
   const speakText = (text: string) => {
     if (!voiceEnabled) return;
     window.speechSynthesis.cancel();
@@ -185,12 +200,14 @@ const ChatPanel: React.FC<ChatPanelProps> = ({ onClose }) => {
       {isMobile && (
         <div
           onClick={onClose}
+          onTouchMove={(e) => e.preventDefault()}
           style={{
             position: 'fixed',
             inset: 0,
             backgroundColor: 'rgba(0,0,0,0.4)',
             zIndex: 9999,
             backdropFilter: 'blur(2px)',
+            touchAction: 'none',
           }}
         />
       )}
@@ -257,6 +274,8 @@ const ChatPanel: React.FC<ChatPanelProps> = ({ onClose }) => {
         gap: '10px',
         backgroundColor: '#f8f9fa',
         WebkitOverflowScrolling: 'touch',
+        overscrollBehavior: 'contain',
+        touchAction: 'pan-y',
       }}>
         {messages.map((msg, i) => (
           <div key={i} style={{
