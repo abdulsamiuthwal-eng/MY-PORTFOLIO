@@ -105,6 +105,7 @@ const Timeline: React.FC = () => {
                 year="Jul 2026 - Present"
                 title="Python Developer Intern"
                 institution="DecodeLabs (Online Internship)"
+                institutionLink="https://www.decodelabs.tech/"
                 description="Designed & developed Python-based applications with a strong focus on clean code, object-oriented programming (OOP), and problem-solving. Built rule-based chatbot solutions, file handling tools, modular project structures, debugging workflows, and version control using Git."
                 delay="0"
               />
@@ -112,6 +113,7 @@ const Timeline: React.FC = () => {
                 year="Jul 2026 - Present"
                 title="AI/ML Intern"
                 institution="DEVFORGE (Online Internship)"
+                institutionLink="https://devforgelabs.netlify.app/"
                 description="Developed an end-to-end Sentiment Analysis web application using Python, Scikit-learn, Pandas, NumPy, NLTK, TF-IDF, and FastAPI. Trained & evaluated ML models, built REST APIs, integrated frontend/backend, and deployed AI solutions following industry best practices."
                 delay="100"
               />
