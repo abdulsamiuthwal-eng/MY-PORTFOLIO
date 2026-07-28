@@ -107,28 +107,31 @@ const App: React.FC = () => {
     }
   }, [currentHash]);
 
-  // Push floating icons above footer when footer enters viewport
+  // Push floating icons smoothly above footer when footer enters viewport
   useEffect(() => {
-    const footer = document.querySelector('footer');
-    if (!footer) return;
+    const handleFooterPush = () => {
+      const footer = document.querySelector('footer');
+      if (!footer) return;
 
-    const html = document.documentElement;
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          const push = footer.offsetHeight + 14;
-          html.style.setProperty('--footer-push', `${push}px`);
-          html.classList.add('footer-push');
-        } else {
-          html.style.setProperty('--footer-push', '0px');
-          html.classList.remove('footer-push');
-        }
-      },
-      { threshold: 0 }
-    );
+      const footerTop = footer.getBoundingClientRect().top;
+      const windowHeight = window.innerHeight;
+      const visibleFooterHeight = windowHeight - footerTop;
 
-    observer.observe(footer);
-    return () => observer.disconnect();
+      if (visibleFooterHeight > 0) {
+        document.documentElement.style.setProperty('--footer-push', `${visibleFooterHeight}px`);
+      } else {
+        document.documentElement.style.setProperty('--footer-push', '0px');
+      }
+    };
+
+    window.addEventListener('scroll', handleFooterPush, { passive: true });
+    window.addEventListener('resize', handleFooterPush, { passive: true });
+    handleFooterPush();
+
+    return () => {
+      window.removeEventListener('scroll', handleFooterPush);
+      window.removeEventListener('resize', handleFooterPush);
+    };
   }, []);
 
   const isContactPage = currentHash === '#contact-page';
