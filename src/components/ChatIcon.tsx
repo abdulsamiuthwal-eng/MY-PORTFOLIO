@@ -73,15 +73,12 @@ const ChatIcon: React.FC = () => {
       <div
         className="ptf-chat-wrapper"
         style={{
-          position: 'fixed',
-          bottom: 'calc(25px + var(--footer-push, 0px))',
-          right: isMobile ? '20px' : '25px',
           zIndex: 9999,
           display: 'flex',
           alignItems: 'center',
           flexDirection: 'row-reverse',
           gap: '12px',
-          transition: 'bottom 0.15s ease-out, right 0.25s ease',
+          transition: 'bottom 0.2s ease-out, right 0.25s ease',
         }}
       >
         <button
