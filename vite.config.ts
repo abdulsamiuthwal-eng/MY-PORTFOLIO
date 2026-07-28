@@ -59,7 +59,7 @@ export default defineConfig(({ mode }) => {
                 res.end(JSON.stringify({ error: errText }));
                 return;
               }
-              const data = await geminiRes.json();
+              const data = await geminiRes.json() as any;
               const raw: string = data.candidates?.[0]?.content?.parts?.[0]?.text || 'No response.';
               const sectionMatch = raw.match(/---SECTION:(#[a-z-]+)---/);
               res.statusCode = 200;
