@@ -153,6 +153,7 @@ class TheftDetector:
       { badge: 4, title: 'Asynchronous Notification Routing', desc: 'Verified threat detections trigger UI updates (SocketIO), SMTP emails with snapshots, and mobile push notifications.' }
     ],
     screenshots: [
+      { url: '/projects/vigilant-eye.png', caption: 'Vigilant Eye Real-Time AI Surveillance Dashboard' },
       { url: '/projects/vigilant-eye/img1.jpg', caption: 'Vigilant Eye Splash and Camera Connection Initialization Screen' },
       { url: '/projects/vigilant-eye/img2.jpg', caption: 'Administrator Portal Secure Login Interface' },
       { url: '/projects/vigilant-eye/img3.jpg', caption: 'Real-Time Multithreaded Live Video Feed with YOLOv8 Object Detection and Labels' },
@@ -208,6 +209,7 @@ class RAGChain:
       { badge: 4, title: 'Llama 3.1 Grounded Answer', desc: 'Standalone question + context → Groq Llama 3.1 70B → grounded, cited answer with source references.' }
     ],
     screenshots: [
+      { url: '/projects/rag-chatbot.png', caption: 'RAG Research Assistant Main Chat Interface & Vector Search' },
       { url: '/projects/rag-chatbot/img1.jpg', caption: 'RAG Research Assistant — Splash & Landing Screen' },
       { url: '/projects/rag-chatbot/img2.jpg', caption: 'RAG Chatbot — Main Chat Interface & Response Screen' },
       { url: '/projects/rag-chatbot/img3.jpg', caption: 'RAG Chatbot — Conversation & Knowledge Retrieval View' },
@@ -336,7 +338,7 @@ def serve_next_ticket(desk_id, service_type):
       { badge: 4, title: 'Desk Operator Serves', desc: 'Operator clicks Next, fetching top ticket using transactions.' }
     ],
     screenshots: [
-      { url: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=1200&q=80', caption: 'Main Lobby Queue Status Display Board' },
+      { url: '/projects/smart-queue.png', caption: 'Main Lobby Queue Status Display Board' },
       { url: 'https://images.unsplash.com/photo-1538481199705-c710c4e965fc?auto=format&fit=crop&w=1200&q=80', caption: 'Operator Desk Dashboard Interface' },
       { url: 'https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&fit=crop&w=1200&q=80', caption: 'Queue Management System — Customer Flow & Ticketing' }
     ],

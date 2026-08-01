@@ -52,14 +52,14 @@ const Projects: React.FC = () => {
   
   const projectList = [
     {
-      image: 'https://images.unsplash.com/photo-1535378917042-10a22c95931a?auto=format&fit=crop&w=800&q=80',
+      image: '/projects/vigilant-eye.png',
       title: 'Vigilant Eye — Real-Time AI Surveillance System',
       category: 'Artificial Intelligence / Computer Vision',
       link: '#project/vigilant-eye',
       liveLink: 'https://vigilant-eye-gold.vercel.app',
     },
     {
-      image: 'https://images.unsplash.com/photo-1614741118887-7a4ee193a5fa?auto=format&fit=crop&w=800&q=80',
+      image: '/projects/rag-chatbot.png',
       title: 'RAG Research Assistant — RAG Chatbot (Llama 3.1 & ChromaDB)',
       category: 'RAG System / AI Chatbot',
       link: '#project/rag-chatbot',
@@ -73,7 +73,7 @@ const Projects: React.FC = () => {
       liveLink: null,
     },
     {
-      image: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=800&q=80',
+      image: '/projects/smart-queue.png',
       title: 'Smart Queue Management System',
       category: 'Python & Firebase Backend',
       link: '#project/smart-queue',
