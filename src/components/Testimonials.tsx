@@ -497,45 +497,46 @@ const Testimonials: React.FC = () => {
                 }}
                 className="ptf-cert-card"
               >
-                {/* Priority Badge */}
-                {cert.priority <= 4 && (
-                  <div style={{
-                    position: 'absolute',
-                    top: '16px',
-                    right: '16px',
-                    backgroundColor: 'rgba(250, 69, 41, 0.1)',
-                    color: 'var(--ptf-accent-1)',
-                    fontSize: '11px',
-                    fontWeight: 700,
-                    padding: '4px 10px',
-                    borderRadius: '20px',
-                    letterSpacing: '0.5px'
-                  }}>
-                    TOP SPECIALIZATION
-                  </div>
-                )}
-
                 <div>
-                  {/* Header Meta */}
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '18px' }}>
-                    <div style={{
-                      width: '42px',
-                      height: '42px',
-                      borderRadius: '10px',
-                      backgroundColor: 'rgba(0, 0, 0, 0.04)',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      color: 'var(--ptf-black-color)'
-                    }}>
-                      <Award size={22} />
+                  {/* Top Badge & Issuer Flex Header */}
+                  <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: '10px', marginBottom: '16px' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flex: 1, minWidth: 0 }}>
+                      <div style={{
+                        width: '42px',
+                        height: '42px',
+                        borderRadius: '10px',
+                        backgroundColor: 'rgba(0, 0, 0, 0.04)',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        color: 'var(--ptf-black-color)',
+                        flexShrink: 0
+                      }}>
+                        <Award size={22} />
+                      </div>
+                      <div style={{ overflow: 'hidden' }}>
+                        <span style={{ fontSize: '12px', fontWeight: 600, color: '#888888', display: 'block', textTransform: 'uppercase', letterSpacing: '0.5px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                          {cert.issuer}
+                        </span>
+                        <span style={{ fontSize: '12px', color: '#999999' }}>{cert.date}</span>
+                      </div>
                     </div>
-                    <div>
-                      <span style={{ fontSize: '12px', fontWeight: 600, color: '#888888', display: 'block', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
-                        {cert.issuer}
-                      </span>
-                      <span style={{ fontSize: '12px', color: '#999999' }}>{cert.date}</span>
-                    </div>
+
+                    {cert.priority <= 4 && (
+                      <div style={{
+                        backgroundColor: 'rgba(250, 69, 41, 0.1)',
+                        color: 'var(--ptf-accent-1)',
+                        fontSize: '10px',
+                        fontWeight: 700,
+                        padding: '4px 10px',
+                        borderRadius: '20px',
+                        letterSpacing: '0.5px',
+                        whiteSpace: 'nowrap',
+                        flexShrink: 0
+                      }}>
+                        TOP SPECIALIZATION
+                      </div>
+                    )}
                   </div>
 
                   {/* Title */}
