@@ -11,28 +11,28 @@ const InstagramIcon = (props: React.SVGProps<SVGSVGElement>) => (
 const InstagramGrid: React.FC = () => {
   const feedImages = [
     {
-      url: '/projects/vigilant-eye.png',
-      alt: 'Vigilant Eye — AI Real-Time Threat Detection Surveillance',
+      url: '/instagram/insta-1.jpg',
+      alt: 'Next-Gen Neural Hardware — Silicon Microelectronics & AI Chips',
       link: 'https://www.instagram.com/sami.uthwal?igsh=eGtmdjAwaXZjZnk5'
     },
     {
-      url: '/projects/rag-chatbot.png',
-      alt: 'RAG Knowledge Assistant — Vector Semantic Search Pipeline',
+      url: '/instagram/insta-2.jpg',
+      alt: 'Interactive Digital AI — Futuristic Human-Computer Interface',
       link: 'https://www.instagram.com/sami.uthwal?igsh=eGtmdjAwaXZjZnk5'
     },
     {
-      url: '/projects/cloud-assign.png',
-      alt: 'CloudAssign — Automated Docker Mobile Code Evaluation',
+      url: '/instagram/insta-3.jpg',
+      alt: 'Cyberpunk Workstation — High-Performance Engineering Setup',
       link: 'https://www.instagram.com/sami.uthwal?igsh=eGtmdjAwaXZjZnk5'
     },
     {
-      url: '/projects/smart-queue.png',
-      alt: 'Smart Queue Management — AI Density Analytics',
+      url: '/instagram/insta-4.jpg',
+      alt: 'Cloud Computing Infrastructure — High-Density Server Datacenter',
       link: 'https://www.instagram.com/sami.uthwal?igsh=eGtmdjAwaXZjZnk5'
     },
     {
-      url: '/projects/project-census.png',
-      alt: 'National Census Analytics — Population Demographics',
+      url: '/instagram/insta-5.jpg',
+      alt: 'Deep Learning Neural Network — Autonomous Intelligent Systems',
       link: 'https://www.instagram.com/sami.uthwal?igsh=eGtmdjAwaXZjZnk5'
     }
   ];
