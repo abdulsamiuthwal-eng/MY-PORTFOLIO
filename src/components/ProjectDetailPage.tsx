@@ -153,12 +153,11 @@ class TheftDetector:
       { badge: 4, title: 'Asynchronous Notification Routing', desc: 'Verified threat detections trigger UI updates (SocketIO), SMTP emails with snapshots, and mobile push notifications.' }
     ],
     screenshots: [
-      { url: '/projects/vigilant-eye.png', caption: 'Vigilant Eye Real-Time AI Surveillance Dashboard' },
-      { url: '/projects/vigilant-eye/img1.jpg', caption: 'Vigilant Eye Splash and Camera Connection Initialization Screen' },
-      { url: '/projects/vigilant-eye/img2.jpg', caption: 'Administrator Portal Secure Login Interface' },
-      { url: '/projects/vigilant-eye/img3.jpg', caption: 'Real-Time Multithreaded Live Video Feed with YOLOv8 Object Detection and Labels' },
-      { url: '/projects/vigilant-eye/img4.jpg', caption: 'Advanced Threats & Detections Statistical Analytics Dashboard' },
-      { url: '/projects/vigilant-eye/img5.jpg', caption: 'Surveillance Settings, Email Alerts and Detection Confidence Level Threshold Dashboard' }
+      { url: '/projects/vigilant-eye/shoplifting-alert.png', caption: 'Grocery Store Shoplifting Event & AI Threat Detection (99% Confidence)' },
+      { url: '/projects/vigilant-eye/mobile-push-notification.png', caption: 'Instant Mobile Security Push Notification Alert & Camera Snapshot Preview' },
+      { url: '/projects/vigilant-eye/surveillance-overview.png', caption: 'Real-Time AI Multi-Object & Customer Flow Surveillance Overview' },
+      { url: '/projects/vigilant-eye/img3.jpg', caption: 'Multithreaded Camera Pipeline & Bounding Box Coordinates Feed' },
+      { url: '/projects/vigilant-eye/img4.jpg', caption: 'Threat History Analytics, Dwell-Time Logs & Multi-Recipient OTP Alerting' }
     ],
     nextProjectId: 'rag-chatbot'
   },
