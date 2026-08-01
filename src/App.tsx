@@ -77,7 +77,12 @@ const App: React.FC = () => {
 
   // Handle smooth scrolling for home page section anchors and page transitions
   useEffect(() => {
-    if (currentHash === '#contact-page') {
+    if (currentHash.startsWith('#project/')) {
+      window.scrollTo(0, 0);
+      setTimeout(() => {
+        AOS.refreshHard();
+      }, 50);
+    } else if (currentHash === '#contact-page') {
       window.scrollTo(0, 0);
       setTimeout(() => {
         AOS.refreshHard();

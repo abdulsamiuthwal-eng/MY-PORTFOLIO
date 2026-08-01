@@ -321,6 +321,7 @@ const Projects: React.FC = () => {
     const anchor = (e.currentTarget as HTMLAnchorElement);
     const href = anchor.getAttribute('href');
     if (href) {
+      window.scrollTo(0, 0);
       history.pushState(null, '', href);
       window.dispatchEvent(new HashChangeEvent('hashchange'));
     }
