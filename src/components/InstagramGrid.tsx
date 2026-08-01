@@ -1,30 +1,38 @@
 import React from 'react';
 
+const InstagramIcon = (props: React.SVGProps<SVGSVGElement>) => (
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
+    <rect width="20" height="20" x="2" y="2" rx="5" ry="5" />
+    <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
+    <line x1="17.5" x2="17.51" y1="6.5" y2="6.5" />
+  </svg>
+);
+
 const InstagramGrid: React.FC = () => {
   const feedImages = [
     {
-      url: 'https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&w=500&h=500&q=80',
-      alt: 'Clean VS Code Coding Screen',
+      url: '/projects/vigilant-eye.png',
+      alt: 'Vigilant Eye — AI Real-Time Threat Detection Surveillance',
       link: 'https://www.instagram.com/sami.uthwal?igsh=eGtmdjAwaXZjZnk5'
     },
     {
-      url: 'https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&w=500&h=500&q=80',
-      alt: 'Cloud Servers Infrastructure Hardware Network',
+      url: '/projects/rag-chatbot.png',
+      alt: 'RAG Knowledge Assistant — Vector Semantic Search Pipeline',
       link: 'https://www.instagram.com/sami.uthwal?igsh=eGtmdjAwaXZjZnk5'
     },
     {
-      url: 'https://images.unsplash.com/photo-1587829741301-dc798b83add3?auto=format&fit=crop&w=500&h=500&q=80',
-      alt: 'Professional Developer Workspace Workstation',
+      url: '/projects/cloud-assign.png',
+      alt: 'CloudAssign — Automated Docker Mobile Code Evaluation',
       link: 'https://www.instagram.com/sami.uthwal?igsh=eGtmdjAwaXZjZnk5'
     },
     {
-      url: 'https://images.unsplash.com/photo-1508921912186-1d1a45ebb3c1?auto=format&fit=crop&w=500&h=500&q=80',
-      alt: 'Detailed Developer Code Screen',
+      url: '/projects/smart-queue.png',
+      alt: 'Smart Queue Management — AI Density Analytics',
       link: 'https://www.instagram.com/sami.uthwal?igsh=eGtmdjAwaXZjZnk5'
     },
     {
-      url: 'https://images.unsplash.com/photo-1586717791821-3f44a563fa4c?auto=format&fit=crop&w=500&h=500&q=80',
-      alt: 'UX Wireframe Design Flow Mockup',
+      url: '/projects/project-census.png',
+      alt: 'National Census Analytics — Population Demographics',
       link: 'https://www.instagram.com/sami.uthwal?igsh=eGtmdjAwaXZjZnk5'
     }
   ];
@@ -34,10 +42,11 @@ const InstagramGrid: React.FC = () => {
       <div className="container-xxl">
         <div className="ptf-divider" data-aos="draw-line"></div>
         <div className="ptf-spacer" style={{ height: '80px' }}></div>
+        
         {/* Header containing the Instagram tag */}
         <div className="text-center ptf-animated-block" data-aos="fade-up" style={{ marginBottom: '50px' }}>
           <h5 className="fz-14 text-uppercase has-3-color fw-normal tracking-widest" style={{ marginBottom: '10px' }}>
-            Follow Me
+            Follow Me On Instagram
           </h5>
           <a 
             href="https://www.instagram.com/sami.uthwal?igsh=eGtmdjAwaXZjZnk5" 
@@ -56,7 +65,7 @@ const InstagramGrid: React.FC = () => {
           </a>
         </div>
 
-        {/* 5-Column Responsive Grid */}
+        {/* 5-Column Responsive Aesthetic Grid */}
         <div>
           <ul className="ptf-instagram-feed">
             {feedImages.map((img, index) => (
@@ -66,8 +75,33 @@ const InstagramGrid: React.FC = () => {
                 data-aos="fade-up" 
                 data-aos-delay={index * 100}
               >
-                <a href={img.link} target="_blank" rel="noreferrer">
+                <a 
+                  href={img.link} 
+                  target="_blank" 
+                  rel="noreferrer"
+                  style={{ position: 'relative', display: 'block', borderRadius: '12px', overflow: 'hidden' }}
+                  className="insta-grid-item-link"
+                >
                   <img src={img.url} alt={img.alt} loading="lazy" />
+                  
+                  {/* Hover Overlay */}
+                  <div 
+                    style={{
+                      position: 'absolute',
+                      inset: 0,
+                      backgroundColor: 'rgba(0, 0, 0, 0.35)',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      color: '#ffffff',
+                      opacity: 0,
+                      transition: 'opacity 0.3s ease',
+                      backdropFilter: 'blur(3px)'
+                    }}
+                    className="insta-hover-overlay"
+                  >
+                    <InstagramIcon width={28} height={28} />
+                  </div>
                 </a>
               </li>
             ))}

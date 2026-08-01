@@ -933,7 +933,11 @@ body {
 }
 
 .ptf-instagram-feed li a:hover img {
-  transform: scale(1.05);
+  transform: scale(1.08);
+}
+
+.insta-grid-item-link:hover .insta-hover-overlay {
+  opacity: 1 !important;
 }
 
 /* Rotating SVG CTA Circular Button */
