@@ -2856,30 +2856,43 @@ a, button, select, input, textarea, .filter-item {
 
 @media (max-width: 767.98px) {
   .ptf-monitor-mock {
-    max-width: 100%;
+    width: 100% !important;
+    max-width: 100% !important;
     margin-top: 15px;
+    box-sizing: border-box !important;
   }
   .monitor-bezel {
-    border-width: 8px;
-    border-radius: 12px 12px 0 0;
+    width: 100% !important;
+    max-width: 100% !important;
+    border-width: 6px !important;
+    border-radius: 12px 12px 0 0 !important;
     box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+    box-sizing: border-box !important;
   }
   .monitor-screen-inner {
-    aspect-ratio: 4/3 !important;
-    min-height: 380px !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    aspect-ratio: 16 / 10 !important;
+    min-height: 230px !important;
     height: auto !important;
+    box-sizing: border-box !important;
   }
   .feed-scene {
+    width: 100% !important;
+    height: 100% !important;
     background-size: cover !important;
     background-position: center !important;
     background-repeat: no-repeat !important;
   }
   .ptf-project-main-image-wrapper {
+    width: 100% !important;
     border-radius: 10px;
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
   }
   .ptf-project-main-image {
-    aspect-ratio: 4/3 !important;
+    width: 100% !important;
+    height: auto !important;
+    aspect-ratio: 16 / 10 !important;
     object-fit: cover !important;
     object-position: center !important;
   }

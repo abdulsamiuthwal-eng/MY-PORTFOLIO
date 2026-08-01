@@ -593,11 +593,9 @@ const ProjectDetailPage: React.FC<ProjectDetailPageProps> = ({ projectId }) => {
       'Enter Selection Code (1-4): '
     ]);
 
-    if (window.innerWidth < 768) {
-      window.scrollTo({ top: 0, behavior: 'auto' });
-    } else {
-      window.scrollTo(0, 0);
-    }
+    window.scrollTo(0, 0);
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
   }, [projectId]);
 
   // GSAP Entrance Animations
