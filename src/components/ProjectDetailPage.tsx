@@ -19,7 +19,8 @@ import {
   UploadCloud,
   UserPlus,
   ArrowRight,
-  Database
+  Database,
+  ShieldAlert
 } from 'lucide-react';
 
 import gsap from 'gsap';
@@ -487,7 +488,7 @@ const ProjectDetailPage: React.FC<ProjectDetailPageProps> = ({ projectId }) => {
   const [confidenceRate, setConfidenceRate] = useState(0);
   
   // Specific Scenario for Vigilant Eye
-  const [vigilantMode, setVigilantMode] = useState<'idle' | 'intruder' | 'hazard'>('idle');
+  const [vigilantMode, setVigilantMode] = useState<'idle' | 'intruder' | 'theft'>('idle');
 
   // RAG Chatbot Simulator States
   const [ragQuery, setRagQuery] = useState('');
@@ -650,14 +651,14 @@ const ProjectDetailPage: React.FC<ProjectDetailPageProps> = ({ projectId }) => {
         ];
         newLog = `[${timestamp}] ${intruderMessages[Math.floor(Math.random() * intruderMessages.length)]}`;
         setConfidenceRate(Math.floor(Math.random() * 5) + 94);
-      } else if (vigilantMode === 'hazard') {
-        const hazardMessages = [
-          `[CRITICAL] Thermal spike detected inside Server Closet.`,
-          `[ALERT] Suspicious smoke/flame signature in Zone C.`,
-          `[INFERENCE] Hazard: Fire detected (confidence: ${Math.floor(Math.random() * 4) + 95}%).`,
-          `[ACTION] SocketIO emitting alarm trigger to monitoring dashboard.`
+      } else if (vigilantMode === 'theft') {
+        const theftMessages = [
+          `[ALERT] Shoplifting detection trigger at Grocery Aisle 4.`,
+          `[INFERENCE] Concealment behavior flagged with high confidence.`,
+          `[ACTION] Mobile alert dispatched to store manager with snapshot.`,
+          `[ALERT] Tracking Target_Shoplifter (confidence: ${Math.floor(Math.random() * 4) + 95}%).`
         ];
-        newLog = `[${timestamp}] ${hazardMessages[Math.floor(Math.random() * hazardMessages.length)]}`;
+        newLog = `[${timestamp}] ${theftMessages[Math.floor(Math.random() * theftMessages.length)]}`;
         setConfidenceRate(Math.floor(Math.random() * 4) + 95);
       }
 
@@ -667,7 +668,7 @@ const ProjectDetailPage: React.FC<ProjectDetailPageProps> = ({ projectId }) => {
     return () => clearInterval(timer);
   }, [vigilantMode, simActive, projectId]);
 
-  const handleVigilantModeChange = (mode: 'idle' | 'intruder' | 'hazard') => {
+  const handleVigilantModeChange = (mode: 'idle' | 'intruder' | 'theft') => {
     setVigilantMode(mode);
     const timestamp = new Date().toLocaleTimeString();
     let initialLog = '';
@@ -678,8 +679,8 @@ const ProjectDetailPage: React.FC<ProjectDetailPageProps> = ({ projectId }) => {
     } else if (mode === 'intruder') {
       initialLog = `[${timestamp}] [ALERT] Security breach detected! Person bounding box active.`;
       setConfidenceRate(95);
-    } else if (mode === 'hazard') {
-      initialLog = `[${timestamp}] [CRITICAL] Environmental hazard detected! Fire alert state: ACTIVE.`;
+    } else if (mode === 'theft') {
+      initialLog = `[${timestamp}] [CRITICAL] Shoplifting threat detected in Grocery Aisle 4! Mobile alert dispatched.`;
       setConfidenceRate(97);
     }
 
@@ -1051,11 +1052,11 @@ const ProjectDetailPage: React.FC<ProjectDetailPageProps> = ({ projectId }) => {
                           <span>Intruder</span>
                         </button>
                         <button 
-                          className={`sim-control-btn critical-trigger ${vigilantMode === 'hazard' ? 'active' : ''}`}
-                          onClick={() => handleVigilantModeChange('hazard')}
+                          className={`sim-control-btn critical-trigger ${vigilantMode === 'theft' ? 'active' : ''}`}
+                          onClick={() => handleVigilantModeChange('theft')}
                         >
-                          <AlertTriangle size={14} />
-                          <span>Fire Hazard</span>
+                          <ShieldAlert size={14} />
+                          <span>Theft Alert</span>
                         </button>
                       </div>
                       <div className="sim-status-control">
@@ -1246,10 +1247,10 @@ const ProjectDetailPage: React.FC<ProjectDetailPageProps> = ({ projectId }) => {
                             <div 
                               className="feed-scene" 
                               style={{
-                                backgroundImage: vigilantMode === 'hazard' 
-                                  ? `url('/projects/vigilant-eye/mobile-push-notification.png')`
-                                  : vigilantMode === 'intruder'
+                                backgroundImage: vigilantMode === 'theft' 
                                   ? `url('/projects/vigilant-eye/shoplifting-alert.png')`
+                                  : vigilantMode === 'intruder'
+                                  ? `url('/projects/vigilant-eye/mobile-push-notification.png')`
                                   : `url('/projects/vigilant-eye.png')`
                               }}
                             ></div>
@@ -1259,17 +1260,17 @@ const ProjectDetailPage: React.FC<ProjectDetailPageProps> = ({ projectId }) => {
                                 <div className="yolo-corner tl"></div><div className="yolo-corner tr"></div><div className="yolo-corner bl"></div><div className="yolo-corner br"></div>
                               </div>
                             )}
-                            {vigilantMode === 'hazard' && simActive && (
+                            {vigilantMode === 'theft' && simActive && (
                               <div className="yolo-box hazard-box animate-pulse">
-                                <span className="yolo-label">FIRE // CONF {confidenceRate}%</span>
+                                <span className="yolo-label">THEFT THREAT // CONF {confidenceRate}%</span>
                                 <div className="yolo-corner tl"></div><div className="yolo-corner tr"></div><div className="yolo-corner bl"></div><div className="yolo-corner br"></div>
                               </div>
                             )}
                             {vigilantMode !== 'idle' && simActive && (
-                              <div className={`alarm-overlay ${vigilantMode === 'hazard' ? 'hazard' : ''}`}>
+                              <div className={`alarm-overlay ${vigilantMode === 'theft' ? 'hazard' : ''}`}>
                                 <div className="alarm-banner">
                                   <AlertTriangle size={18} />
-                                  <span>{vigilantMode === 'hazard' ? 'CRITICAL FIRE STATE' : 'BOUNDARY BREACH DETECTED'}</span>
+                                  <span>{vigilantMode === 'theft' ? 'SHOPLIFTING THREAT DETECTED' : 'BOUNDARY BREACH DETECTED'}</span>
                                 </div>
                               </div>
                             )}
