@@ -3,12 +3,21 @@ import { MessageCircle, X } from 'lucide-react';
 import type { ChatMessage } from '../lib/chat';
 import ChatPanel from './ChatPanel';
 
-const ChatIcon: React.FC = () => {
+interface ChatIconProps {
+  isContactPage?: boolean;
+}
+
+const ChatIcon: React.FC<ChatIconProps> = ({ isContactPage }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
   const [tooltipState, setTooltipState] = useState<'hidden' | 'fade-in' | 'visible' | 'fade-out'>('hidden');
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 480);
   const scrollDismissed = useRef(false);
+
+  // Hide Chatbot on mobile view when on Contact Page
+  if (isMobile && isContactPage) {
+    return null;
+  }
 
   // Preserved chat state across open/close
   const [messages, setMessages] = useState<ChatMessage[]>([

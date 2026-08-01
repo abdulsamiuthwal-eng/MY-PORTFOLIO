@@ -16,6 +16,8 @@
 
 html {
   scroll-behavior: smooth;
+  overflow-x: hidden;
+  width: 100%;
 }
 
 * {
@@ -24,9 +26,6 @@ html {
   padding: 0;
 }
 
-
-
-
 body {
   font-family: var(--ptf-font-sans);
   color: var(--ptf-text-color);
@@ -34,6 +33,7 @@ body {
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  width: 100%;
   overflow-x: hidden;
 }
 
@@ -1305,6 +1305,20 @@ body {
 .ptf-btn-secondary:hover {
   border-color: var(--ptf-accent-1);
   color: var(--ptf-accent-1);
+}
+
+/* Contact Page View - Prevent mobile AOS white screen */
+.ptf-contact-page-view,
+.ptf-contact-page-view * {
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+.ptf-contact-page-view [data-aos] {
+  opacity: 1 !important;
+  transform: none !important;
+  transition: none !important;
+  visibility: visible !important;
 }
 
 /* Footer Section */
