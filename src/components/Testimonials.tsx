@@ -33,61 +33,22 @@ const Testimonials: React.FC = () => {
     }
   ];
 
-  const N = testimonials.length; // 3
-  const clonedTestimonials = [...testimonials, ...testimonials, ...testimonials]; // 9 items
+  const N = testimonials.length;
 
-  const [currentIndex, setCurrentIndex] = useState(N); // Start at middle set (index 3)
-  const [isTransitioning, setIsTransitioning] = useState(true);
-  const [isDragging, setIsDragging] = useState(false);
+  const [currentIndex, setCurrentIndex] = useState(0);
   const [dragOffset, setDragOffset] = useState(0);
+  const [isDragging, setIsDragging] = useState(false);
+  const [isAnimating, setIsAnimating] = useState(false);
 
+  const containerRef = useRef<HTMLDivElement>(null);
   const dragStartXRef = useRef(0);
   const dragStartYRef = useRef(0);
   const isHorizontalSwipeRef = useRef<boolean | null>(null);
+  const wheelSnapTimeoutRef = useRef<any>(null);
+  const wheelAccumulatorRef = useRef(0);
 
-  const isDraggingRef = useRef(false);
-  const wheelCooldownRef = useRef(false);
-  const trackRef = useRef<HTMLDivElement>(null);
-
-  const activeDot = ((currentIndex % N) + N) % N;
-
-  const handleTransitionEnd = (e?: React.TransitionEvent) => {
-    if (e && e.target !== trackRef.current) return;
-
-    if (currentIndex >= 2 * N) {
-      if (trackRef.current) {
-        trackRef.current.style.transition = 'none';
-        const newIndex = currentIndex - N;
-        const translateXVal = (newIndex * 100) / (3 * N);
-        trackRef.current.style.transform = `translateX(-${translateXVal}%)`;
-        void trackRef.current.offsetHeight; // Force layout recalculation in same frame
-      }
-      setIsTransitioning(false);
-      setCurrentIndex(currentIndex - N);
-    } else if (currentIndex < N) {
-      if (trackRef.current) {
-        trackRef.current.style.transition = 'none';
-        const newIndex = currentIndex + N;
-        const translateXVal = (newIndex * 100) / (3 * N);
-        trackRef.current.style.transform = `translateX(-${translateXVal}%)`;
-        void trackRef.current.offsetHeight;
-      }
-      setIsTransitioning(false);
-      setCurrentIndex(currentIndex + N);
-    }
-  };
-
-  useEffect(() => {
-    if (!isTransitioning) {
-      if (trackRef.current) {
-        trackRef.current.offsetHeight; // Force reflow
-      }
-      setIsTransitioning(true);
-    }
-  }, [isTransitioning]);
-
+  // Handle Drag / Touch Start
   const handleStart = (clientX: number, clientY?: number) => {
-    isDraggingRef.current = true;
     setIsDragging(true);
     dragStartXRef.current = clientX;
     if (clientY !== undefined) {
@@ -95,10 +56,12 @@ const Testimonials: React.FC = () => {
       isHorizontalSwipeRef.current = null;
     }
     setDragOffset(0);
+    setIsAnimating(false);
   };
 
+  // Handle Touch Move
   const handleTouchMove = (e: React.TouchEvent) => {
-    if (!isDraggingRef.current) return;
+    if (!isDragging) return;
     const clientX = e.touches[0].clientX;
     const clientY = e.touches[0].clientY;
     const deltaX = clientX - dragStartXRef.current;
@@ -111,7 +74,6 @@ const Testimonials: React.FC = () => {
     }
 
     if (isHorizontalSwipeRef.current === false) {
-      isDraggingRef.current = false;
       setIsDragging(false);
       setDragOffset(0);
       return;
@@ -122,44 +84,64 @@ const Testimonials: React.FC = () => {
     }
   };
 
+  // Handle Mouse Move
   const handleMouseMove = (clientX: number) => {
-    if (!isDraggingRef.current) return;
+    if (!isDragging) return;
     const deltaX = clientX - dragStartXRef.current;
     setDragOffset(deltaX);
   };
 
+  // Handle End (Touch / Mouse Up)
   const handleEnd = () => {
-    if (!isDraggingRef.current) return;
-    isDraggingRef.current = false;
+    if (!isDragging) return;
     setIsDragging(false);
+    setIsAnimating(true);
 
-    if (dragOffset < -50) {
-      setIsTransitioning(true);
+    const containerWidth = containerRef.current?.offsetWidth || 1000;
+    const threshold = containerWidth * 0.15; // 15% swipe threshold
+
+    if (dragOffset < -threshold && currentIndex < N - 1) {
       setCurrentIndex((prev) => prev + 1);
-    } else if (dragOffset > 50) {
-      setIsTransitioning(true);
+    } else if (dragOffset > threshold && currentIndex > 0) {
       setCurrentIndex((prev) => prev - 1);
     }
+
     setDragOffset(0);
     isHorizontalSwipeRef.current = null;
   };
 
-  // 2-Finger Trackpad & Mouse Wheel Horizontal Scroll
+  // Fluid 1:1 Pixel Scroll for Trackpad & Mouse Wheel
   const handleWheel = (e: React.WheelEvent) => {
     if (Math.abs(e.deltaX) <= Math.abs(e.deltaY)) return;
-    if (Math.abs(e.deltaX) < 15 || wheelCooldownRef.current) return;
 
-    wheelCooldownRef.current = true;
-    setTimeout(() => {
-      wheelCooldownRef.current = false;
-    }, 450);
+    // Accumulate horizontal scroll delta smoothly
+    wheelAccumulatorRef.current += e.deltaX;
+    const containerWidth = containerRef.current?.offsetWidth || 1000;
 
-    setIsTransitioning(true);
-    if (e.deltaX > 0) {
-      setCurrentIndex((prev) => prev + 1);
-    } else if (e.deltaX < 0) {
-      setCurrentIndex((prev) => prev - 1);
+    // Apply immediate 1:1 pixel drag offset visual feedback
+    setIsAnimating(false);
+    setDragOffset(-wheelAccumulatorRef.current);
+
+    // Clear existing snap timer
+    if (wheelSnapTimeoutRef.current) {
+      clearTimeout(wheelSnapTimeoutRef.current);
     }
+
+    // Snap to nearest card after user stops wheeling
+    wheelSnapTimeoutRef.current = setTimeout(() => {
+      const accum = wheelAccumulatorRef.current;
+      wheelAccumulatorRef.current = 0;
+      setIsAnimating(true);
+
+      const threshold = containerWidth * 0.15;
+      if (accum > threshold && currentIndex < N - 1) {
+        setCurrentIndex((prev) => Math.min(N - 1, prev + Math.ceil(accum / containerWidth)));
+      } else if (accum < -threshold && currentIndex > 0) {
+        setCurrentIndex((prev) => Math.max(0, prev + Math.floor(accum / containerWidth)));
+      }
+
+      setDragOffset(0);
+    }, 120);
   };
 
   useEffect(() => {
@@ -177,17 +159,15 @@ const Testimonials: React.FC = () => {
     };
   }, [isDragging, currentIndex, dragOffset]);
 
-  const slideWidthPct = 100 / (3 * N); // 11.11111%
-  const trackWidthPct = 3 * N * 100; // 900%
-  const translateXVal = (currentIndex * 100) / (3 * N);
-
   return (
     <section id="testimonials" className="ptf-testimonials-section" style={{ backgroundColor: 'var(--ptf-white-color)' }}>
       <div className="container-xxl">
         <div className="ptf-divider" data-aos="draw-line"></div>
         <div className="ptf-spacer" style={{ height: '180px' }}></div>
-        {/* Testimonial Slider */}
+
+        {/* Testimonial Slider Container */}
         <div
+          ref={containerRef}
           className="ptf-testimonials-slider"
           onWheel={handleWheel}
           onMouseDown={(e) => handleStart(e.clientX)}
@@ -200,30 +180,51 @@ const Testimonials: React.FC = () => {
             cursor: isDragging ? 'grabbing' : 'grab',
             userSelect: 'none',
             WebkitUserSelect: 'none',
+            touchAction: 'pan-y',
           }}
         >
-          <div 
-            ref={trackRef}
-            className="ptf-testimonials-track" 
-            onTransitionEnd={handleTransitionEnd}
-            style={{ 
-              display: 'flex', 
-              width: `${trackWidthPct}%`, 
-              transform: `translateX(calc(-${translateXVal}% + ${dragOffset}px))`, 
-              transition: isDragging || !isTransitioning ? 'none' : 'transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94)',
+          <div
+            className="ptf-testimonials-track"
+            style={{
+              display: 'flex',
+              width: `${N * 100}%`,
+              transform: `translateX(calc(-${(currentIndex * 100) / N}% + ${dragOffset}px))`,
+              transition: isDragging || !isAnimating ? 'none' : 'transform 0.5s cubic-bezier(0.25, 1, 0.5, 1)',
             }}
           >
-            {clonedTestimonials.map((t, idx) => (
-              <div 
-                key={idx} 
-                style={{ width: `${slideWidthPct}%`, padding: '0 15px', textAlign: 'center' }}
+            {testimonials.map((t, idx) => (
+              <div
+                key={idx}
+                style={{ width: `${100 / N}%`, padding: '0 15px', textAlign: 'center', flexShrink: 0 }}
                 className="ptf-animated-block"
                 data-aos="fade-up"
               >
-                <p className="serif-font ptf-testimonial-quote" style={{ fontSize: 'clamp(24px, 3.2vw, 42px)', lineHeight: '1.45', color: 'var(--ptf-black-color)', maxWidth: '950px', margin: '0 auto', fontWeight: 400 }}>
+                <p
+                  className="serif-font ptf-testimonial-quote"
+                  style={{
+                    fontSize: 'clamp(24px, 3.2vw, 42px)',
+                    lineHeight: '1.45',
+                    color: 'var(--ptf-black-color)',
+                    maxWidth: '950px',
+                    margin: '0 auto',
+                    fontWeight: 400,
+                  }}
+                >
                   {t.quote}
                 </p>
-                <h4 className="ptf-testimonial-author" style={{ marginTop: '40px', fontSize: '22px', fontWeight: 700, color: 'var(--ptf-black-color)', fontFamily: 'var(--ptf-font-sans)', textTransform: 'none', letterSpacing: 'normal', fontStyle: 'italic' }}>
+                <h4
+                  className="ptf-testimonial-author"
+                  style={{
+                    marginTop: '40px',
+                    fontSize: '22px',
+                    fontWeight: 700,
+                    color: 'var(--ptf-black-color)',
+                    fontFamily: 'var(--ptf-font-sans)',
+                    textTransform: 'none',
+                    letterSpacing: 'normal',
+                    fontStyle: 'italic',
+                  }}
+                >
                   {t.author}
                 </h4>
                 <p className="ptf-testimonial-role" style={{ marginTop: '5px', fontSize: '16px', color: '#999999', fontFamily: 'var(--ptf-font-sans)' }}>
@@ -241,20 +242,21 @@ const Testimonials: React.FC = () => {
 
         {/* Testimonial Style Dots Pagination */}
         <div className="ptf-testimonials-dots ptf-animated-block" data-aos="fade-up" style={{ display: 'flex', justifyContent: 'center', marginTop: '50px' }}>
-          {Array.from({ length: N }).map((_, i) => (
+          {testimonials.map((_, i) => (
             <button
               key={i}
-              className={`ptf-pagination-dot ${activeDot === i ? 'active' : ''}`}
+              className={`ptf-pagination-dot ${currentIndex === i ? 'active' : ''}`}
               onClick={() => {
-                setIsTransitioning(true);
-                setCurrentIndex(N + i);
+                setIsAnimating(true);
+                setDragOffset(0);
+                setCurrentIndex(i);
               }}
               aria-label={`Go to slide ${i + 1}`}
             />
           ))}
         </div>
       </div>
-      
+
       {/* Spacer */}
       <div className="ptf-spacer" style={{ height: '180px' }}></div>
     </section>
@@ -262,3 +264,4 @@ const Testimonials: React.FC = () => {
 };
 
 export default Testimonials;
+
