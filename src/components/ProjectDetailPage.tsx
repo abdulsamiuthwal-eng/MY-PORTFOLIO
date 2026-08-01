@@ -1247,8 +1247,10 @@ const ProjectDetailPage: React.FC<ProjectDetailPageProps> = ({ projectId }) => {
                               className="feed-scene" 
                               style={{
                                 backgroundImage: vigilantMode === 'hazard' 
-                                  ? `url('https://images.unsplash.com/photo-1580587771525-78b9dba3b914?auto=format&fit=crop&w=800&q=80')`
-                                  : `url('https://images.unsplash.com/photo-1508962914676-134849a727f0?auto=format&fit=crop&w=800&q=80')`
+                                  ? `url('/projects/vigilant-eye/mobile-push-notification.png')`
+                                  : vigilantMode === 'intruder'
+                                  ? `url('/projects/vigilant-eye/shoplifting-alert.png')`
+                                  : `url('/projects/vigilant-eye.png')`
                               }}
                             ></div>
                             {vigilantMode === 'intruder' && simActive && (
