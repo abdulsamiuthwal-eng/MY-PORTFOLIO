@@ -325,6 +325,18 @@ const Testimonials: React.FC = () => {
     };
   }, [isDragging, currentIndex, dragOffset]);
 
+  // Lock background page scroll when Certificate Modal is active
+  useEffect(() => {
+    if (selectedCert) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [selectedCert]);
+
   // Filtered certificates
   const filteredCertificates = activeCategory === 'all'
     ? certificatesData
