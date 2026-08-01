@@ -273,7 +273,7 @@ function executeStudentCode(studentFilePath, testCasesPath) {
       { badge: 4, title: 'MongoDB & Client Alert', desc: 'Results logged in DB; UI updates grade and feedback.' }
     ],
     screenshots: [
-      { url: 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=1200&q=80', caption: 'Student Assignment Dashboard & Team Collaboration Interface' },
+      { url: '/projects/cloud-assign.png', caption: 'Student Assignment Dashboard & Team Collaboration Interface' },
       { url: 'https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&w=1200&q=80', caption: 'AWS Cloud Infrastructure & Docker Container Management' }
     ],
     nextProjectId: 'smart-queue'
@@ -399,7 +399,7 @@ class SyncWorker(context: Context, params: WorkerParameters) : CoroutineWorker(c
       { badge: 4, title: 'Cloud Sync', desc: 'Uploads unsynced rows to Firestore in background.' }
     ],
     screenshots: [
-      { url: 'https://images.unsplash.com/photo-1581291518633-83b4ebd1d83e?auto=format&fit=crop&w=1200&q=80', caption: 'Household Details Data Entry Screen' },
+      { url: '/projects/project-census.png', caption: 'Household Details Data Entry Screen' },
       { url: 'https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=1200&q=80', caption: 'Surveyor GPS Coverage Map Interface' },
       { url: 'https://images.unsplash.com/photo-1573164713714-d95e436ab8d6?auto=format&fit=crop&w=1200&q=80', caption: 'Field Survey & Data Collection Workflow' }
     ],
@@ -457,7 +457,7 @@ public:
       { badge: 4, title: 'Object Read/Write', desc: 'Deserializes/Serializes object structures and prints response.' }
     ],
     screenshots: [
-      { url: 'https://images.unsplash.com/photo-1607799279861-4dd421887fb3?auto=format&fit=crop&w=1200&q=80', caption: 'Interactive Library System Terminal Console' },
+      { url: '/projects/library-system.png', caption: 'Interactive Library System Terminal Console' },
       { url: 'https://images.unsplash.com/photo-1507842217343-583bb7270b66?auto=format&fit=crop&w=1200&q=80', caption: 'Binary File Storage and Record Indexing Diagram' },
       { url: 'https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?auto=format&fit=crop&w=1200&q=80', caption: 'Library Management System — Book Inventory & Records' }
     ],

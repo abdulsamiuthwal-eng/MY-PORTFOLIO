@@ -66,7 +66,7 @@ const Projects: React.FC = () => {
       liveLink: null,
     },
     {
-      image: 'https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&w=800&q=80',
+      image: '/projects/cloud-assign.png',
       title: 'CloudAssign — Cloud-Based Assignment Submission',
       category: 'Cloud & Web Apps',
       link: '#project/cloud-assign',
@@ -80,14 +80,14 @@ const Projects: React.FC = () => {
       liveLink: null,
     },
     {
-      image: 'https://images.unsplash.com/photo-1581291518633-83b4ebd1d83e?auto=format&fit=crop&w=800&q=80',
+      image: '/projects/project-census.png',
       title: 'Project Census — Android Data Collection App',
       category: 'Android Mobile App',
       link: '#project/project-census',
       liveLink: null,
     },
     {
-      image: 'https://images.unsplash.com/photo-1607799279861-4dd421887fb3?auto=format&fit=crop&w=800&q=80',
+      image: '/projects/library-system.png',
       title: 'Library Management System',
       category: 'C++ OOP Console App',
       link: '#project/library-system',
