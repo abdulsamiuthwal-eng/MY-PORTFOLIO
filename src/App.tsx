@@ -17,6 +17,20 @@ import CustomCursor from './components/CustomCursor';
 import ChatIcon from './components/ChatIcon';
 import ProjectDetailPage from './components/ProjectDetailPage';
 
+// Run before the browser can restore a previous scroll position on refresh —
+// the app always opens the home view (except on the contact page), so any
+// native scroll restoration would jump the user to an unexpected section.
+if ('scrollRestoration' in window.history) {
+  window.history.scrollRestoration = 'manual';
+}
+
+// Deep-link only the contact page. Section anchors (#skills, #project, ...) and
+// project detail hashes are stripped on refresh so the portfolio always opens
+// at the home view with its animations.
+if (window.location.hash && window.location.hash !== '#contact-page') {
+  window.history.replaceState(null, '', window.location.pathname + window.location.search);
+}
+
 // Re-run AOS animations for the currently visible view after a view switch.
 // Transitions are temporarily disabled while elements are reset to their hidden
 // state, then a forced reflow commits that hidden state (without this the
@@ -36,17 +50,14 @@ const replayAOS = () => {
 };
 
 const App: React.FC = () => {
-  const [currentHash, setCurrentHash] = useState(window.location.hash);
+  const [currentHash, setCurrentHash] = useState(() =>
+    window.location.hash === '#contact-page' ? '#contact-page' : '#home',
+  );
   const isFirstRender = useRef(true);
 
   useEffect(() => {
-    // Prevent mobile browsers from automatically restoring previous scroll position down the page on refresh
-    if ('scrollRestoration' in window.history) {
-      window.history.scrollRestoration = 'manual';
-    }
-    // Scroll to top on page refresh unless viewing project details
-    const hash = window.location.hash;
-    if (!hash.startsWith('#project/') && hash !== '#contact-page') {
+    // Scroll to top on page refresh unless we're on the contact page
+    if (window.location.hash !== '#contact-page') {
       window.scrollTo(0, 0);
     }
   }, []);
