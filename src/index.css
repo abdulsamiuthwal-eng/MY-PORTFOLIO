@@ -15,7 +15,7 @@
 }
 
 html {
-  scroll-behavior: smooth;
+  scroll-behavior: auto;
   overflow-x: hidden;
   width: 100%;
 }
@@ -1311,19 +1311,8 @@ body {
   color: var(--ptf-accent-1);
 }
 
-/* Contact Page View - Prevent mobile AOS white screen */
-.ptf-contact-page-view,
-.ptf-contact-page-view * {
-  opacity: 1 !important;
-  visibility: visible !important;
-}
 
-.ptf-contact-page-view [data-aos] {
-  opacity: 1 !important;
-  transform: none !important;
-  transition: none !important;
-  visibility: visible !important;
-}
+
 
 /* Footer Section */
 .ptf-footer {
@@ -3356,6 +3345,12 @@ a, button, select, input, textarea, .filter-item {
   background: var(--ptf-white-color);
   line-height: 1.4;
   text-align: left;
+}
+
+/* Contact Page Viewport Guarantee — prevents white screen on mobile */
+.ptf-contact-page-view [data-aos] {
+  opacity: 1 !important;
+  transform: none !important;
 }
 
 

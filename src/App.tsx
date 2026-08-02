@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import AOS from 'aos';
 import 'aos/dist/aos.css';
+import { scrollToTop } from './lib/scroll';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
 import About from './components/About';
@@ -16,8 +17,20 @@ import CustomCursor from './components/CustomCursor';
 import ChatIcon from './components/ChatIcon';
 import ProjectDetailPage from './components/ProjectDetailPage';
 
+// Re-run AOS animations for the currently visible view after a view switch.
+// All elements are reset to their hidden state first (with a forced reflow so the
+// browser records the hidden state), then AOS re-scans the DOM via refreshHard()
+// and animates everything that is in the viewport.
+const replayAOS = () => {
+  const elements = document.querySelectorAll<HTMLElement>('[data-aos]');
+  elements.forEach(el => el.classList.remove('aos-animate'));
+  void document.body.offsetHeight;
+  AOS.refreshHard();
+};
+
 const App: React.FC = () => {
   const [currentHash, setCurrentHash] = useState(window.location.hash);
+  const isFirstRender = useRef(true);
 
   useEffect(() => {
     // Prevent mobile browsers from automatically restoring previous scroll position down the page on refresh
@@ -25,7 +38,8 @@ const App: React.FC = () => {
       window.history.scrollRestoration = 'manual';
     }
     // Scroll to top on page refresh unless viewing project details
-    if (!window.location.hash.startsWith('#project/') && currentHash !== '#contact-page') {
+    const hash = window.location.hash;
+    if (!hash.startsWith('#project/') && hash !== '#contact-page') {
       window.scrollTo(0, 0);
     }
   }, []);
@@ -33,7 +47,7 @@ const App: React.FC = () => {
   useEffect(() => {
     AOS.init({
       duration: 1000,
-      once: false,
+      once: true,
       easing: 'ease-out-cubic',
     });
 
@@ -46,11 +60,7 @@ const App: React.FC = () => {
     (window as any).triggerSectionAnimation = (hash: string) => {
       if (hash === '#home' || hash === '') {
         window.scrollTo({ top: 0, behavior: 'smooth' });
-        const animatedElements = document.querySelectorAll('.aos-init');
-        animatedElements.forEach(el => el.classList.remove('aos-animate'));
-        setTimeout(() => {
-          AOS.refresh();
-        }, 150);
+        replayAOS();
       } else {
         try {
           const element = document.querySelector(hash);
@@ -59,7 +69,7 @@ const App: React.FC = () => {
             const sectionElements = element.querySelectorAll('.aos-init');
             sectionElements.forEach(el => el.classList.remove('aos-animate'));
             setTimeout(() => {
-              AOS.refresh();
+              AOS.refreshHard();
             }, 150);
           }
         } catch (e) {
@@ -77,22 +87,34 @@ const App: React.FC = () => {
 
   // Handle smooth scrolling for home page section anchors and page transitions
   useEffect(() => {
-    if (currentHash.startsWith('#project/')) {
-      window.scrollTo(0, 0);
-      setTimeout(() => {
-        AOS.refreshHard();
-      }, 50);
-    } else if (currentHash === '#contact-page') {
-      window.scrollTo(0, 0);
-      setTimeout(() => {
-        AOS.refreshHard();
+    const isPageView =
+      currentHash === '#contact-page' ||
+      currentHash.startsWith('#project/') ||
+      currentHash === '#home' ||
+      currentHash === '';
+
+    if (isPageView) {
+      // On the very first render AOS.init() has already animated the visible view
+      if (isFirstRender.current) {
+        isFirstRender.current = false;
+        return;
+      }
+
+      // Hard reset scroll (safe 2-arg form — no 'instant' behavior that throws
+      // on mobile browsers) and replay AOS animations for the newly shown view
+      scrollToTop();
+      requestAnimationFrame(() => {
+        scrollToTop();
+        replayAOS();
+      });
+      const timer = setTimeout(() => {
+        scrollToTop();
+        replayAOS();
       }, 60);
-    } else if (currentHash === '#home' || currentHash === '') {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-      setTimeout(() => {
-        AOS.refreshHard();
-      }, 60);
-    } else if (currentHash && !currentHash.startsWith('#project/')) {
+      return () => clearTimeout(timer);
+    }
+
+    if (currentHash) {
       try {
         const element = document.querySelector(currentHash);
         if (element) {
@@ -146,12 +168,17 @@ const App: React.FC = () => {
       <ChatIcon isContactPage={isContactPage} />
       <Navbar />
       <main>
-        {isContactPage ? (
-          <ContactPage />
-        ) : isProjectDetailPage ? (
+        {/* Contact Page View */}
+        {isContactPage && <ContactPage />}
+
+        {/* Project Detail Page View */}
+        {isProjectDetailPage && (
           <ProjectDetailPage projectId={currentHash.replace('#project/', '')} />
-        ) : (
-          <>
+        )}
+
+        {/* Main Portfolio Home View */}
+        {!isContactPage && !isProjectDetailPage && (
+          <div id="home">
             <Hero />
             <About />
             <Skills />
@@ -160,7 +187,7 @@ const App: React.FC = () => {
             <Testimonials />
             <InstagramGrid />
             <CircularCTA />
-          </>
+          </div>
         )}
       </main>
       <Footer />

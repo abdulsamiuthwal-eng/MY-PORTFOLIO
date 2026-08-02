@@ -1,15 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { ArrowUpRight } from 'lucide-react';
-import AOS from 'aos';
 
 const ContactPage: React.FC = () => {
-  useEffect(() => {
-    window.scrollTo(0, 0);
-    const timer = setTimeout(() => {
-      AOS.refreshHard();
-    }, 60);
-    return () => clearTimeout(timer);
-  }, []);
+
   const [formData, setFormData] = useState({
     name: '',
     organization: '',
@@ -170,7 +163,7 @@ const ContactPage: React.FC = () => {
   };
 
   return (
-    <div className="ptf-contact-page-view" style={{ backgroundColor: 'var(--ptf-white-color)', minHeight: '100vh', paddingTop: '120px', paddingBottom: '100px' }}>
+    <div id="contact-page" className="ptf-contact-page-view" style={{ backgroundColor: 'var(--ptf-white-color)', minHeight: '100vh', paddingTop: '120px', paddingBottom: '100px' }}>
       <div className="container-xxl">
         {/* Header Hero Section */}
         <div className="row align-items-center justify-content-between ptf-animated-block" data-aos="fade-up" style={{ marginBottom: '80px' }}>

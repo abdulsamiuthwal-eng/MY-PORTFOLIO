@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { X } from 'lucide-react';
+import { scrollToTop } from '../lib/scroll';
 
 const TwitterIcon = (props: React.SVGProps<SVGSVGElement>) => (
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" {...props}>
@@ -55,6 +56,9 @@ const Navbar: React.FC = () => {
   ];
 
   const handleLinkClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+    if (href === '#contact-page' || href === '#home') {
+      scrollToTop();
+    }
     // If clicking a link that is already the current location, trigger the scroll and animation manually
     if (window.location.hash === href || (href === '#home' && window.location.hash === '')) {
       e.preventDefault();

@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
+import { scrollToTop } from '../lib/scroll';
 
 const CircularCTA: React.FC = () => {
   const [isClicked, setIsClicked] = useState(false);
 
   const handleClick = () => {
+    scrollToTop();
     setIsClicked(true);
     setTimeout(() => {
       setIsClicked(false);

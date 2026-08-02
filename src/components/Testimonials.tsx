@@ -7,6 +7,8 @@ interface TestimonialItem {
   role: string;
   company: string;
   companyUrl: string;
+  certificateImage?: string;
+  certificateTitle?: string;
 }
 
 export interface CertificateItem {
@@ -181,7 +183,9 @@ const Testimonials: React.FC = () => {
       author: "Innovative Pakistan 2026",
       role: "Organized by ",
       company: "IEEE, HEC & Partners",
-      companyUrl: "#"
+      companyUrl: "#",
+      certificateImage: '/certificates/INNOVATIVE_PAKISTAN_CERTI.png',
+      certificateTitle: 'Innovative Pakistan 2026 — Certificate of Participation'
     },
     {
       quote: "“First, solve the problem. Then, write the code. Strive for simplicity and efficiency in every line of logic.”",
@@ -209,6 +213,9 @@ const Testimonials: React.FC = () => {
   // Certificates Filter & Modal state
   const [activeCategory, setActiveCategory] = useState<'all' | 'core' | 'ai-data' | 'foundations'>('all');
   const [selectedCert, setSelectedCert] = useState<CertificateItem | null>(null);
+
+  // Testimonial certificate image modal state
+  const [testimonialCertImage, setTestimonialCertImage] = useState<{ url: string; title: string } | null>(null);
 
   const containerRef = useRef<HTMLDivElement>(null);
   const dragStartXRef = useRef(0);
@@ -418,6 +425,37 @@ const Testimonials: React.FC = () => {
                     </a>
                   )}
                 </p>
+
+                {/* View Certificate Button — only for slides that have a certificate */}
+                {t.certificateImage && (
+                  <div style={{ marginTop: '28px' }}>
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setTestimonialCertImage({ url: t.certificateImage!, title: t.certificateTitle || t.author });
+                      }}
+                      style={{
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: '8px',
+                        fontSize: '14px',
+                        fontWeight: 600,
+                        color: 'var(--ptf-white-color)',
+                        backgroundColor: 'var(--ptf-black-color)',
+                        border: 'none',
+                        borderRadius: '8px',
+                        padding: '10px 22px',
+                        cursor: 'pointer',
+                        transition: 'all 0.25s ease',
+                        fontFamily: 'var(--ptf-font-sans)',
+                      }}
+                      className="ptf-view-cert-btn"
+                    >
+                      <Eye size={15} />
+                      <span>Click to View Certificate</span>
+                    </button>
+                  </div>
+                )}
               </div>
             ))}
           </div>
@@ -630,6 +668,115 @@ const Testimonials: React.FC = () => {
       {/* ==========================================
           HIGH-RES CERTIFICATE PDF LIGHTBOX MODAL
          ========================================== */}
+      {/* ==========================================
+          TESTIMONIAL CERTIFICATE IMAGE LIGHTBOX
+         ========================================== */}
+      {testimonialCertImage && (
+        <div
+          style={{
+            position: 'fixed',
+            inset: 0,
+            zIndex: 99999,
+            backgroundColor: 'rgba(0, 0, 0, 0.85)',
+            backdropFilter: 'blur(8px)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: '20px'
+          }}
+          onClick={() => setTestimonialCertImage(null)}
+        >
+          <div
+            style={{
+              backgroundColor: '#ffffff',
+              borderRadius: '16px',
+              width: '100%',
+              maxWidth: '900px',
+              maxHeight: '90vh',
+              display: 'flex',
+              flexDirection: 'column',
+              overflow: 'hidden',
+              boxShadow: '0 25px 60px rgba(0, 0, 0, 0.3)',
+              position: 'relative'
+            }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Modal Header */}
+            <div style={{
+              padding: '16px 24px',
+              borderBottom: '1px solid var(--ptf-border-color)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              backgroundColor: '#fafafa',
+              flexShrink: 0
+            }}>
+              <div>
+                <span style={{ fontSize: '11px', textTransform: 'uppercase', letterSpacing: '1px', color: 'var(--ptf-accent-1)', fontWeight: 700, display: 'block' }}>
+                  Certificate of Participation
+                </span>
+                <h4 style={{ fontSize: '17px', fontWeight: 600, color: 'var(--ptf-black-color)', margin: '2px 0 0 0' }}>
+                  {testimonialCertImage.title}
+                </h4>
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                <a
+                  href={testimonialCertImage.url}
+                  download
+                  style={{
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '6px',
+                    fontSize: '13px',
+                    fontWeight: 600,
+                    color: 'var(--ptf-black-color)',
+                    backgroundColor: '#eeeeee',
+                    padding: '8px 14px',
+                    borderRadius: '6px',
+                    textDecoration: 'none'
+                  }}
+                >
+                  <Download size={14} />
+                  <span>Download</span>
+                </a>
+                <button
+                  onClick={() => setTestimonialCertImage(null)}
+                  style={{
+                    width: '36px',
+                    height: '36px',
+                    borderRadius: '50%',
+                    border: '1px solid #ddd',
+                    backgroundColor: '#ffffff',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    cursor: 'pointer',
+                    color: '#333'
+                  }}
+                >
+                  <X size={18} />
+                </button>
+              </div>
+            </div>
+
+            {/* Modal Body: Certificate Image */}
+            <div style={{ flex: 1, overflow: 'auto', backgroundColor: '#525659', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px' }}>
+              <img
+                src={testimonialCertImage.url}
+                alt={testimonialCertImage.title}
+                style={{
+                  maxWidth: '100%',
+                  maxHeight: '100%',
+                  objectFit: 'contain',
+                  borderRadius: '8px',
+                  boxShadow: '0 8px 32px rgba(0,0,0,0.4)'
+                }}
+              />
+            </div>
+          </div>
+        </div>
+      )}
+
       {selectedCert && (
         <div
           style={{
