@@ -3347,12 +3347,6 @@ a, button, select, input, textarea, .filter-item {
   text-align: left;
 }
 
-/* Contact Page Viewport Guarantee — prevents white screen on mobile */
-.ptf-contact-page-view [data-aos] {
-  opacity: 1 !important;
-  transform: none !important;
-}
-
 
 
 
