@@ -1460,11 +1460,13 @@ body {
   position: fixed;
   right: 30px;
   bottom: calc(104px + var(--footer-push, 0px));
+  pointer-events: none;
 }
 
 /* Chat Icon Default (Desktop) */
 .ptf-chat-icon {
   z-index: 9999;
+  pointer-events: auto;
 }
 
 /* Mobile Adjustments (width < 768px) */

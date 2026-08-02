@@ -57,7 +57,7 @@ const App: React.FC = () => {
   const homeScrollPos = useRef<number | null>(null);
   const pendingRestore = useRef(false);
   const linkSave = useRef<{ pos: number; time: number } | null>(null);
-  const homeLinkTime = useRef<number | null>(null);
+  const linkClickTime = useRef<number | null>(null);
   const hashRef = useRef(window.location.hash);
 
   useEffect(() => {
@@ -76,20 +76,20 @@ const App: React.FC = () => {
 
     // Link clicks can scroll the page before navigation (e.g. Navbar scrolls to
     // top on Contact/Home clicks), so the real home scroll position is captured
-    // during the capture phase, before any onClick handler runs
+    // during the capture phase, before any onClick handler runs. Any hash link
+    // click is also flagged so returning home via an explicit link never
+    // restores a remembered position.
     const handleDocumentClick = (e: MouseEvent) => {
       const anchor = (e.target as HTMLElement).closest('a[href^="#"]');
       if (!anchor) return;
       const href = anchor.getAttribute('href');
       if (!href) return;
-      if (href === '#home') {
-        homeLinkTime.current = Date.now();
-        return;
-      }
+      linkClickTime.current = Date.now();
       const isPageView = href === '#contact-page' || href.startsWith('#project/');
       if (isPageView) {
         const currentHash = window.location.hash;
-        if (currentHash === '' || currentHash === '#home') {
+        const onHome = !(currentHash === '#contact-page' || currentHash.startsWith('#project/'));
+        if (onHome) {
           linkSave.current = { pos: window.scrollY, time: Date.now() };
         }
       }
@@ -100,22 +100,26 @@ const App: React.FC = () => {
       const oldHash = hashRef.current;
       hashRef.current = newHash;
 
-      const wasHome = oldHash === '' || oldHash === '#home';
-      const isHomeView = newHash === '' || newHash === '#home';
       const isPageView = newHash === '#contact-page' || newHash.startsWith('#project/');
       const wasPageView = oldHash === '#contact-page' || oldHash.startsWith('#project/');
+      const isHomeView = !isPageView;
+      const wasHomeView = !wasPageView;
+
+      // A recent hash-link click means the navigation came from an explicit
+      // link (nav bar, buttons), so returning home must not restore
+      const linkClick =
+        linkClickTime.current !== null && Date.now() - linkClickTime.current < 500;
+      linkClickTime.current = null;
 
       if (isHomeView && wasPageView) {
-        // Returning to the home view: browser back/forward restores the
-        // remembered position, an explicit Home link click starts at the top
-        const homeLinkClick =
-          homeLinkTime.current !== null && Date.now() - homeLinkTime.current < 500;
-        homeLinkTime.current = null;
-        pendingRestore.current = !homeLinkClick && homeScrollPos.current !== null;
-        if (homeLinkClick) homeScrollPos.current = null;
+        // Returning to the home view (from a page view): browser back/forward
+        // restores the remembered position, an explicit link click scrolls to
+        // its section as usual
+        pendingRestore.current = !linkClick && homeScrollPos.current !== null;
+        if (linkClick) homeScrollPos.current = null;
       }
 
-      if (wasHome && isPageView) {
+      if (wasHomeView && isPageView) {
         // Remember the home scroll position before switching to a page view so
         // the back button can restore the exact section the user came from.
         // A recent link click already captured the position at click time
@@ -216,6 +220,25 @@ const App: React.FC = () => {
     }
 
     if (currentHash) {
+      // Back navigation from a page view to a section hash: restore the exact
+      // position instead of jumping to the section top
+      if (pendingRestore.current && homeScrollPos.current !== null) {
+        const restorePos = homeScrollPos.current;
+        pendingRestore.current = false;
+        homeScrollPos.current = null;
+        window.scrollTo(0, restorePos);
+        requestAnimationFrame(() => {
+          window.scrollTo(0, restorePos);
+          replayAOS();
+        });
+        const timer = setTimeout(() => {
+          window.scrollTo(0, restorePos);
+          replayAOS();
+        }, 60);
+        return () => clearTimeout(timer);
+      }
+      pendingRestore.current = false;
+
       try {
         const element = document.querySelector(currentHash);
         if (element) {
