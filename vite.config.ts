@@ -7,6 +7,7 @@ export default defineConfig(({ mode }) => {
   const geminiKey = env.GEMINI_API_KEY;
 
   return {
+    base: './',
     plugins: [
       react(),
       // Local dev only: handles /api/chat so chatbot works on localhost
