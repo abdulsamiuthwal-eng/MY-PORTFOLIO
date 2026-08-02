@@ -71,7 +71,7 @@ WORK EXPERIENCE:
    Company: Developer Hub (Online Internship) — developershubcorp.com
    Work: Worked on machine learning model development and AI workflows using Python, Scikit-learn, Pandas & NumPy. Built LLM-powered applications with LangChain and RAG pipelines, applied NLP techniques, and explored TensorFlow to improve model performance.
 
-PROJECTS (7 total):
+PROJECTS (8 total):
 1. Vigilant Eye — Real-Time AI Surveillance System
    Category: Artificial Intelligence / Computer Vision
    Description: A real-time AI surveillance system built using Computer Vision. Uses YOLOv8 for object/person detection.
@@ -86,19 +86,23 @@ PROJECTS (7 total):
    Description: An end-to-end NLP sentiment classification web application that categorizes text into Positive, Neutral, or Negative classes in real time with dynamic confidence probability scoring using Scikit-Learn and FastAPI.
    Live: https://sentiment-analysis-web-app-gcgl.vercel.app/
 
-4. CloudAssign — Cloud-Based Assignment Submission
+4. AI Data Classifier — Iris Species Classification with Multi-Algorithm ML Pipeline
+   Category: Machine Learning / Data Science / Full-Stack Web App
+   Description: A full-stack AI web application that trains three classification algorithms (KNN, Decision Tree, Random Forest) on the Iris dataset, compares accuracy in real-time, and enables live species predictions with confidence scores through a Flask dashboard.
+
+5. CloudAssign — Cloud-Based Assignment Submission
    Category: Cloud & Web Apps
    Description: A cloud-based platform for submitting and managing assignments online.
 
-5. Smart Queue Management System
+6. Smart Queue Management System
    Category: Python & Firebase Backend
    Description: An intelligent queue management system using Python backend with Firebase for real-time data sync.
 
-6. Project Census — Android Data Collection App
+7. Project Census — Android Data Collection App
    Category: Android Mobile App
    Description: An Android app for efficient data collection and census management.
 
-7. Library Management System
+8. Library Management System
    Category: C++ OOP Console App
    Description: A comprehensive library management system built in C++ using Object-Oriented Programming principles.
 

@@ -295,6 +295,73 @@ def predict(request: PredictionRequest):
       { url: '/projects/aurasentiment-negative.png', caption: 'AuraSentiment — Negative Sentiment Prediction State (NEGATIVE.png)' },
       { url: '/projects/aurasentiment-neutral.png', caption: 'AuraSentiment — Neutral Sentiment Prediction State (NEUTRAL.png)' }
     ],
+    nextProjectId: 'ai-data-classifier'
+  },
+  'ai-data-classifier': {
+    title: 'AI Data Classifier — Iris Species Classification with Multi-Algorithm ML Pipeline',
+    category: 'Machine Learning / Data Science / Full-Stack Web App',
+    client: 'DecodeLabs AI Internship — Batch 2026',
+    timeline: 'July 2026 – August 2026',
+    role: 'ML Engineer & Full-Stack Developer',
+    techStack: 'Python, scikit-learn, Flask, pandas, NumPy, joblib, Chart.js, HTML5, CSS3',
+    liveDemoUrl: null,
+    repoUrl: 'https://github.com/abdulsamiuthwal-eng/AI-Data-classifier',
+    overview: 'This project is a complete end-to-end Machine Learning classification system built as part of the DecodeLabs AI Internship (Batch 2026). It implements a professional ML pipeline that loads the classic Iris dataset (150 samples, 4 features, 3 flower species), applies feature scaling using StandardScaler, and trains three supervised learning algorithms — K-Nearest Neighbors, Decision Tree, and Random Forest — in a single pipeline run.\n\nThe best-performing model is automatically selected and serialized to disk using joblib. The trained model is served via a Flask web backend with a premium dark-themed dashboard, where users can visually compare algorithm metrics (accuracy, precision, recall, F1-score, confusion matrix) through Chart.js visualizations, and run live real-time predictions by entering flower measurements — receiving the predicted species name, confidence percentage, and full probability breakdown.',
+    challenge: `• Multi-Model Comparison Without Redundancy: Needed to train, evaluate, and compare 3 different ML algorithms in one pipeline without writing repetitive code for each model's metrics.
+
+• Persistent Model State: After training, the model needed to persist between Flask requests without retraining every time — required clean joblib serialization and safe file path resolution across operating systems.
+
+• Real-Time Prediction with Scaling: User-submitted inputs had to be scaled using the same StandardScaler fitted during training, not a new one, otherwise predictions would be incorrect.
+
+• Working Directory Conflicts on Windows: Flask's os.getcwd() and relative paths conflicted during training/prediction when the app was run from different directories — required dynamic os.path.abspath(__file__) resolution.`,
+    solution: `• Modular Pipeline Architecture: Separated the codebase into train.py (pipeline: load → preprocess → train → save) and predict.py (load → scale → infer → return), keeping concerns clean and independently testable.
+
+• Stratified Train-Test Split: Used stratify=y in train_test_split to ensure all 3 species are proportionally represented in both train and test sets, giving reliable accuracy scores.
+
+• Auto Best-Model Selection: After training all 3 models, the pipeline automatically compares accuracy scores and saves only the best-performing model's .pkl file, making the prediction endpoint always use the optimal classifier.
+
+• REST API + Web UI: Exposed both a form-based web prediction page (/predict) and a JSON REST endpoint (/api/predict) for programmatic access, making the system flexible for both human users and API consumers.`,
+    highlights: [
+      { icon: LineChart, title: 'Multi-Algorithm Training Dashboard', desc: 'Trains KNN (K=5), Decision Tree (max_depth=4), and Random Forest (100 estimators) simultaneously and displays a side-by-side comparison of Accuracy, Precision, Recall, and F1-Score using animated Chart.js bar charts.' },
+      { icon: Zap, title: 'Live Species Prediction with Confidence', desc: 'Users enter 4 flower measurements (sepal length, sepal width, petal length, petal width) and instantly receive the predicted Iris species (Setosa / Versicolor / Virginica) along with confidence percentage and full class probability breakdown.' },
+      { icon: Activity, title: 'Confusion Matrix Visualization', desc: 'Each trained model outputs an interactive confusion matrix rendered as a color-coded grid, letting users visually inspect true positives, false positives, and misclassification patterns per class.' },
+      { icon: Terminal, title: 'Dual-Mode REST API', desc: 'Beyond the web UI, a JSON REST API (/api/predict, /api/results) enables programmatic prediction queries and results retrieval — making the system extensible for integration with mobile apps or data pipelines.' }
+    ],
+    metrics: [
+      { num: '100%', label: 'Best Model Accuracy (Random Forest)' },
+      { num: '3', label: 'Models Compared in Single Pipeline Run' },
+      { num: '<50ms', label: 'Average Prediction Response Time' }
+    ],
+    fileName: 'train.py',
+    codeSnippet: `# train.py — DecodeLabs AI Classification Pipeline
+def train_all_models(X_train, X_test, y_train, y_test):
+    """Train KNN, Decision Tree, Random Forest. Return best model."""
+    models = {
+        'K-Nearest Neighbors': KNeighborsClassifier(n_neighbors=5),
+        'Decision Tree':       DecisionTreeClassifier(max_depth=4, random_state=42),
+        'Random Forest':       RandomForestClassifier(n_estimators=100, random_state=42)
+    }
+    best_model, best_accuracy = None, 0
+    for name, model in models.items():
+        model.fit(X_train, y_train)
+        y_pred = model.predict(X_test)
+        acc = round(accuracy_score(y_test, y_pred) * 100, 2)
+        if acc > best_accuracy:
+            best_accuracy = acc
+            best_model    = model
+    return results, best_model, best_model_name`,
+    flowchart: [
+      { badge: 1, title: 'Data Ingestion', desc: 'Load the Iris dataset (150 rows × 4 features) from scikit-learn. Map integer targets to species names (Setosa, Versicolor, Virginica).' },
+      { badge: 2, title: 'Preprocessing & Scaling', desc: 'Apply 80/20 stratified train-test split. Fit a StandardScaler on training data and transform both splits — ensuring zero data leakage.' },
+      { badge: 3, title: 'Multi-Model Training & Evaluation', desc: 'Train all 3 classifiers, compute Accuracy / Precision / Recall / F1 / Confusion Matrix for each, and auto-select the best model.' },
+      { badge: 4, title: 'Serve & Predict', desc: 'Serialize the best model + scaler with joblib. Flask loads these on startup and serves predictions via the web UI and REST API in real-time.' }
+    ],
+    screenshots: [
+      { url: '/projects/ai-data-classifier-splash.png', caption: 'AI Data Classifier — Project Showcase & Architecture Banner' },
+      { url: '/projects/ai-data-classifier-1.png', caption: 'AI Data Classifier — Multi-Algorithm Comparison Dashboard (Chart.js)' },
+      { url: '/projects/ai-data-classifier-2.png', caption: 'AI Data Classifier — Live Flower Species Prediction Page' },
+      { url: '/projects/ai-data-classifier-3.png', caption: 'AI Data Classifier — Training Results & Confusion Matrix Heatmap' }
+    ],
     nextProjectId: 'cloud-assign'
   },
   'cloud-assign': {
@@ -589,6 +656,24 @@ const ProjectDetailPage: React.FC<ProjectDetailPageProps> = ({ projectId }) => {
     '[MODEL] LogisticRegression confidence: 98.50% POSITIVE'
   ]);
 
+  // AI Data Classifier Simulator States
+  const [sepalLength, setSepalLength] = useState('5.1');
+  const [sepalWidth, setSepalWidth] = useState('3.5');
+  const [petalLength, setPetalLength] = useState('1.4');
+  const [petalWidth, setPetalWidth] = useState('0.2');
+  const [selectedAlgo, setSelectedAlgo] = useState<'Random Forest' | 'K-Nearest Neighbors' | 'Decision Tree'>('Random Forest');
+  const [dataClassifierResult, setDataClassifierResult] = useState<{ species: string; confidence: number; probs: { setosa: number; versicolor: number; virginica: number }; algo: string } | null>({
+    species: 'Iris Setosa',
+    confidence: 100.0,
+    probs: { setosa: 100.0, versicolor: 0.0, virginica: 0.0 },
+    algo: 'Random Forest'
+  });
+  const [dataClassifierLogs, setDataClassifierLogs] = useState<string[]>([
+    '[FLASK API] 200 OK - /api/predict (42ms)',
+    '[SCALER] StandardScaler normalized features: [5.1, 3.5, 1.4, 0.2]',
+    '[INFERENCE] Random Forest classifier result: Iris Setosa (100% prob)'
+  ]);
+
   // CloudAssign Simulator States
   const [uploadProgress, setUploadProgress] = useState(0);
   const [runnerState, setRunnerState] = useState<'idle' | 'uploading' | 'booting' | 'testing' | 'done'>('idle');
@@ -866,6 +951,52 @@ const ProjectDetailPage: React.FC<ProjectDetailPageProps> = ({ projectId }) => {
         ...prev.slice(0, 4)
       ]);
     }, 600);
+  };
+
+  // 2c. AI Data Classifier Simulation Trigger
+  const handleClassifierPredict = (sl?: string, sw?: string, pl?: string, pw?: string, algoChoice?: string) => {
+    const sLen = parseFloat(sl || sepalLength) || 5.1;
+    const sWid = parseFloat(sw || sepalWidth) || 3.5;
+    const pLen = parseFloat(pl || petalLength) || 1.4;
+    const pWid = parseFloat(pw || petalWidth) || 0.2;
+    const activeAlgo = algoChoice || selectedAlgo;
+
+    let species = 'Iris Setosa';
+    let setosa = 100.0;
+    let versicolor = 0.0;
+    let virginica = 0.0;
+
+    if (pLen < 2.5) {
+      species = 'Iris Setosa';
+      setosa = 100.0;
+      versicolor = 0.0;
+      virginica = 0.0;
+    } else if (pLen >= 2.5 && pLen < 4.9) {
+      species = 'Iris Versicolor';
+      setosa = 0.0;
+      versicolor = 96.4;
+      virginica = 3.6;
+    } else {
+      species = 'Iris Virginica';
+      setosa = 0.0;
+      versicolor = 2.1;
+      virginica = 97.9;
+    }
+
+    const conf = species === 'Iris Setosa' ? setosa : species === 'Iris Versicolor' ? versicolor : virginica;
+
+    setDataClassifierResult({
+      species,
+      confidence: conf,
+      probs: { setosa, versicolor, virginica },
+      algo: activeAlgo
+    });
+
+    setDataClassifierLogs((prev) => [
+      `[POST /api/predict] Features: [${sLen}, ${sWid}, ${pLen}, ${pWid}]`,
+      `[MODEL] Classifier (${activeAlgo}) -> ${species} (${conf}% prob)`,
+      ...prev.slice(0, 3)
+    ]);
   };
 
   // 3. CloudAssign Simulation Trigger
@@ -1288,6 +1419,72 @@ const ProjectDetailPage: React.FC<ProjectDetailPageProps> = ({ projectId }) => {
                   </div>
                 )}
 
+                {/* B3. AI Data Classifier Control */}
+                {projectId === 'ai-data-classifier' && (
+                  <div className="ptf-simulator-controls">
+                    <div className="sim-control-header">
+                      <Sliders size={16} />
+                      <span>Iris Flower Classifier Controls</span>
+                    </div>
+                    <div className="sim-control-body">
+                      <p className="narrative-para" style={{ fontSize: '13px', marginBottom: '8px' }}>Select algorithm & sample measurement preset:</p>
+                      
+                      {/* Algorithm selector buttons */}
+                      <div style={{ display: 'flex', gap: '6px', marginBottom: '10px' }}>
+                        {(['Random Forest', 'K-Nearest Neighbors', 'Decision Tree'] as const).map((algo) => (
+                          <button
+                            key={algo}
+                            onClick={() => {
+                              setSelectedAlgo(algo);
+                              handleClassifierPredict(undefined, undefined, undefined, undefined, algo);
+                            }}
+                            className={`sim-control-btn ${selectedAlgo === algo ? 'active' : ''}`}
+                            style={{ flex: 1, padding: '6px 4px', fontSize: '11px' }}
+                          >
+                            {algo === 'K-Nearest Neighbors' ? 'KNN (K=5)' : algo}
+                          </button>
+                        ))}
+                      </div>
+
+                      <div className="sim-buttons-group" style={{ gridTemplateColumns: '1fr', gap: '8px' }}>
+                        <button 
+                          className="sim-control-btn" 
+                          style={{ justifyContent: 'flex-start', textAlign: 'left' }}
+                          onClick={() => {
+                            setSepalLength('5.1'); setSepalWidth('3.5'); setPetalLength('1.4'); setPetalWidth('0.2');
+                            handleClassifierPredict('5.1', '3.5', '1.4', '0.2');
+                          }}
+                        >
+                          <ArrowRight size={14} />
+                          <span>Setosa Preset (5.1cm, 3.5cm, 1.4cm, 0.2cm)</span>
+                        </button>
+                        <button 
+                          className="sim-control-btn" 
+                          style={{ justifyContent: 'flex-start', textAlign: 'left' }}
+                          onClick={() => {
+                            setSepalLength('6.0'); setSepalWidth('2.9'); setPetalLength('4.5'); setPetalWidth('1.5');
+                            handleClassifierPredict('6.0', '2.9', '4.5', '1.5');
+                          }}
+                        >
+                          <ArrowRight size={14} />
+                          <span>Versicolor Preset (6.0cm, 2.9cm, 4.5cm, 1.5cm)</span>
+                        </button>
+                        <button 
+                          className="sim-control-btn" 
+                          style={{ justifyContent: 'flex-start', textAlign: 'left' }}
+                          onClick={() => {
+                            setSepalLength('6.9'); setSepalWidth('3.1'); setPetalLength('5.4'); setPetalWidth('2.1');
+                            handleClassifierPredict('6.9', '3.1', '5.4', '2.1');
+                          }}
+                        >
+                          <ArrowRight size={14} />
+                          <span>Virginica Preset (6.9cm, 3.1cm, 5.4cm, 2.1cm)</span>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
                 {/* C. CloudAssign Control */}
                 {projectId === 'cloud-assign' && (
                   <div className="ptf-simulator-controls">
@@ -1650,6 +1847,86 @@ const ProjectDetailPage: React.FC<ProjectDetailPageProps> = ({ projectId }) => {
                               <div className="console-header"><Terminal size={12} /><span>FASTAPI ENDPOINT LOGS</span></div>
                               <div className="console-lines" style={{ padding: '6px 12px' }}>
                                 {auraLogs.slice(0, 3).map((log, idx) => <div key={idx} className="console-line">{log}</div>)}
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      )}
+
+                      {/* B3. AI Data Classifier Display */}
+                      {projectId === 'ai-data-classifier' && (
+                        <div style={{ display: 'flex', flexDirection: 'column', height: '100%', background: '#0a0c12' }}>
+                          <div className="monitor-header">
+                            <div className="monitor-header-left">
+                              <span className="live-dot" style={{ background: '#10b981' }}></span>
+                              <span>FLASK MULTI-ALGORITHM ML PIPELINE</span>
+                            </div>
+                            <div className="monitor-header-right">
+                              <span>MODEL: {selectedAlgo.toUpperCase()}</span>
+                            </div>
+                          </div>
+
+                          <div style={{ flex: 1, padding: '16px', display: 'flex', flexDirection: 'column', gap: '12px', background: '#080a0e', overflowY: 'auto' }}>
+                            {/* Input Sliders & Measurements */}
+                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px', background: '#11141f', padding: '12px', borderRadius: '8px', border: '1px solid #1e2436' }}>
+                              <div>
+                                <label style={{ fontSize: '10px', color: '#888' }}>Sepal Length (cm): {sepalLength}</label>
+                                <input type="range" min="4.0" max="8.0" step="0.1" value={sepalLength} onChange={(e) => { setSepalLength(e.target.value); handleClassifierPredict(e.target.value, sepalWidth, petalLength, petalWidth); }} style={{ width: '100%' }} />
+                              </div>
+                              <div>
+                                <label style={{ fontSize: '10px', color: '#888' }}>Sepal Width (cm): {sepalWidth}</label>
+                                <input type="range" min="2.0" max="4.5" step="0.1" value={sepalWidth} onChange={(e) => { setSepalWidth(e.target.value); handleClassifierPredict(sepalLength, e.target.value, petalLength, petalWidth); }} style={{ width: '100%' }} />
+                              </div>
+                              <div>
+                                <label style={{ fontSize: '10px', color: '#888' }}>Petal Length (cm): {petalLength}</label>
+                                <input type="range" min="1.0" max="7.0" step="0.1" value={petalLength} onChange={(e) => { setPetalLength(e.target.value); handleClassifierPredict(sepalLength, sepalWidth, e.target.value, petalWidth); }} style={{ width: '100%' }} />
+                              </div>
+                              <div>
+                                <label style={{ fontSize: '10px', color: '#888' }}>Petal Width (cm): {petalWidth}</label>
+                                <input type="range" min="0.1" max="2.5" step="0.1" value={petalWidth} onChange={(e) => { setPetalWidth(e.target.value); handleClassifierPredict(sepalLength, sepalWidth, petalLength, e.target.value); }} style={{ width: '100%' }} />
+                              </div>
+                            </div>
+
+                            {/* Classification Result Card */}
+                            {dataClassifierResult && (
+                              <div style={{
+                                background: '#11141f',
+                                border: '1px solid #10b98155',
+                                borderRadius: '10px',
+                                padding: '14px',
+                                textAlign: 'left'
+                              }}>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
+                                  <span style={{ fontSize: '11px', color: '#10b981', fontWeight: 700 }}>PREDICTED FLOWER SPECIES</span>
+                                  <span style={{ fontSize: '11px', color: '#aaa' }}>{dataClassifierResult.confidence}% Confidence</span>
+                                </div>
+                                <div style={{ fontSize: '20px', fontWeight: 800, color: '#fff', marginBottom: '10px' }}>
+                                  {dataClassifierResult.species}
+                                </div>
+
+                                {/* Class probabilities */}
+                                <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                                  <div>
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '10px', color: '#888' }}><span>Iris Setosa</span><span>{dataClassifierResult.probs.setosa}%</span></div>
+                                    <div style={{ height: '4px', background: '#1e2436', borderRadius: '2px', overflow: 'hidden' }}><div style={{ width: `${dataClassifierResult.probs.setosa}%`, height: '100%', background: '#10b981' }} /></div>
+                                  </div>
+                                  <div>
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '10px', color: '#888' }}><span>Iris Versicolor</span><span>{dataClassifierResult.probs.versicolor}%</span></div>
+                                    <div style={{ height: '4px', background: '#1e2436', borderRadius: '2px', overflow: 'hidden' }}><div style={{ width: `${dataClassifierResult.probs.versicolor}%`, height: '100%', background: '#3b82f6' }} /></div>
+                                  </div>
+                                  <div>
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '10px', color: '#888' }}><span>Iris Virginica</span><span>{dataClassifierResult.probs.virginica}%</span></div>
+                                    <div style={{ height: '4px', background: '#1e2436', borderRadius: '2px', overflow: 'hidden' }}><div style={{ width: `${dataClassifierResult.probs.virginica}%`, height: '100%', background: '#8b5cf6' }} /></div>
+                                  </div>
+                                </div>
+                              </div>
+                            )}
+
+                            {/* Logs Box */}
+                            <div className="monitor-console" style={{ height: '80px' }}>
+                              <div className="console-header"><Terminal size={12} /><span>FLASK REST API CONSOLE</span></div>
+                              <div className="console-lines" style={{ padding: '4px 10px' }}>
+                                {dataClassifierLogs.slice(0, 3).map((log, idx) => <div key={idx} className="console-line">{log}</div>)}
                               </div>
                             </div>
                           </div>

@@ -73,6 +73,13 @@ const Projects: React.FC = () => {
       liveLink: 'https://sentiment-analysis-web-app-gcgl.vercel.app/',
     },
     {
+      image: '/projects/ai-data-classifier.png',
+      title: 'AI Data Classifier — Iris Species Classification with Multi-Algorithm ML Pipeline',
+      category: 'Machine Learning / Data Science / Full-Stack Web App',
+      link: '#project/ai-data-classifier',
+      liveLink: null,
+    },
+    {
       image: '/projects/cloud-assign.png',
       title: 'CloudAssign — Cloud-Based Assignment Submission',
       category: 'Cloud & Web Apps',
