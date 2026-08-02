@@ -18,13 +18,20 @@ import ChatIcon from './components/ChatIcon';
 import ProjectDetailPage from './components/ProjectDetailPage';
 
 // Re-run AOS animations for the currently visible view after a view switch.
-// All elements are reset to their hidden state first (with a forced reflow so the
-// browser records the hidden state), then AOS re-scans the DOM via refreshHard()
-// and animates everything that is in the viewport.
+// Transitions are temporarily disabled while elements are reset to their hidden
+// state, then a forced reflow commits that hidden state (without this the
+// browser treats the class flip as a 1->1 no-op and nothing replays). Once
+// transitions are restored, AOS.refreshHard() animates everything back in.
 const replayAOS = () => {
   const elements = document.querySelectorAll<HTMLElement>('[data-aos]');
-  elements.forEach(el => el.classList.remove('aos-animate'));
+  elements.forEach(el => {
+    el.style.transition = 'none';
+    el.classList.remove('aos-animate');
+  });
   void document.body.offsetHeight;
+  elements.forEach(el => {
+    el.style.transition = '';
+  });
   AOS.refreshHard();
 };
 
