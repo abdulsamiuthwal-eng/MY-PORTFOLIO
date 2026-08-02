@@ -217,6 +217,84 @@ class RAGChain:
       { url: '/projects/rag-chatbot/img5.jpg', caption: 'RAG Chatbot — Evaluation Benchmark Results' },
       { url: '/projects/rag-chatbot/img6.jpg', caption: 'RAG Chatbot — Settings & Model Configuration Panel' }
     ],
+    nextProjectId: 'aurasentiment-web-app'
+  },
+  'aurasentiment-web-app': {
+    title: 'AuraSentiment — End-to-End Sentiment Analysis Web Application',
+    category: 'Machine Learning / Natural Language Processing (NLP) / Full-Stack',
+    client: 'DEVFORGE AI/ML Internship / Open Source',
+    timeline: 'Jan 2026 – Feb 2026',
+    role: 'Lead AI Engineer & Full-Stack Developer',
+    techStack: 'Python, Scikit-Learn, NLTK, FastAPI, Uvicorn, HTML5, Vanilla CSS3 (Glassmorphism), JavaScript (Fetch API), Vercel, Render',
+    liveDemoUrl: 'https://sentiment-analysis-web-app-gcgl.vercel.app/',
+    repoUrl: 'https://github.com/abdulsamiuthwal-eng/Sentiment-Analysis-Web-App',
+    overview: 'AuraSentiment is a portfolio-grade machine learning application designed to classify sentiment across unstructured text data like social media posts, product reviews, and customer feedback into Positive, Neutral, or Negative categories. Built as part of the DEVFORGE AI/ML Internship, the system features a complete ML lifecycle including exploratory data analysis, dataset balancing, text normalization pipelines, and model evaluation across multiple algorithms (Logistic Regression, Naive Bayes, Random Forest). The production solution pairs a lightweight FastAPI microservice on Render with a responsive glassmorphic web UI hosted on Vercel.',
+    challenge: `• Noisy Unstructured Text Data: Raw social media text contained heavy noise (URLs, punctuation, emojis, special characters) requiring robust cleaning without losing contextual meaning.
+
+• Model Latency & Deployment Footprint: Balancing computational resource limits on cloud hosting with high-speed real-time inference requirements.
+
+• CORS & Asynchronous State Synchronization: Connecting a decoupled static web client on Vercel to a stateless RESTful backend on Render seamlessly.
+
+• Probability Confidence Calculation: Providing probabilistic metric scores to end users alongside discrete sentiment predictions.`,
+    solution: `• Multi-Stage Preprocessing Pipeline: Developed custom text cleaning routines utilizing NLTK and regular expressions for lowercasing, URL removal, stopword pruning, and WordNet Lemmatization.
+
+• TF-IDF & Logistic Regression: Engineered TF-IDF feature matrices paired with an optimized Logistic Regression classifier for low latency and high precision.
+
+• FastAPI Microservice Architecture: Designed a production-ready API with Pydantic validation schemas, health checks, dynamic path resolution, and CORS middleware.
+
+• Glassmorphic Responsive Frontend: Built a modern UI in pure HTML5/CSS3/JS featuring dynamic theme transitions, backdrop blurs, and real-time state feedback.`,
+    highlights: [
+      { icon: Zap, title: 'Real-Time Sentiment Classification', desc: 'Instantaneous text evaluation returning Positive, Neutral, or Negative sentiment predictions.' },
+      { icon: Activity, title: 'Dynamic Confidence Scoring', desc: 'Calculates and displays percentage confidence metrics based on model output probabilities.' },
+      { icon: Terminal, title: 'Automated OpenAPI Documentation', desc: 'Embedded Swagger UI (/docs) and ReDoc (/redoc) for interactive API testing and developer exploration.' },
+      { icon: Sliders, title: 'Modern Responsive Glassmorphism', desc: 'Interactive UI with custom HSL palettes, smooth loading states, and dynamic status meters.' }
+    ],
+    metrics: [
+      { num: '94.2%', label: 'Validation Model Precision' },
+      { num: '<25ms', label: 'Inference API Latency' },
+      { num: '100%', label: 'OpenAPI & Type Safety Coverage' }
+    ],
+    fileName: 'backend/main.py',
+    codeSnippet: `@app.post("/predict", response_model=PredictionResponse, status_code=status.HTTP_200_OK)
+def predict(request: PredictionRequest):
+    if not request.text or not request.text.strip():
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Input text cannot be empty or whitespace only."
+        )
+    
+    # Preprocess & Vectorize
+    processed = preprocess_text(request.text)
+    vectorized = vectorizer.transform([processed])
+    
+    # Predict Sentiment & Probability Confidence
+    prediction = model.predict(vectorized)[0]
+    confidence = None
+    if hasattr(model, "predict_proba"):
+        probs = model.predict_proba(vectorized)[0]
+        classes = model.classes_
+        if prediction in classes:
+            pred_idx = list(classes).index(prediction)
+            confidence = f"{probs[pred_idx] * 100:.2f}%"
+    
+    return PredictionResponse(
+        text=request.text,
+        prediction=prediction,
+        confidence=confidence
+    )`,
+    flowchart: [
+      { badge: 1, title: 'Text Normalization', desc: 'Input text is stripped of noise, URLs, and punctuation, then tokenized and lemmatized via WordNet.' },
+      { badge: 2, title: 'Feature Vectorization', desc: 'The preprocessed string is transformed into numerical feature vectors using the serialized TF-IDF vectorizer.' },
+      { badge: 3, title: 'Model Inference', desc: 'The Logistic Regression model predicts the categorical sentiment and computes confidence scores.' },
+      { badge: 4, title: 'UI Update', desc: 'The browser receives the JSON payload asynchronously and updates result metrics, status colors, and confidence bars dynamically.' }
+    ],
+    screenshots: [
+      { url: '/projects/aurasentiment-splash.png', caption: 'AuraSentiment — Project Showcase & Architecture Banner (SPLASH_T1.png)' },
+      { url: '/projects/aurasentiment.png', caption: 'AuraSentiment — Main Glassmorphic Dashboard View (HOME.png)' },
+      { url: '/projects/aurasentiment-positive.png', caption: 'AuraSentiment — Positive Sentiment Prediction State (POSITIVE.png)' },
+      { url: '/projects/aurasentiment-negative.png', caption: 'AuraSentiment — Negative Sentiment Prediction State (NEGATIVE.png)' },
+      { url: '/projects/aurasentiment-neutral.png', caption: 'AuraSentiment — Neutral Sentiment Prediction State (NEUTRAL.png)' }
+    ],
     nextProjectId: 'cloud-assign'
   },
   'cloud-assign': {

@@ -4,7 +4,7 @@ IMPORTANT: Whenever you mention his name, ALWAYS write it in full uppercase: ABD
 
 ---
 ABOUT ABDUL SAMI UTHWAL:
-ABDUL SAMI UTHWAL is an AI/ML Engineer & Full-Stack Developer operating globally from Pakistan (Jhang, Punjab). His motto is "Work for passion, build for impact!" He specializes in building intelligent systems — from Computer Vision pipelines to LLM-powered applications. He has 1.5+ years of experience, 100% client satisfaction, and 6+ projects completed.
+ABDUL SAMI UTHWAL is an AI/ML Engineer & Full-Stack Developer operating globally from Pakistan (Jhang, Punjab). His motto is "Work for passion, build for impact!" He specializes in building intelligent systems — from Computer Vision pipelines to LLM-powered applications. He has 1.5+ years of experience, 100% client satisfaction, and 7+ projects completed.
 
 CONTACT INFORMATION:
 - Location: Jhang, Punjab, Pakistan
@@ -71,7 +71,7 @@ WORK EXPERIENCE:
    Company: Developer Hub (Online Internship) — developershubcorp.com
    Work: Worked on machine learning model development and AI workflows using Python, Scikit-learn, Pandas & NumPy. Built LLM-powered applications with LangChain and RAG pipelines, applied NLP techniques, and explored TensorFlow to improve model performance.
 
-PROJECTS (6 total):
+PROJECTS (7 total):
 1. Vigilant Eye — Real-Time AI Surveillance System
    Category: Artificial Intelligence / Computer Vision
    Description: A real-time AI surveillance system built using Computer Vision. Uses YOLOv8 for object/person detection.
@@ -81,19 +81,24 @@ PROJECTS (6 total):
    Category: RAG System / AI Chatbot
    Description: A Retrieval-Augmented Generation chatbot powered by Llama 3.1 and ChromaDB vector database for intelligent document Q&A.
 
-3. CloudAssign — Cloud-Based Assignment Submission
+3. AuraSentiment — End-to-End Sentiment Analysis Web Application
+   Category: Machine Learning / Natural Language Processing (NLP) / Full-Stack
+   Description: An end-to-end NLP sentiment classification web application that categorizes text into Positive, Neutral, or Negative classes in real time with dynamic confidence probability scoring using Scikit-Learn and FastAPI.
+   Live: https://sentiment-analysis-web-app-gcgl.vercel.app/
+
+4. CloudAssign — Cloud-Based Assignment Submission
    Category: Cloud & Web Apps
    Description: A cloud-based platform for submitting and managing assignments online.
 
-4. Smart Queue Management System
+5. Smart Queue Management System
    Category: Python & Firebase Backend
    Description: An intelligent queue management system using Python backend with Firebase for real-time data sync.
 
-5. Project Census — Android Data Collection App
+6. Project Census — Android Data Collection App
    Category: Android Mobile App
    Description: An Android app for efficient data collection and census management.
 
-6. Library Management System
+7. Library Management System
    Category: C++ OOP Console App
    Description: A comprehensive library management system built in C++ using Object-Oriented Programming principles.
 

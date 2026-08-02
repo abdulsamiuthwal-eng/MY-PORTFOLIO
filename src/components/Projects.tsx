@@ -66,6 +66,13 @@ const Projects: React.FC = () => {
       liveLink: null,
     },
     {
+      image: '/projects/aurasentiment.png',
+      title: 'AuraSentiment — End-to-End Sentiment Analysis Web Application',
+      category: 'Machine Learning / Natural Language Processing (NLP) / Full-Stack',
+      link: '#project/aurasentiment-web-app',
+      liveLink: 'https://sentiment-analysis-web-app-gcgl.vercel.app/',
+    },
+    {
       image: '/projects/cloud-assign.png',
       title: 'CloudAssign — Cloud-Based Assignment Submission',
       category: 'Cloud & Web Apps',

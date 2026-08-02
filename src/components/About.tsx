@@ -95,7 +95,7 @@ const About: React.FC = () => {
             <div className="ptf-animated-block ptf-stat-block" data-aos="fade-up" data-aos-delay="450">
               <h5 className="fz-14 text-uppercase has-3-color fw-normal tracking-widest" style={{ marginBottom: '8px' }}>Projects Done</h5>
               <div className="serif-font has-black-color" style={{ fontSize: '75px', lineHeight: '1', fontWeight: 400 }}>
-                6+
+                7+
               </div>
             </div>
           </div>
