@@ -54,6 +54,9 @@ const App: React.FC = () => {
     window.location.hash === '#contact-page' ? '#contact-page' : '#home',
   );
   const isFirstRender = useRef(true);
+  const homeScrollPos = useRef<number | null>(null);
+  const isBackNav = useRef(false);
+  const hashRef = useRef(window.location.hash);
 
   useEffect(() => {
     // Scroll to top on page refresh unless we're on the contact page
@@ -69,8 +72,21 @@ const App: React.FC = () => {
       easing: 'ease-out-cubic',
     });
 
+    const handlePopState = () => {
+      isBackNav.current = true;
+    };
+
     const handleHashChange = () => {
       const newHash = window.location.hash;
+      const oldHash = hashRef.current;
+      hashRef.current = newHash;
+      // Remember the home scroll position before switching to a page view so
+      // the back button can restore the exact section the user came from
+      const wasHome = oldHash === '' || oldHash === '#home';
+      const isPageView = newHash === '#contact-page' || newHash.startsWith('#project/');
+      if (wasHome && isPageView) {
+        homeScrollPos.current = window.scrollY;
+      }
       setCurrentHash(newHash);
     };
 
@@ -96,8 +112,10 @@ const App: React.FC = () => {
       }
     };
 
+    window.addEventListener('popstate', handlePopState);
     window.addEventListener('hashchange', handleHashChange);
     return () => {
+      window.removeEventListener('popstate', handlePopState);
       window.removeEventListener('hashchange', handleHashChange);
       delete (window as any).triggerSectionAnimation;
     };
@@ -105,6 +123,9 @@ const App: React.FC = () => {
 
   // Handle smooth scrolling for home page section anchors and page transitions
   useEffect(() => {
+    const backNav = isBackNav.current;
+    isBackNav.current = false;
+
     const isPageView =
       currentHash === '#contact-page' ||
       currentHash.startsWith('#project/') ||
@@ -116,6 +137,25 @@ const App: React.FC = () => {
       if (isFirstRender.current) {
         isFirstRender.current = false;
         return;
+      }
+
+      const isHomeView = currentHash === '#home' || currentHash === '';
+
+      if (isHomeView && backNav && homeScrollPos.current !== null) {
+        // Back navigation from a page view: restore the exact scroll position
+        // the user clicked through from, then replay the visible animations
+        const restorePos = homeScrollPos.current;
+        homeScrollPos.current = null;
+        window.scrollTo(0, restorePos);
+        requestAnimationFrame(() => {
+          window.scrollTo(0, restorePos);
+          replayAOS();
+        });
+        const timer = setTimeout(() => {
+          window.scrollTo(0, restorePos);
+          replayAOS();
+        }, 60);
+        return () => clearTimeout(timer);
       }
 
       // Hard reset scroll (safe 2-arg form — no 'instant' behavior that throws
