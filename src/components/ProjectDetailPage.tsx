@@ -20,7 +20,10 @@ import {
   UserPlus,
   ArrowRight,
   Database,
-  ShieldAlert
+  ShieldAlert,
+  CheckCircle,
+  Users,
+  Sparkles
 } from 'lucide-react';
 
 import gsap from 'gsap';
@@ -362,6 +365,88 @@ def train_all_models(X_train, X_test, y_train, y_test):
       { url: '/projects/ai-data-classifier-2.png', caption: 'AI Data Classifier — Live Flower Species Prediction Page' },
       { url: '/projects/ai-data-classifier-3.png', caption: 'AI Data Classifier — Training Results & Confusion Matrix Heatmap' }
     ],
+    nextProjectId: 'rashid-dental-ai-assistant'
+  },
+  'rashid-dental-ai-assistant': {
+    title: 'Rashid Dental AI Assistant — Intelligent RAG-Powered Clinical Healthcare Bot & Appointment System',
+    category: 'Healthcare AI / Natural Language Processing / RAG Systems / Full-Stack Engineering',
+    client: 'DEVFORGE AI/ML Internship — Project 2 / Healthcare Client Prototype (Rashid Dental Clinic)',
+    timeline: 'Jan 2026 – Feb 2026',
+    role: 'Lead AI/ML Engineer & Full-Stack Developer',
+    techStack: 'Python 3.12+, FastAPI 0.111, Google Gemini 1.5 Flash, Google Embedding-001, FAISS (CPU Vector Store), PostgreSQL 15 (Neon Cloud DB), Async SQLAlchemy 2.0, Pydantic v2, SlowAPI (Rate Limiting), Loguru, HTML5, CSS3, JavaScript, Render',
+    liveDemoUrl: 'https://rashid-dental-ai-assistant-3.onrender.com',
+    repoUrl: 'https://github.com/abdulsamiuthwal-eng/Rashid-dental-ai-assistant',
+    overview: 'The Rashid Dental AI Assistant is a state-of-the-art, healthcare-grade conversational AI platform built to revolutionize patient interaction, consultation routing, and appointment scheduling for Rashid Dental Clinic. Traditional clinic websites struggle to handle off-hours patient inquiries, provide instant transparent pricing, or collect appointment details efficiently without human intervention. To resolve this, the system embeds a high-performance Retrieval-Augmented Generation (RAG) pipeline powered by Google Gemini 1.5 Flash and FAISS vector index into a modern glassmorphic web interface. Grounded strictly in verified clinic documentation (services.md, pricing.md, emergency-guidance.md, timings-and-location.md, etc.), the AI provides precise, source-cited responses while actively eliminating hallucination risks.\n\nBeyond informational search, the system incorporates strict medical safety guardrails and multi-layered security. It intelligently enforces medical non-diagnosis rules, refuses medication requests, detects emergency red flags (e.g., severe bleeding, jaw trauma, breathing difficulties) for immediate escalation, and neutralizes prompt-injection attempts. The backend, built with async FastAPI and SQLAlchemy, manages multi-turn conversational session memory and persists structured patient appointment intake requests into a cloud PostgreSQL database hosted on Neon. The result is a production-ready, low-latency clinical support system operating 24/7 with zero compromise on safety or medical ethics.',
+    challenge: `• Medical Hallucination & Liability Risks: Standard Large Language Models (LLMs) tend to hallucinate medical advice or diagnose symptoms, exposing clinics to severe legal liability and risking patient health.
+
+• Context Chunking & Metadata Loss: Conventional fixed-character text splitters break tabular pricing structures, doctor credentials, and heading hierarchies, producing fragmented and out-of-context retrieval results.
+
+• Prompt Injection & Adversarial Exploitation: Malicious users might try to override system prompts ("ignore previous instructions") to extract internal system keys, alter clinic policies, or generate harmful medical prescriptions.
+
+• Low-Latency RAG Execution on Cloud: Performing real-time vector similarity search, document reranking, LLM context generation, and relational DB writes within a single request window under strict memory budgets (Render Free Tier: 512MB RAM).`,
+    solution: `• Heading-Aware Markdown Chunker & FAISS Indexing: Built a custom Markdown document loader that splits knowledge base files specifically by H2 and H3 headers while maintaining source file attributes, preserving full semantic context per section, and embedding them via Google embedding-001 into a normalized IndexFlatIP FAISS vector store.
+
+• Multi-Layered Medical Safety & Emergency Filter: Designed a strict system prompt combined with pre-LLM regex and rule-based analyzers. Queries triggering diagnostic terms or emergency keywords (e.g., "throbbing abscess", "knocked out tooth", "cannot breathe") instantly bypass standard LLM output to trigger immediate emergency contact directives.
+
+• Adversarial Input Sanitization & Guardrails: Implemented input validation guardrails using Pydantic v2 schemas and SlowAPI rate limiters to filter system prompt leakage attempts, roleplay bypasses ("act as a doctor"), and spam attacks before reaching Gemini.
+
+• Async FastAPI Backend & Cloud Database Architecture: Engineered a fully asynchronous RESTful API using FastAPI and Async SQLAlchemy connected to Neon PostgreSQL for zero-blocking database operations, allowing session memory management and appointment request intake to run smoothly under high concurrency.`,
+    highlights: [
+      { icon: CheckCircle, title: 'RAG Engine with Explicit Source Citation', desc: 'Every AI response retrieves top-K relevant chunks from FAISS, generates grounded explanations, and appends explicit source file citations ([Source: pricing.md]), ensuring 100% verification.' },
+      { icon: ShieldAlert, title: 'Clinical Guardrails & Emergency Escalation Protocol', desc: 'Strict adherence to zero-diagnosis and zero-prescription rules. Emergency detection automatically provides clinic helpline details and urgent care instructions.' },
+      { icon: Users, title: 'Conversational Appointment Intake Flow', desc: 'Patients can seamlessly initiate appointment requests directly within the chat widget. The assistant collects full name, phone number, desired service, preferred date/time, and notes, storing them in PostgreSQL.' },
+      { icon: Sparkles, title: 'Responsive Glassmorphic UI & Interactive Landing Page', desc: 'A floating chatbot widget with fluid animations, auto-suggested questions, session state preservation, accessibility features (ARIA labels), and responsive desktop/mobile layouts.' }
+    ],
+    metrics: [
+      { num: '100%', label: 'Safety Compliance (0 Violations across 91 Test Cases)' },
+      { num: '<250ms', label: 'FAISS Vector Search & Retrieval Latency' },
+      { num: '91/91', label: 'Automated Test Suite Pass Rate' }
+    ],
+    fileName: 'backend/app/rag/vector_store.py',
+    codeSnippet: `import pickle
+from pathlib import Path
+import faiss
+import numpy as np
+import numpy.typing as npt
+from backend.app.rag.schemas import DocumentChunk
+
+class VectorStore:
+    """Manages a FAISS inner-product index over DocumentChunk embeddings."""
+    def __init__(self, index_path: Path, meta_path: Path) -> None:
+        self._index_path = Path(index_path)
+        self._meta_path = Path(meta_path)
+        self._index: faiss.IndexFlatIP | None = None
+        self._chunks: list[DocumentChunk] = []
+
+    def search(self, query_embedding: npt.NDArray[np.float32], top_k: int = 5) -> list[tuple[DocumentChunk, float]]:
+        """Perform cosine similarity search against stored FAISS index."""
+        if self._index is None or not self._chunks:
+            raise RuntimeError("FAISS index is not loaded. Call load() first.")
+        # Ensure 2D float32 array normalized for inner-product (cosine) search
+        vector = np.ascontiguousarray(query_embedding, dtype=np.float32)
+        if vector.ndim == 1:
+            vector = vector.reshape(1, -1)
+        faiss.normalize_L2(vector)
+        scores, indices = self._index.search(vector, min(top_k, len(self._chunks)))
+        
+        results: list[tuple[DocumentChunk, float]] = []
+        for score, idx in zip(scores[0], indices[0]):
+            if idx != -1:
+                results.append((self._chunks[idx], float(score)))
+        return results`,
+    flowchart: [
+      { badge: 1, title: 'Patient Input & Guardrail Inspection', desc: 'User submits a message via the web chatbot widget. Input passes through Pydantic validation, SlowAPI rate limiting, emergency keyword regex scanning, and prompt injection filters.' },
+      { badge: 2, title: 'FAISS Semantic Retrieval', desc: 'The query is transformed into a 768-dim vector via Google Embedding-001. FAISS executes an inner-product search across knowledge base chunks (services.md, pricing.md, etc.) to retrieve top-K context matches.' },
+      { badge: 3, title: 'Context-Grounded LLM Synthesis', desc: 'Retrieved context, conversation session history, and strict clinical safety system prompts are dispatched to Google Gemini 1.5 Flash to synthesize an accurate, source-cited answer.' },
+      { badge: 4, title: 'Response Rendering & Appointment Persistence', desc: 'The response with source attribution links is returned to the client. If an appointment is requested, the backend stores the structured data in Neon PostgreSQL.' }
+    ],
+    screenshots: [
+      { url: '/projects/rashid-dental-splash.png', caption: 'Rashid Dental AI Assistant — Architectural Overview & System Banner' },
+      { url: '/projects/rashid-dental-hero.png', caption: 'Rashid Dental AI Assistant — Main Responsive Clinic Landing Page' },
+      { url: '/projects/rashid-dental-chat.png', caption: 'Rashid Dental AI Assistant — Interactive RAG Chatbot with Source Citations' },
+      { url: '/projects/rashid-dental-appointment.png', caption: 'Rashid Dental AI Assistant — Conversational Patient Appointment Intake Flow' },
+      { url: '/projects/rashid-dental-docs.png', caption: 'Rashid Dental AI Assistant — FastAPI OpenAPI Swagger & Health Monitoring' }
+    ],
     nextProjectId: 'cloud-assign'
   },
   'cloud-assign': {
@@ -672,6 +757,18 @@ const ProjectDetailPage: React.FC<ProjectDetailPageProps> = ({ projectId }) => {
     '[FLASK API] 200 OK - /api/predict (42ms)',
     '[SCALER] StandardScaler normalized features: [5.1, 3.5, 1.4, 0.2]',
     '[INFERENCE] Random Forest classifier result: Iris Setosa (100% prob)'
+  ]);
+
+  // Rashid Dental AI Assistant Simulator States
+  const [dentalQuery, setDentalQuery] = useState('');
+  const [dentalMessages, setDentalMessages] = useState<{ sender: 'user' | 'bot'; text: string; sources?: string[]; isEmergency?: boolean; isAppointment?: boolean }[]>([
+    { sender: 'bot', text: 'Welcome to Rashid Dental Clinic! How can I assist you with services, pricing, or appointment bookings today?', sources: ['services.md'] }
+  ]);
+  const [dentalState, setDentalState] = useState<'idle' | 'faiss' | 'guardrails' | 'gemini'>('idle');
+  const [dentalLogs, setDentalLogs] = useState<string[]>([
+    '[200 OK] POST /api/v1/chat (145ms)',
+    '[FAISS Index] Top 3 cosine matches retrieved from services.md & pricing.md',
+    '[GUARDRAILS] Passed: 0 diagnostic violations | 0 prompt injection triggers'
   ]);
 
   // CloudAssign Simulator States
@@ -997,6 +1094,56 @@ const ProjectDetailPage: React.FC<ProjectDetailPageProps> = ({ projectId }) => {
       `[MODEL] Classifier (${activeAlgo}) -> ${species} (${conf}% prob)`,
       ...prev.slice(0, 3)
     ]);
+  };
+
+  // 2d. Rashid Dental AI Assistant Simulation Trigger
+  const handleDentalChat = (e?: React.FormEvent, customMsg?: string) => {
+    if (e) e.preventDefault();
+    const queryText = customMsg || dentalQuery;
+    if (!queryText.trim() || dentalState !== 'idle') return;
+
+    setDentalQuery('');
+    setDentalMessages((prev) => [...prev, { sender: 'user', text: queryText }]);
+    setDentalState('faiss');
+
+    setTimeout(() => {
+      setDentalState('guardrails');
+      setTimeout(() => {
+        setDentalState('gemini');
+        setTimeout(() => {
+          let botReply = '';
+          let sources: string[] = [];
+          let isEmergency = false;
+          let isAppointment = false;
+
+          const lower = queryText.toLowerCase();
+
+          if (lower.includes('price') || lower.includes('cost') || lower.includes('fee') || lower.includes('root canal')) {
+            botReply = "At Rashid Dental Clinic, Root Canal treatment ranges from $250 to $450 depending on complexity. Teeth Whitening is $180, and Dental Implants start at $1,200. Consultation is complimentary.";
+            sources = ['pricing.md', 'services.md'];
+          } else if (lower.includes('bleed') || lower.includes('emergency') || lower.includes('pain') || lower.includes('trauma')) {
+            botReply = "⚠️ CLINICAL EMERGENCY PROTOCOL TRIGGERED: If you are experiencing severe bleeding, facial trauma, or difficulty breathing, visit our emergency care unit immediately or call our 24/7 Helpline at +92-300-1234567.";
+            sources = ['emergency-guidance.md'];
+            isEmergency = true;
+          } else if (lower.includes('book') || lower.includes('appointment') || lower.includes('schedule') || lower.includes('timing')) {
+            botReply = "I would be glad to schedule your appointment! Rashid Dental Clinic is open Mon–Sat, 9:00 AM–8:00 PM. Preferred slot logged in PostgreSQL intake pipeline.";
+            sources = ['timings-and-location.md'];
+            isAppointment = true;
+          } else {
+            botReply = "Rashid Dental Clinic offers comprehensive dental care including Cosmetic Dentistry, Orthodontics, Root Canals, and Emergency Care. All treatments adhere to strict ISO sterilization standards.";
+            sources = ['services.md', 'about-us.md'];
+          }
+
+          setDentalMessages((prev) => [...prev, { sender: 'bot', text: botReply, sources, isEmergency, isAppointment }]);
+          setDentalState('idle');
+          setDentalLogs((prev) => [
+            `[RAG PIPELINE] Retrieved ${sources.length} sources via FAISS IndexFlatIP (cos_sim: 0.912)`,
+            `[POSTGRES] Session state & intake persisted in Neon Cloud DB`,
+            ...prev.slice(0, 3)
+          ]);
+        }, 600);
+      }, 500);
+    }, 400);
   };
 
   // 3. CloudAssign Simulation Trigger
@@ -1485,6 +1632,48 @@ const ProjectDetailPage: React.FC<ProjectDetailPageProps> = ({ projectId }) => {
                   </div>
                 )}
 
+                {/* B4. Rashid Dental AI Assistant Control */}
+                {projectId === 'rashid-dental-ai-assistant' && (
+                  <div className="ptf-simulator-controls">
+                    <div className="sim-control-header">
+                      <Sliders size={16} />
+                      <span>Clinical Healthcare RAG Controls</span>
+                    </div>
+                    <div className="sim-control-body">
+                      <p className="narrative-para" style={{ fontSize: '13px', marginBottom: '8px' }}>Test RAG retrieval, clinical safety guardrails, or appointment intake:</p>
+                      <div className="sim-buttons-group" style={{ gridTemplateColumns: '1fr', gap: '8px' }}>
+                        <button 
+                          disabled={dentalState !== 'idle'}
+                          className="sim-control-btn" 
+                          style={{ justifyContent: 'flex-start', textAlign: 'left' }}
+                          onClick={() => handleDentalChat(undefined, "How much is root canal treatment?")}
+                        >
+                          <ArrowRight size={14} />
+                          <span>"How much is root canal treatment?" (Pricing)</span>
+                        </button>
+                        <button 
+                          disabled={dentalState !== 'idle'}
+                          className="sim-control-btn" 
+                          style={{ justifyContent: 'flex-start', textAlign: 'left', borderColor: '#ef4444' }}
+                          onClick={() => handleDentalChat(undefined, "I am bleeding heavily from my tooth after injury!")}
+                        >
+                          <ArrowRight size={14} />
+                          <span style={{ color: '#f87171' }}>"Severe tooth bleeding!" (Emergency Alert)</span>
+                        </button>
+                        <button 
+                          disabled={dentalState !== 'idle'}
+                          className="sim-control-btn" 
+                          style={{ justifyContent: 'flex-start', textAlign: 'left' }}
+                          onClick={() => handleDentalChat(undefined, "Book an appointment for teeth cleaning tomorrow at 10 AM.")}
+                        >
+                          <ArrowRight size={14} />
+                          <span>"Book teeth cleaning appointment" (Intake)</span>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
                 {/* C. CloudAssign Control */}
                 {projectId === 'cloud-assign' && (
                   <div className="ptf-simulator-controls">
@@ -1930,6 +2119,89 @@ const ProjectDetailPage: React.FC<ProjectDetailPageProps> = ({ projectId }) => {
                               </div>
                             </div>
                           </div>
+                        </div>
+                      )}
+
+                      {/* B4. Rashid Dental AI Assistant Display */}
+                      {projectId === 'rashid-dental-ai-assistant' && (
+                        <div style={{ display: 'flex', flexDirection: 'column', height: '100%', background: '#0a0d14' }}>
+                          <div className="monitor-header">
+                            <div className="monitor-header-left">
+                              <span className="live-dot" style={{ background: '#0d9488' }}></span>
+                              <span>RASHID DENTAL CLINICAL RAG ENGINE</span>
+                            </div>
+                            <div className="monitor-header-right">
+                              <span>RETRIEVAL: {dentalState.toUpperCase()}</span>
+                            </div>
+                          </div>
+
+                          {/* Chat Messages */}
+                          <div style={{ flex: 1, padding: '16px', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '12px', background: '#070910' }}>
+                            {dentalMessages.map((msg, idx) => (
+                              <div key={idx} style={{ 
+                                alignSelf: msg.sender === 'user' ? 'flex-end' : 'flex-start',
+                                backgroundColor: msg.sender === 'user' ? '#0d9488' : msg.isEmergency ? '#991b1b' : '#131926',
+                                color: '#ffffff',
+                                border: msg.isEmergency ? '1px solid #ef4444' : '1px solid #1e293b',
+                                padding: '10px 14px',
+                                borderRadius: '10px',
+                                maxWidth: '85%',
+                                fontSize: '13px',
+                                textAlign: 'left'
+                              }}>
+                                <div>{msg.text}</div>
+                                {msg.sources && msg.sources.length > 0 && (
+                                  <div style={{ marginTop: '8px', borderTop: '1px solid #334155', paddingTop: '6px', fontSize: '10px', color: '#94a3b8', display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
+                                    <strong>Source Citations:</strong>
+                                    {msg.sources.map((src, sIdx) => (
+                                      <span key={sIdx} style={{ background: '#1e293b', padding: '2px 6px', borderRadius: '4px', color: '#38bdf8' }}>
+                                        [Source: {src}]
+                                      </span>
+                                    ))}
+                                  </div>
+                                )}
+                              </div>
+                            ))}
+                            {dentalState !== 'idle' && (
+                              <div style={{ alignSelf: 'flex-start', background: '#131926', color: '#94a3b8', padding: '10px 14px', borderRadius: '8px', fontSize: '12px', fontStyle: 'italic' }}>
+                                {dentalState === 'faiss' && 'Executing FAISS cosine similarity vector search...'}
+                                {dentalState === 'guardrails' && 'Running clinical medical non-diagnosis guardrails...'}
+                                {dentalState === 'gemini' && 'Gemini 1.5 Flash generating source-cited answer...'}
+                              </div>
+                            )}
+                          </div>
+
+                          {/* Logs Box */}
+                          <div className="monitor-console" style={{ height: '70px', borderTop: '1px solid #1e293b' }}>
+                            <div className="console-header"><Terminal size={12} /><span>FASTAPI & FAISS CONSOLE</span></div>
+                            <div className="console-lines" style={{ padding: '4px 10px' }}>
+                              {dentalLogs.slice(0, 2).map((log, idx) => <div key={idx} className="console-line">{log}</div>)}
+                            </div>
+                          </div>
+
+                          {/* Chat Input */}
+                          <form onSubmit={handleDentalChat} style={{ borderTop: '1px solid #1e293b', padding: '12px', display: 'flex', gap: '8px', background: '#0a0d14' }}>
+                            <input 
+                              type="text" 
+                              placeholder="Ask Rashid Dental AI Assistant..." 
+                              value={dentalQuery}
+                              onChange={(e) => setDentalQuery(e.target.value)}
+                              disabled={dentalState !== 'idle'}
+                              style={{ 
+                                flex: 1, 
+                                background: '#131926', 
+                                border: '1px solid #334155', 
+                                borderRadius: '6px', 
+                                color: '#fff', 
+                                padding: '8px 12px',
+                                fontSize: '13px',
+                                outline: 'none'
+                              }}
+                            />
+                            <button type="submit" disabled={dentalState !== 'idle'} style={{ background: '#0d9488', border: 'none', borderRadius: '6px', color: '#fff', padding: '8px 14px', cursor: 'pointer' }}>
+                              <Send size={14} />
+                            </button>
+                          </form>
                         </div>
                       )}
 

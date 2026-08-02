@@ -71,7 +71,7 @@ WORK EXPERIENCE:
    Company: Developer Hub (Online Internship) — developershubcorp.com
    Work: Worked on machine learning model development and AI workflows using Python, Scikit-learn, Pandas & NumPy. Built LLM-powered applications with LangChain and RAG pipelines, applied NLP techniques, and explored TensorFlow to improve model performance.
 
-PROJECTS (8 total):
+PROJECTS (9 total):
 1. Vigilant Eye — Real-Time AI Surveillance System
    Category: Artificial Intelligence / Computer Vision
    Description: A real-time AI surveillance system built using Computer Vision. Uses YOLOv8 for object/person detection.
@@ -90,19 +90,24 @@ PROJECTS (8 total):
    Category: Machine Learning / Data Science / Full-Stack Web App
    Description: A full-stack AI web application that trains three classification algorithms (KNN, Decision Tree, Random Forest) on the Iris dataset, compares accuracy in real-time, and enables live species predictions with confidence scores through a Flask dashboard.
 
-5. CloudAssign — Cloud-Based Assignment Submission
+5. Rashid Dental AI Assistant — Intelligent RAG-Powered Clinical Healthcare Bot & Appointment System
+   Category: Healthcare AI / Natural Language Processing / RAG Systems / Full-Stack Engineering
+   Description: An enterprise-grade, RAG-powered AI dental assistant designed for Rashid Dental Clinic that delivers source-attributed, medical-safety-compliant answers using FAISS vector search and Gemini 1.5 Flash, while seamlessly orchestrating patient appointment requests and emergency escalations.
+   Live: https://rashid-dental-ai-assistant-3.onrender.com
+
+6. CloudAssign — Cloud-Based Assignment Submission
    Category: Cloud & Web Apps
    Description: A cloud-based platform for submitting and managing assignments online.
 
-6. Smart Queue Management System
+7. Smart Queue Management System
    Category: Python & Firebase Backend
    Description: An intelligent queue management system using Python backend with Firebase for real-time data sync.
 
-7. Project Census — Android Data Collection App
+8. Project Census — Android Data Collection App
    Category: Android Mobile App
    Description: An Android app for efficient data collection and census management.
 
-8. Library Management System
+9. Library Management System
    Category: C++ OOP Console App
    Description: A comprehensive library management system built in C++ using Object-Oriented Programming principles.
 

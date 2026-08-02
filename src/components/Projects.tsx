@@ -80,6 +80,13 @@ const Projects: React.FC = () => {
       liveLink: null,
     },
     {
+      image: '/projects/rashid-dental.png',
+      title: 'Rashid Dental AI Assistant — Intelligent RAG-Powered Clinical Healthcare Bot & Appointment System',
+      category: 'Healthcare AI / Natural Language Processing / RAG Systems / Full-Stack Engineering',
+      link: '#project/rashid-dental-ai-assistant',
+      liveLink: 'https://rashid-dental-ai-assistant-3.onrender.com',
+    },
+    {
       image: '/projects/cloud-assign.png',
       title: 'CloudAssign — Cloud-Based Assignment Submission',
       category: 'Cloud & Web Apps',
