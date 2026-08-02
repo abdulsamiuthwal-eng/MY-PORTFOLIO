@@ -575,6 +575,20 @@ const ProjectDetailPage: React.FC<ProjectDetailPageProps> = ({ projectId }) => {
   ]);
   const [ragInferenceState, setRagInferenceState] = useState<'idle' | 'embedding' | 'retrieving' | 'reranking' | 'generating'>('idle');
 
+  // AuraSentiment Simulator States
+  const [auraInputText, setAuraInputText] = useState('Loved the clean design, fast inference, and smooth user experience!');
+  const [auraResult, setAuraResult] = useState<{ sentiment: 'Positive' | 'Negative' | 'Neutral'; confidence: number; latency: string } | null>({
+    sentiment: 'Positive',
+    confidence: 98.5,
+    latency: '18ms'
+  });
+  const [auraAnalyzing, setAuraAnalyzing] = useState(false);
+  const [auraLogs, setAuraLogs] = useState<string[]>([
+    '[200 OK] POST /predict - 18ms latency',
+    '[NLP] Preprocessed: "loved clean design fast inference smooth user experience"',
+    '[MODEL] LogisticRegression confidence: 98.50% POSITIVE'
+  ]);
+
   // CloudAssign Simulator States
   const [uploadProgress, setUploadProgress] = useState(0);
   const [runnerState, setRunnerState] = useState<'idle' | 'uploading' | 'booting' | 'testing' | 'done'>('idle');
@@ -809,6 +823,48 @@ const ProjectDetailPage: React.FC<ProjectDetailPageProps> = ({ projectId }) => {
           setRagInferenceState('idle');
         }, 800);
       }, 700);
+    }, 600);
+  };
+
+  // 2b. AuraSentiment Simulation Trigger
+  const handleAuraPredict = (customText?: string) => {
+    const textToAnalyze = customText || auraInputText;
+    if (!textToAnalyze.trim() || auraAnalyzing) return;
+
+    setAuraAnalyzing(true);
+    const lower = textToAnalyze.toLowerCase();
+    
+    let sentiment: 'Positive' | 'Negative' | 'Neutral' = 'Positive';
+    let confidence = 98.5;
+
+    if (lower.includes('terrible') || lower.includes('crashed') || lower.includes('bad') || lower.includes('slow') || lower.includes('poor')) {
+      sentiment = 'Negative';
+      confidence = 92.4;
+    } else if (lower.includes('monday') || lower.includes('received') || lower.includes('item') || lower.includes('ordinary') || lower.includes('standard')) {
+      sentiment = 'Neutral';
+      confidence = 88.0;
+    } else {
+      sentiment = 'Positive';
+      confidence = 98.5;
+    }
+
+    setAuraLogs((prev) => [
+      `[HTTP] POST /predict payload: "${textToAnalyze.slice(0, 30)}..."`,
+      ...prev
+    ]);
+
+    setTimeout(() => {
+      setAuraResult({
+        sentiment,
+        confidence,
+        latency: `${Math.floor(Math.random() * 10) + 15}ms`
+      });
+      setAuraAnalyzing(false);
+      setAuraLogs((prev) => [
+        `[200 OK] Categorized as ${sentiment.toUpperCase()} (${confidence}% confidence)`,
+        `[TF-IDF] Extracted 384 feature vectors | Lemmatization: WordNet`,
+        ...prev.slice(0, 4)
+      ]);
     }, 600);
   };
 
@@ -1178,6 +1234,60 @@ const ProjectDetailPage: React.FC<ProjectDetailPageProps> = ({ projectId }) => {
                   </div>
                 )}
 
+                {/* B2. AuraSentiment Control */}
+                {projectId === 'aurasentiment-web-app' && (
+                  <div className="ptf-simulator-controls">
+                    <div className="sim-control-header">
+                      <Sliders size={16} />
+                      <span>NLP Model Inference Controls</span>
+                    </div>
+                    <div className="sim-control-body">
+                      <p className="narrative-para" style={{ fontSize: '13px', marginBottom: '8px' }}>Click a preset text or trigger custom input prediction:</p>
+                      <div className="sim-buttons-group" style={{ gridTemplateColumns: '1fr', gap: '8px' }}>
+                        <button 
+                          disabled={auraAnalyzing}
+                          className="sim-control-btn" 
+                          style={{ justifyContent: 'flex-start', textAlign: 'left' }}
+                          onClick={() => {
+                            const text = "Loved the clean design, fast inference, and smooth user experience!";
+                            setAuraInputText(text);
+                            handleAuraPredict(text);
+                          }}
+                        >
+                          <ArrowRight size={14} />
+                          <span>"Loved the clean design & fast inference!" (Positive)</span>
+                        </button>
+                        <button 
+                          disabled={auraAnalyzing}
+                          className="sim-control-btn" 
+                          style={{ justifyContent: 'flex-start', textAlign: 'left' }}
+                          onClick={() => {
+                            const text = "The service was terrible and app crashed.";
+                            setAuraInputText(text);
+                            handleAuraPredict(text);
+                          }}
+                        >
+                          <ArrowRight size={14} />
+                          <span>"The service was terrible & app crashed." (Negative)</span>
+                        </button>
+                        <button 
+                          disabled={auraAnalyzing}
+                          className="sim-control-btn" 
+                          style={{ justifyContent: 'flex-start', textAlign: 'left' }}
+                          onClick={() => {
+                            const text = "Received the package on Monday afternoon.";
+                            setAuraInputText(text);
+                            handleAuraPredict(text);
+                          }}
+                        >
+                          <ArrowRight size={14} />
+                          <span>"Received package on Monday." (Neutral)</span>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
                 {/* C. CloudAssign Control */}
                 {projectId === 'cloud-assign' && (
                   <div className="ptf-simulator-controls">
@@ -1429,6 +1539,120 @@ const ProjectDetailPage: React.FC<ProjectDetailPageProps> = ({ projectId }) => {
                               <Send size={14} />
                             </button>
                           </form>
+                        </div>
+                      )}
+
+                      {/* B2. AuraSentiment Display */}
+                      {projectId === 'aurasentiment-web-app' && (
+                        <div style={{ display: 'flex', flexDirection: 'column', height: '100%', background: '#0a0b10' }}>
+                          <div className="monitor-header">
+                            <div className="monitor-header-left">
+                              <span className="live-dot" style={{ background: '#34a853' }}></span>
+                              <span>FASTAPI NLP SENTIMENT ENGINE</span>
+                            </div>
+                            <div className="monitor-header-right">
+                              <span>STATUS: 200 OK</span>
+                            </div>
+                          </div>
+
+                          <div style={{ flex: 1, padding: '20px', display: 'flex', flexDirection: 'column', gap: '16px', background: '#07080c' }}>
+                            {/* Input Field & Submit */}
+                            <div style={{ display: 'flex', gap: '8px' }}>
+                              <input 
+                                type="text"
+                                value={auraInputText}
+                                onChange={(e) => setAuraInputText(e.target.value)}
+                                placeholder="Type text to analyze sentiment..."
+                                style={{
+                                  flex: 1,
+                                  background: '#12141d',
+                                  border: '1px solid #232736',
+                                  borderRadius: '8px',
+                                  color: '#fff',
+                                  padding: '10px 14px',
+                                  fontSize: '13px',
+                                  outline: 'none'
+                                }}
+                              />
+                              <button 
+                                onClick={() => handleAuraPredict()}
+                                disabled={auraAnalyzing}
+                                style={{
+                                  background: 'var(--ptf-accent-1)',
+                                  color: '#fff',
+                                  border: 'none',
+                                  borderRadius: '8px',
+                                  padding: '10px 18px',
+                                  fontSize: '13px',
+                                  fontWeight: 600,
+                                  cursor: 'pointer'
+                                }}
+                              >
+                                {auraAnalyzing ? 'Analyzing...' : 'Classify'}
+                              </button>
+                            </div>
+
+                            {/* Result Display Box */}
+                            {auraResult && (
+                              <div style={{
+                                background: '#12141d',
+                                border: `1px solid ${auraResult.sentiment === 'Positive' ? '#34a85366' : auraResult.sentiment === 'Negative' ? '#ea433566' : '#4285f466'}`,
+                                borderRadius: '12px',
+                                padding: '18px',
+                                display: 'flex',
+                                flexDirection: 'column',
+                                gap: '12px',
+                                textAlign: 'left'
+                              }}>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                  <span style={{ fontSize: '11px', color: '#888', textTransform: 'uppercase', letterSpacing: '1px' }}>
+                                    PREDICTED SENTIMENT
+                                  </span>
+                                  <span style={{ fontSize: '11px', color: '#aaa' }}>
+                                    LATENCY: {auraResult.latency}
+                                  </span>
+                                </div>
+
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                                  <span style={{
+                                    fontSize: '22px',
+                                    fontWeight: 700,
+                                    color: auraResult.sentiment === 'Positive' ? '#34a853' : auraResult.sentiment === 'Negative' ? '#ea4335' : '#4285f4'
+                                  }}>
+                                    {auraResult.sentiment.toUpperCase()}
+                                  </span>
+                                  <span style={{
+                                    fontSize: '12px',
+                                    fontWeight: 600,
+                                    padding: '4px 10px',
+                                    borderRadius: '12px',
+                                    background: auraResult.sentiment === 'Positive' ? '#34a85322' : auraResult.sentiment === 'Negative' ? '#ea433522' : '#4285f422',
+                                    color: auraResult.sentiment === 'Positive' ? '#34a853' : auraResult.sentiment === 'Negative' ? '#ea4335' : '#4285f4'
+                                  }}>
+                                    {auraResult.confidence}% CONFIDENCE
+                                  </span>
+                                </div>
+
+                                {/* Progress Bar */}
+                                <div style={{ width: '100%', background: '#1e2230', height: '8px', borderRadius: '4px', overflow: 'hidden' }}>
+                                  <div style={{
+                                    width: `${auraResult.confidence}%`,
+                                    height: '100%',
+                                    background: auraResult.sentiment === 'Positive' ? '#34a853' : auraResult.sentiment === 'Negative' ? '#ea4335' : '#4285f4',
+                                    transition: 'width 0.4s ease'
+                                  }} />
+                                </div>
+                              </div>
+                            )}
+
+                            {/* Logs Box */}
+                            <div className="monitor-console" style={{ height: '95px' }}>
+                              <div className="console-header"><Terminal size={12} /><span>FASTAPI ENDPOINT LOGS</span></div>
+                              <div className="console-lines" style={{ padding: '6px 12px' }}>
+                                {auraLogs.slice(0, 3).map((log, idx) => <div key={idx} className="console-line">{log}</div>)}
+                              </div>
+                            </div>
+                          </div>
                         </div>
                       )}
 
