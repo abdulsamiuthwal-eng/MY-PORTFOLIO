@@ -18,11 +18,10 @@ const SECTIONS: Section[] = [
   { id: 'circular-cta', label: '9. Get In Touch' },
 ];
 
-const SLOT_HEIGHT = 20;
-const SLOT_GAP = 8;
-const TRACK_PADDING_TOP = 14;
+const SLOT_HEIGHT = 28;      // Increased height of each dot slot for taller vertical size
+const SLOT_GAP = 14;         // Increased gap between slots for taller vertical size
+const TRACK_PADDING_TOP = 18; // Increased top padding for taller vertical size
 
-// Helper to get true absolute top offset of an element relative to document
 const getAbsoluteTop = (el: HTMLElement): number => {
   let top = 0;
   let curr: HTMLElement | null = el;
@@ -41,7 +40,6 @@ const CustomScrollbar: React.FC = () => {
 
   useEffect(() => {
     const handleScroll = () => {
-      // Make scrollbar visible immediately on scroll
       setIsVisible(true);
 
       if (hideTimerRef.current) clearTimeout(hideTimerRef.current);
@@ -49,7 +47,6 @@ const CustomScrollbar: React.FC = () => {
         setIsVisible(false);
       }, 2000);
 
-      // Determine active section by true absolute scroll position
       const scrollPos = window.scrollY + window.innerHeight / 3;
       for (let i = SECTIONS.length - 1; i >= 0; i--) {
         const sec = SECTIONS[i];
@@ -106,11 +103,11 @@ const CustomScrollbar: React.FC = () => {
   const safeActiveIndex = activeIndex >= 0 ? activeIndex : 0;
   const isShown = isVisible || isHovered;
 
-  const activeRingTop = TRACK_PADDING_TOP + safeActiveIndex * (SLOT_HEIGHT + SLOT_GAP) + (SLOT_HEIGHT - 18) / 2;
+  const activeRingTop = TRACK_PADDING_TOP + safeActiveIndex * (SLOT_HEIGHT + SLOT_GAP) + (SLOT_HEIGHT - 20) / 2;
 
   return (
     <>
-      {/* Right Edge Invisible Hover Trigger Area with onMouseLeave */}
+      {/* Right Edge Invisible Hover Trigger Area */}
       <div
         className="ptf-scrollbar-hover-zone"
         onMouseEnter={handleMouseEnter}
@@ -138,7 +135,7 @@ const CustomScrollbar: React.FC = () => {
           transform: `translateY(-50%) translateX(${isShown ? '0px' : '120px'})`,
           opacity: isShown ? 1 : 0,
           pointerEvents: isShown ? 'auto' : 'none',
-          transition: 'transform 0.4s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.4s ease',
+          transition: 'transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94), opacity 0.6s ease',
           zIndex: 9990,
           padding: '4px',
           display: 'flex',
@@ -155,7 +152,7 @@ const CustomScrollbar: React.FC = () => {
             WebkitBackdropFilter: 'blur(10px)',
             border: '1.5px solid var(--ptf-border-color)',
             borderRadius: '24px',
-            padding: `${TRACK_PADDING_TOP}px 6px`,
+            padding: `${TRACK_PADDING_TOP}px 7px`,
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
@@ -171,7 +168,7 @@ const CustomScrollbar: React.FC = () => {
               top: 0,
               left: 0,
               right: 0,
-              height: '12px',
+              height: '16px',
               backgroundColor: 'rgba(250, 69, 41, 0.35)',
               borderTopLeftRadius: '24px',
               borderTopRightRadius: '24px',
@@ -186,7 +183,7 @@ const CustomScrollbar: React.FC = () => {
               bottom: 0,
               left: 0,
               right: 0,
-              height: '12px',
+              height: '16px',
               backgroundColor: 'rgba(250, 69, 41, 0.35)',
               borderBottomLeftRadius: '24px',
               borderBottomRightRadius: '24px',
@@ -199,8 +196,8 @@ const CustomScrollbar: React.FC = () => {
             style={{
               position: 'absolute',
               top: `${activeRingTop}px`,
-              width: '18px',
-              height: '18px',
+              width: '20px',
+              height: '20px',
               borderRadius: '50%',
               border: '2px solid var(--ptf-accent-1)',
               backgroundColor: 'rgba(250, 69, 41, 0.18)',
@@ -223,7 +220,7 @@ const CustomScrollbar: React.FC = () => {
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  width: '18px',
+                  width: '20px',
                   height: `${SLOT_HEIGHT}px`,
                   cursor: 'pointer',
                   zIndex: 3,
