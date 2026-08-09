@@ -16,6 +16,7 @@ const ContactPage: React.FC = () => {
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState<'success' | 'error' | null>(null);
+  const [isFading, setIsFading] = useState(false);
 
   // Custom dropdown toggle states
   const [isCurrencyOpen, setIsCurrencyOpen] = useState(false);
@@ -133,6 +134,7 @@ const ContactPage: React.FC = () => {
       const data = await response.json();
 
       if (data.success) {
+        setIsFading(false);
         setSubmitStatus('success');
         setMinBudget('');
         setMaxBudget('');
@@ -147,6 +149,9 @@ const ContactPage: React.FC = () => {
           budget: '',
           agree: false
         });
+        // Fade out after 4s, remove after 5s
+        setTimeout(() => setIsFading(true), 4000);
+        setTimeout(() => { setSubmitStatus(null); setIsFading(false); }, 5000);
       } else {
         setSubmitStatus('error');
       }
@@ -487,7 +492,15 @@ const ContactPage: React.FC = () => {
               </button>
 
               {submitStatus === 'success' && (
-                <div style={{ color: '#28a745', marginTop: '20px', fontSize: '18px', fontWeight: 500 }}>
+                <div style={{
+                  color: '#28a745',
+                  marginTop: '20px',
+                  fontSize: '18px',
+                  fontWeight: 500,
+                  opacity: isFading ? 0 : 1,
+                  transform: isFading ? 'translateY(-8px)' : 'translateY(0)',
+                  transition: 'opacity 1s ease, transform 1s ease',
+                }}>
                   ✓ Thank you! Your request has been sent successfully. I will get back to you shortly.
                 </div>
               )}
