@@ -5,9 +5,10 @@ import ChatPanel from './ChatPanel';
 
 interface ChatIconProps {
   isContactPage?: boolean;
+  isMobileMenuOpen?: boolean;
 }
 
-const ChatIcon: React.FC<ChatIconProps> = ({ isContactPage }) => {
+const ChatIcon: React.FC<ChatIconProps> = ({ isContactPage, isMobileMenuOpen }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
   const [tooltipState, setTooltipState] = useState<'hidden' | 'fade-in' | 'visible' | 'fade-out'>('hidden');
@@ -24,7 +25,7 @@ const ChatIcon: React.FC<ChatIconProps> = ({ isContactPage }) => {
   // Hide Chatbot on mobile view when on Contact Page.
   // NOTE: This must stay AFTER all hooks — an early return before a hook would
   // change the hook count between renders and crash the whole app on mobile.
-  const isHiddenOnMobile = isMobile && isContactPage;
+  const isHiddenOnMobile = isMobile && (isContactPage || isMobileMenuOpen);
 
   useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth <= 480);

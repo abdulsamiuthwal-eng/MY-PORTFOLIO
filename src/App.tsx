@@ -53,6 +53,7 @@ const App: React.FC = () => {
   const [currentHash, setCurrentHash] = useState(() =>
     window.location.hash === '#contact-page' ? '#contact-page' : '#home',
   );
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const isFirstRender = useRef(true);
   const homeScrollPos = useRef<number | null>(null);
   const pendingRestore = useRef(false);
@@ -289,8 +290,8 @@ const App: React.FC = () => {
   return (
     <>
       <CustomCursor />
-      <ChatIcon isContactPage={isContactPage} />
-      <Navbar />
+      <ChatIcon isContactPage={isContactPage} isMobileMenuOpen={isMobileMenuOpen} />
+      <Navbar onMenuToggle={setIsMobileMenuOpen} />
       <main>
         {/* Contact Page View */}
         {isContactPage && <ContactPage />}

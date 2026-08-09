@@ -43,8 +43,17 @@ const WhatsappIcon = (props: React.SVGProps<SVGSVGElement>) => (
   </svg>
 );
 
-const Navbar: React.FC = () => {
+interface NavbarProps {
+  onMenuToggle?: (isOpen: boolean) => void;
+}
+
+const Navbar: React.FC<NavbarProps> = ({ onMenuToggle }) => {
   const [isOpen, setIsOpen] = useState(false);
+
+  const toggleMenu = (value: boolean) => {
+    setIsOpen(value);
+    onMenuToggle?.(value);
+  };
 
   const navItems = [
     { label: 'Home', href: '#home' },
@@ -123,7 +132,7 @@ const Navbar: React.FC = () => {
           </div>
 
           {/* Mobile Toggle */}
-          <button className="ptf-navbar-toggle" onClick={() => setIsOpen(!isOpen)} data-aos="fade-up" data-aos-delay="100" data-aos-duration="1000">
+          <button className="ptf-navbar-toggle" onClick={() => toggleMenu(!isOpen)} data-aos="fade-up" data-aos-delay="100" data-aos-duration="1000">
             {isOpen ? (
               <X size={24} />
             ) : (
@@ -147,12 +156,12 @@ const Navbar: React.FC = () => {
       {/* Mobile Drawer */}
       {isOpen && (
         <>
-          <div className="ptf-mobile-drawer-overlay" onClick={() => setIsOpen(false)}></div>
+          <div className="ptf-mobile-drawer-overlay" onClick={() => toggleMenu(false)}></div>
           <div className="ptf-mobile-drawer">
             {/* Header inside drawer with elegant thin Close button */}
-            <div className="ptf-mobile-drawer-header" style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '20px' }}>
+            <div className="ptf-mobile-drawer-header" style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '10px' }}>
               <button 
-                onClick={() => setIsOpen(false)} 
+                onClick={() => toggleMenu(false)} 
                 style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--ptf-black-color)', padding: '5px' }}
                 aria-label="Close Menu"
               >
@@ -164,7 +173,7 @@ const Navbar: React.FC = () => {
             </div>
 
             {/* Navigation links vertically centered in the remaining space */}
-            <div className="ptf-mobile-drawer-links-container" style={{ margin: '40px 0 auto 0' }}>
+            <div className="ptf-mobile-drawer-links-container" style={{ margin: '5px 0 auto 0' }}>
               <div className="ptf-mobile-drawer-links" style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
                 {navItems.map((item) => (
                   <a
@@ -180,11 +189,11 @@ const Navbar: React.FC = () => {
                       fontWeight: '700', 
                       textTransform: 'none', 
                       color: 'var(--ptf-black-color)', 
-                      padding: '16px 0',
+                      padding: '10px 0',
                       textDecoration: 'none'
                     }}
                     onClick={(e) => {
-                      setIsOpen(false);
+                      toggleMenu(false);
                       handleLinkClick(e, item.href);
                     }}
                   >
