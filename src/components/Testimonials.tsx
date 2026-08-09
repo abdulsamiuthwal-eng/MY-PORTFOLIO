@@ -490,7 +490,7 @@ const Testimonials: React.FC = () => {
             <ShieldCheck size={16} style={{ display: 'inline', marginRight: '6px', verticalAlign: '-2px' }} />
             Verified Credentials
           </span>
-          <h2 className="serif-font" style={{ fontSize: 'clamp(32px, 5vw, 48px)', fontWeight: 400, color: 'var(--ptf-black-color)', marginBottom: '20px' }}>
+          <h2 className="large-heading has-secondary-font fw-normal text-center responsive-section-heading" style={{ marginBottom: '20px' }}>
             Certifications & Technical Specializations
           </h2>
           <p className="has-3-color" style={{ fontSize: '18px', maxWidth: '680px', margin: '0 auto 50px auto', lineHeight: '1.6' }}>
