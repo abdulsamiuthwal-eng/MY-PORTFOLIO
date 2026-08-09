@@ -174,8 +174,8 @@ const ContactPage: React.FC = () => {
             </h1>
           </div>
           <div className="col-12 col-md-4 text-left text-md-right" style={{ marginTop: '20px' }}>
-            <span className="fz-14 text-uppercase has-3-color tracking-widest block" style={{ marginBottom: '15px' }}>Socials</span>
-            <div style={{ display: 'flex', gap: '20px', flexWrap: 'wrap', justifyContent: 'flex-start' }} className="ptf-contact-socials">
+            <span className="fz-14 text-uppercase has-3-color tracking-widest block" style={{ marginBottom: '26px' }}>Socials</span>
+            <div style={{ display: 'flex', gap: '35px', flexWrap: 'wrap', justifyContent: 'flex-start' }} className="ptf-contact-socials">
               <a href="https://wa.me/923073651919" target="_blank" rel="noreferrer" className="ptf-social-link-styled">WhatsApp</a>
               <a href="https://www.linkedin.com/in/abdulsami-se-ai?utm_source=share_via&utm_content=profile&utm_medium=member_android" target="_blank" rel="noreferrer" className="ptf-social-link-styled">LinkedIn</a>
               <a href="https://github.com/abdulsamiuthwal-eng" target="_blank" rel="noreferrer" className="ptf-social-link-styled">GitHub</a>
