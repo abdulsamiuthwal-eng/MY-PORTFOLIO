@@ -140,8 +140,8 @@ const CustomScrollbar: React.FC<CustomScrollbarProps> = ({ isContactPage }) => {
         style={{
           position: 'fixed',
           right: '12px',
-          top: '50%',
-          transform: `translateY(-50%) translateX(${isShown ? '0px' : '120px'})`,
+          top: '42%',
+          transform: `translateY(-42%) translateX(${isShown ? '0px' : '120px'})`,
           opacity: isShown ? 1 : 0,
           pointerEvents: isShown ? 'auto' : 'none',
           transition: 'transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94), opacity 0.6s ease',
