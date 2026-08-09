@@ -18,9 +18,20 @@ const SECTIONS: Section[] = [
   { id: 'circular-cta', label: '9. Get In Touch' },
 ];
 
-const SLOT_HEIGHT = 20; // height of each dot clickable slot
-const SLOT_GAP = 8;     // gap between slots
-const TRACK_PADDING_TOP = 14; // top padding for curved cap
+const SLOT_HEIGHT = 20;
+const SLOT_GAP = 8;
+const TRACK_PADDING_TOP = 14;
+
+// Helper to get true absolute top offset of an element relative to document
+const getAbsoluteTop = (el: HTMLElement): number => {
+  let top = 0;
+  let curr: HTMLElement | null = el;
+  while (curr) {
+    top += curr.offsetTop;
+    curr = curr.offsetParent as HTMLElement | null;
+  }
+  return top;
+};
 
 const CustomScrollbar: React.FC = () => {
   const [activeSection, setActiveSection] = useState<string>('home');
@@ -38,14 +49,14 @@ const CustomScrollbar: React.FC = () => {
         setIsVisible(false);
       }, 2000);
 
-      // Determine active section by scroll position
+      // Determine active section by true absolute scroll position
       const scrollPos = window.scrollY + window.innerHeight / 3;
       for (let i = SECTIONS.length - 1; i >= 0; i--) {
         const sec = SECTIONS[i];
         const el = document.getElementById(sec.id);
         if (el) {
-          const top = el.offsetTop;
-          if (scrollPos >= top) {
+          const absoluteTop = getAbsoluteTop(el);
+          if (scrollPos >= absoluteTop) {
             setActiveSection(sec.id);
             break;
           }
@@ -95,15 +106,15 @@ const CustomScrollbar: React.FC = () => {
   const safeActiveIndex = activeIndex >= 0 ? activeIndex : 0;
   const isShown = isVisible || isHovered;
 
-  // Active ring vertical offset calculation for smooth gliding
   const activeRingTop = TRACK_PADDING_TOP + safeActiveIndex * (SLOT_HEIGHT + SLOT_GAP) + (SLOT_HEIGHT - 18) / 2;
 
   return (
     <>
-      {/* Right Edge Invisible Hover Trigger Area */}
+      {/* Right Edge Invisible Hover Trigger Area with onMouseLeave */}
       <div
         className="ptf-scrollbar-hover-zone"
         onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
         style={{
           position: 'fixed',
           right: 0,
@@ -124,7 +135,7 @@ const CustomScrollbar: React.FC = () => {
           position: 'fixed',
           right: '12px',
           top: '50%',
-          transform: `translateY(-50%) translateX(${isShown ? '0px' : '90px'})`,
+          transform: `translateY(-50%) translateX(${isShown ? '0px' : '120px'})`,
           opacity: isShown ? 1 : 0,
           pointerEvents: isShown ? 'auto' : 'none',
           transition: 'transform 0.4s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.4s ease',
@@ -153,7 +164,7 @@ const CustomScrollbar: React.FC = () => {
             overflow: 'hidden',
           }}
         >
-          {/* Top Half-Curved Accent Cap (Exact reference image styling) */}
+          {/* Top Half-Curved Orange Accent Cap */}
           <div
             style={{
               position: 'absolute',
@@ -168,7 +179,7 @@ const CustomScrollbar: React.FC = () => {
             }}
           />
 
-          {/* Bottom Half-Curved Accent Cap (Exact reference image styling) */}
+          {/* Bottom Half-Curved Orange Accent Cap */}
           <div
             style={{
               position: 'absolute',
@@ -183,7 +194,7 @@ const CustomScrollbar: React.FC = () => {
             }}
           />
 
-          {/* Smooth Gliding Active Orange Ring (No blinking, glides up & down track) */}
+          {/* Smooth Gliding Active Orange Ring */}
           <div
             style={{
               position: 'absolute',
