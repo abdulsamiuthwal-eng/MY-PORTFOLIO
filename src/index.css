@@ -298,6 +298,7 @@ body {
   background-color: rgba(0, 0, 0, 0.4);
   backdrop-filter: blur(4px);
   z-index: 9999;
+  touch-action: none;
   animation: fadeInOverlay 0.4s ease-out forwards;
 }
 
@@ -315,9 +316,10 @@ body {
   height: 100vh;
   height: 100dvh;
   overflow: hidden;
+  touch-action: none;
   background-color: var(--ptf-white-color);
   z-index: 10000;
-  padding: 20px 25px 20px;
+  padding: 25px 30px 20px;
   box-shadow: none;
   display: flex;
   flex-direction: column;

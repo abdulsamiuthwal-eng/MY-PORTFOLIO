@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { X } from 'lucide-react';
 import { scrollToTop } from '../lib/scroll';
 
@@ -54,6 +54,17 @@ const Navbar: React.FC<NavbarProps> = ({ onMenuToggle }) => {
     setIsOpen(value);
     onMenuToggle?.(value);
   };
+
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [isOpen]);
 
   const navItems = [
     { label: 'Home', href: '#home' },
@@ -159,7 +170,7 @@ const Navbar: React.FC<NavbarProps> = ({ onMenuToggle }) => {
           <div className="ptf-mobile-drawer-overlay" onClick={() => toggleMenu(false)}></div>
           <div className="ptf-mobile-drawer">
             {/* Header inside drawer with elegant thin Close button */}
-            <div className="ptf-mobile-drawer-header" style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '0px' }}>
+            <div className="ptf-mobile-drawer-header" style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '5px' }}>
               <button 
                 onClick={() => toggleMenu(false)} 
                 style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--ptf-black-color)', padding: '5px' }}
@@ -174,7 +185,7 @@ const Navbar: React.FC<NavbarProps> = ({ onMenuToggle }) => {
 
             {/* Navigation links vertically centered in the remaining space */}
             <div className="ptf-mobile-drawer-links-container" style={{ margin: '0 0 auto 0' }}>
-              <div className="ptf-mobile-drawer-links" style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
+              <div className="ptf-mobile-drawer-links" style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
                 {navItems.map((item) => (
                   <a
                     key={item.label}
@@ -189,7 +200,7 @@ const Navbar: React.FC<NavbarProps> = ({ onMenuToggle }) => {
                       fontWeight: '700', 
                       textTransform: 'none', 
                       color: 'var(--ptf-black-color)', 
-                      padding: '4px 0',
+                      padding: '7px 0',
                       textDecoration: 'none'
                     }}
                     onClick={(e) => {
@@ -207,7 +218,7 @@ const Navbar: React.FC<NavbarProps> = ({ onMenuToggle }) => {
             </div>
             
             {/* Footer with Copyright and Circular Social icons pushed to bottom */}
-            <div className="ptf-mobile-drawer-footer" style={{ marginTop: 'auto', display: 'flex', flexDirection: 'column', gap: '10px', textAlign: 'left' }}>
+            <div className="ptf-mobile-drawer-footer" style={{ marginTop: 'auto', display: 'flex', flexDirection: 'column', gap: '14px', textAlign: 'left' }}>
               <div className="ptf-mobile-drawer-copyright" style={{ fontSize: '13px', color: '#999999', lineHeight: '1.5', fontWeight: '400' }}>
                 <div>@2026 Sami. All Rights Reserved.</div>
                 <div style={{ marginTop: '4px' }}>Development by Sami.</div>
