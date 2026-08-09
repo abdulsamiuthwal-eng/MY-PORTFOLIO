@@ -486,14 +486,14 @@ const Testimonials: React.FC = () => {
 
         {/* Section Heading */}
         <div className="text-center ptf-animated-block" data-aos="fade-up">
-          <span style={{ fontSize: '13px', textTransform: 'uppercase', letterSpacing: '2px', color: 'var(--ptf-accent-1)', fontWeight: 700 }}>
-            <ShieldCheck size={16} style={{ display: 'inline', marginRight: '6px', verticalAlign: '-3px' }} />
+          <span className="fz-14 text-uppercase has-3-color tracking-widest block" style={{ marginBottom: '15px', color: 'var(--ptf-accent-1)' }}>
+            <ShieldCheck size={16} style={{ display: 'inline', marginRight: '6px', verticalAlign: '-2px' }} />
             Verified Credentials
           </span>
-          <h2 style={{ fontSize: 'clamp(32px, 5vw, 48px)', fontWeight: 400, color: 'var(--ptf-black-color)', marginTop: '10px', marginBottom: '15px' }}>
+          <h2 className="serif-font" style={{ fontSize: 'clamp(32px, 5vw, 48px)', fontWeight: 400, color: 'var(--ptf-black-color)', marginBottom: '20px' }}>
             Certifications & Technical Specializations
           </h2>
-          <p style={{ fontSize: '16px', color: '#666666', maxWidth: '680px', margin: '0 auto 40px auto', lineHeight: '1.6' }}>
+          <p className="has-3-color" style={{ fontSize: '18px', maxWidth: '680px', margin: '0 auto 50px auto', lineHeight: '1.6' }}>
             Industry-recognized credentials in Software Architecture, Artificial Intelligence, Security, Data Science, and Full-Stack Engineering.
           </p>
         </div>
