@@ -15,6 +15,7 @@ import ContactPage from './components/ContactPage';
 import Footer from './components/Footer';
 import CustomCursor from './components/CustomCursor';
 import ChatIcon from './components/ChatIcon';
+import CustomScrollbar from './components/CustomScrollbar';
 import ProjectDetailPage from './components/ProjectDetailPage';
 
 // Run before the browser can restore a previous scroll position on refresh —
@@ -290,6 +291,7 @@ const App: React.FC = () => {
   return (
     <>
       <CustomCursor />
+      <CustomScrollbar />
       <ChatIcon isContactPage={isContactPage} isMobileMenuOpen={isMobileMenuOpen} />
       <Navbar onMenuToggle={setIsMobileMenuOpen} />
       <main>

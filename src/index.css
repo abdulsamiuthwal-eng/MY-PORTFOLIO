@@ -20,6 +20,25 @@ html {
   width: 100%;
 }
 
+/* Hide default native browser scrollbar across all browsers */
+html::-webkit-scrollbar,
+body::-webkit-scrollbar {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+}
+
+html, body {
+  -ms-overflow-style: none !important;  /* IE and Edge */
+  scrollbar-width: none !important;  /* Firefox */
+}
+
+@media (max-width: 991px) {
+  .ptf-custom-scrollbar-wrapper {
+    display: none !important;
+  }
+}
+
 * {
   box-sizing: border-box;
   margin: 0;
