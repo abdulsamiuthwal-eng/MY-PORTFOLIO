@@ -5,7 +5,7 @@ export default async function handler(req, res) {
   }
 
   // Use environment access key or fallback Web3Forms key
-  const accessKey = process.env.WEB3FORMS_ACCESS_KEY || '8f7e2c90-482a-4b71-92b4-7ef260662d55';
+  const accessKey = process.env.WEB3FORMS_ACCESS_KEY || 'cdb7d2df-7946-42f1-811e-c8843c157422';
 
   const payload = {
     access_key: accessKey,
