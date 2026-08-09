@@ -34,7 +34,8 @@ html, body {
 }
 
 @media (max-width: 991px) {
-  .ptf-custom-scrollbar-wrapper {
+  .ptf-custom-scrollbar-wrapper,
+  .ptf-scrollbar-hover-zone {
     display: none !important;
   }
 }

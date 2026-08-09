@@ -13,7 +13,7 @@ const CircularCTA: React.FC = () => {
   };
 
   return (
-    <section className="ptf-circular-cta-section" style={{ paddingBottom: '120px', paddingTop: '0px' }}>
+    <section id="circular-cta" className="ptf-circular-cta-section" style={{ paddingBottom: '120px', paddingTop: '0px' }}>
       <div className="container-xxl">
         <div className="ptf-spacer" style={{ height: '65px' }}></div>
         

@@ -480,7 +480,7 @@ const Testimonials: React.FC = () => {
         {/* ==========================================
             VERIFIED CERTIFICATIONS & CREDENTIALS SHOWCASE
            ========================================== */}
-        <div className="ptf-spacer" style={{ height: '140px' }}></div>
+        <div id="certifications" className="ptf-spacer" style={{ height: '140px' }}></div>
         <div className="ptf-divider" data-aos="draw-line"></div>
         <div className="ptf-spacer" style={{ height: '80px' }}></div>
 

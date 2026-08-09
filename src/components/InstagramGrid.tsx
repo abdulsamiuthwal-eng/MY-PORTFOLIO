@@ -38,7 +38,7 @@ const InstagramGrid: React.FC = () => {
   ];
 
   return (
-    <section className="ptf-instagram-section" style={{ backgroundColor: 'var(--ptf-white-color)' }}>
+    <section id="instagram" className="ptf-instagram-section" style={{ backgroundColor: 'var(--ptf-white-color)' }}>
       <div className="container-xxl">
         <div className="ptf-divider" data-aos="draw-line"></div>
         <div className="ptf-spacer" style={{ height: '80px' }}></div>
