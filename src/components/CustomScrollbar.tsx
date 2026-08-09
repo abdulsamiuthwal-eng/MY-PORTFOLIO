@@ -18,6 +18,10 @@ const SECTIONS: Section[] = [
   { id: 'circular-cta', label: '9. Get In Touch' },
 ];
 
+interface CustomScrollbarProps {
+  isContactPage?: boolean;
+}
+
 const SLOT_HEIGHT = 28;      // Increased height of each dot slot for taller vertical size
 const SLOT_GAP = 14;         // Increased gap between slots for taller vertical size
 const TRACK_PADDING_TOP = 18; // Increased top padding for taller vertical size
@@ -32,12 +36,13 @@ const getAbsoluteTop = (el: HTMLElement): number => {
   return top;
 };
 
-const CustomScrollbar: React.FC = () => {
+const CustomScrollbar: React.FC<CustomScrollbarProps> = ({ isContactPage }) => {
   const [activeSection, setActiveSection] = useState<string>('home');
   const [isVisible, setIsVisible] = useState<boolean>(true);
   const [isHovered, setIsHovered] = useState<boolean>(false);
   const hideTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
+  // Return null on Contact Page (call hooks first or return null before hooks if safe, but hooks must be consistent)
   useEffect(() => {
     const handleScroll = () => {
       setIsVisible(true);
@@ -69,6 +74,10 @@ const CustomScrollbar: React.FC = () => {
       if (hideTimerRef.current) clearTimeout(hideTimerRef.current);
     };
   }, []);
+
+  if (isContactPage) {
+    return null;
+  }
 
   const handleDotClick = (sectionId: string) => {
     if (sectionId === 'home' || sectionId === 'contact-page') {

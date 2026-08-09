@@ -291,7 +291,7 @@ const App: React.FC = () => {
   return (
     <>
       <CustomCursor />
-      <CustomScrollbar />
+      <CustomScrollbar isContactPage={isContactPage} />
       <ChatIcon isContactPage={isContactPage} isMobileMenuOpen={isMobileMenuOpen} />
       <Navbar onMenuToggle={setIsMobileMenuOpen} />
       <main>
