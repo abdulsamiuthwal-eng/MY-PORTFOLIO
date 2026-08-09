@@ -116,47 +116,43 @@ const ContactPage: React.FC = () => {
     };
 
     try {
-      try {
-        await fetch('/api/web3forms', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json',
-          },
-          body: JSON.stringify(payload),
-        });
-      } catch (e) {
-        // Fallback to direct Web3Forms API
-        await fetch('https://api.web3forms.com/submit', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json',
-          },
-          body: JSON.stringify({
-            access_key: 'cdb7d2df-7946-42f1-811e-c8843c157422',
-            ...payload,
-          }),
-        });
-      }
-
-      setSubmitStatus('success');
-      setMinBudget('');
-      setMaxBudget('');
-      setIsCustomBudget(false);
-      setFormData({
-        name: '',
-        organization: '',
-        email: '',
-        goals: '',
-        timeline: '',
-        currency: 'USD',
-        budget: '',
-        agree: false
+      // Submit directly from browser to Web3Forms
+      // (Server-side calls were blocked by Cloudflare bot protection)
+      const response = await fetch('https://api.web3forms.com/submit', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+        },
+        body: JSON.stringify({
+          access_key: 'cdb7d2df-7946-42f1-811e-c8843c157422',
+          ...payload,
+        }),
       });
+
+      const data = await response.json();
+
+      if (data.success) {
+        setSubmitStatus('success');
+        setMinBudget('');
+        setMaxBudget('');
+        setIsCustomBudget(false);
+        setFormData({
+          name: '',
+          organization: '',
+          email: '',
+          goals: '',
+          timeline: '',
+          currency: 'USD',
+          budget: '',
+          agree: false
+        });
+      } else {
+        setSubmitStatus('error');
+      }
     } catch (error) {
       console.error("Submission error:", error);
-      setSubmitStatus('success');
+      setSubmitStatus('error');
     } finally {
       setIsSubmitting(false);
     }
