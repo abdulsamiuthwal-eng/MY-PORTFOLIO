@@ -316,7 +316,7 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
     maxHeight: '85vh',
     borderRadius: '16px 16px 0 0',
     backgroundColor: '#ffffff',
-    boxShadow: '0 -8px 30px rgba(0,0,0,0.22)',
+    boxShadow: '0 -4px 20px rgba(0,0,0,0.18)',
     zIndex: 10000,
     display: 'flex',
     flexDirection: 'column',
@@ -324,13 +324,14 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
     fontFamily: 'var(--ptf-font-sans)',
     border: 'none',
     borderTop: '1px solid var(--ptf-border-color)',
-    willChange: 'transform, opacity',
+    willChange: 'transform',
     transform: 'translate3d(0,0,0)',
     backfaceVisibility: 'hidden',
     WebkitBackfaceVisibility: 'hidden',
+    contain: 'content',
     animation: isClosing
-      ? 'popDownMobileSheet 0.22s cubic-bezier(0.4, 0, 0.2, 1) forwards'
-      : 'popUpMobileSheet 0.24s cubic-bezier(0, 0, 0.2, 1) forwards',
+      ? 'popDownMobileSheet 0.18s cubic-bezier(0.32, 0, 0.67, 0) forwards'
+      : 'popUpMobileSheet 0.20s cubic-bezier(0, 0, 0.2, 1) forwards',
   } : {
     position: 'fixed',
     bottom: '166px',
@@ -386,21 +387,17 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
         @keyframes popUpMobileSheet {
           0% {
             transform: translate3d(0, 100%, 0);
-            opacity: 0;
           }
           100% {
             transform: translate3d(0, 0, 0);
-            opacity: 1;
           }
         }
         @keyframes popDownMobileSheet {
           0% {
             transform: translate3d(0, 0, 0);
-            opacity: 1;
           }
           100% {
             transform: translate3d(0, 100%, 0);
-            opacity: 0;
           }
         }
       `}</style>
