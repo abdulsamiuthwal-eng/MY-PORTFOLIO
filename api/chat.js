@@ -1,3 +1,36 @@
+function getSmartFallback(messages) {
+  const lastMsg = Array.isArray(messages) && messages.length > 0 ? messages[messages.length - 1].text : '';
+  const q = (lastMsg || '').toLowerCase();
+  
+  if (q.includes('skill') || q.includes('stack') || q.includes('tech') || q.includes('language')) {
+    return {
+      text: "ABDUL SAMI UTHWAL specializes in Full Stack Development & AI Engineering!\n\n• **Frontend**: React, TypeScript, Next.js, Vite, Tailwind CSS, Three.js, GSAP\n• **Backend**: Node.js, Express, Python, REST APIs\n• **AI/ML**: Gemini API, OpenAI API, RAG Pipelines\n• **Databases & Cloud**: PostgreSQL, MongoDB, Firebase, Vercel, Docker",
+      section: "#skills"
+    };
+  }
+  if (q.includes('project') || q.includes('work') || q.includes('portfolio') || q.includes('build')) {
+    return {
+      text: "ABDUL SAMI UTHWAL has built high-impact projects including AI Web Applications, 3D Interactive Portfolios, and Full Stack SaaS platforms! You can explore all detailed case studies in the Projects section.",
+      section: "#project"
+    };
+  }
+  if (q.includes('contact') || q.includes('hire') || q.includes('email') || q.includes('reach') || q.includes('phone')) {
+    return {
+      text: "You can reach ABDUL SAMI UTHWAL directly:\n\n• **Email**: abdulsamiuthwal@gmail.com\n• **GitHub**: github.com/abdulsamiuthwal-eng\n\nFeel free to send a message via the Contact section below!",
+      section: "#contact-page"
+    };
+  }
+  if (q.includes('experience') || q.includes('education') || q.includes('background') || q.includes('timeline')) {
+    return {
+      text: "ABDUL SAMI UTHWAL is a Software & AI Engineer with extensive experience building scalable web applications and AI solutions. Check out his full timeline below!",
+      section: "#timeline"
+    };
+  }
+  return {
+    text: "Hello! I am Abdul Sami Uthwal's AI Assistant 🤖\n\nI can tell you about his **Skills**, **Projects**, **Experience**, or **Contact details**. What would you like to know?",
+  };
+}
+
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
     res.status(405).json({ error: 'Method Not Allowed' });
@@ -5,14 +38,15 @@ export default async function handler(req, res) {
   }
 
   const apiKey = process.env.GEMINI_API_KEY;
-  if (!apiKey) {
-    res.status(500).json({ error: 'Missing Gemini API key' });
-    return;
-  }
-
   const { messages, systemPrompt } = req.body;
   if (!Array.isArray(messages)) {
     res.status(400).json({ error: 'Invalid request payload' });
+    return;
+  }
+
+  if (!apiKey) {
+    const fallback = getSmartFallback(messages);
+    res.status(200).json(fallback);
     return;
   }
 
@@ -23,7 +57,7 @@ export default async function handler(req, res) {
 
   try {
     const response = await fetch(
-      'https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-lite-latest:generateContent',
+      'https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent',
       {
         method: 'POST',
         headers: {
@@ -38,8 +72,8 @@ export default async function handler(req, res) {
     );
 
     if (!response.ok) {
-      const text = await response.text();
-      res.status(response.status).json({ error: text || 'Gemini request failed' });
+      const fallback = getSmartFallback(messages);
+      res.status(200).json(fallback);
       return;
     }
 
@@ -52,6 +86,7 @@ export default async function handler(req, res) {
       section: sectionMatch ? sectionMatch[1] : undefined,
     });
   } catch (error) {
-    res.status(500).json({ error: (error instanceof Error ? error.message : 'Unknown error') });
+    const fallback = getSmartFallback(messages);
+    res.status(200).json(fallback);
   }
 }

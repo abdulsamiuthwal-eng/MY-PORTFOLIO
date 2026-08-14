@@ -21,12 +21,6 @@ export default defineConfig(({ mode }) => {
               res.end(JSON.stringify({ error: 'Method Not Allowed' }));
               return;
             }
-            if (!geminiKey) {
-              res.statusCode = 500;
-              res.setHeader('Content-Type', 'application/json');
-              res.end(JSON.stringify({ error: 'Missing GEMINI_API_KEY in .env.local' }));
-              return;
-            }
             const chunks: Buffer[] = [];
             for await (const chunk of req) chunks.push(chunk);
             const body = JSON.parse(Buffer.concat(chunks).toString());
@@ -37,13 +31,53 @@ export default defineConfig(({ mode }) => {
               res.end(JSON.stringify({ error: 'Invalid payload' }));
               return;
             }
+
+            const getSmartFallback = (msgs: any[]) => {
+              const lastMsg = msgs.length > 0 ? msgs[msgs.length - 1].text : '';
+              const q = (lastMsg || '').toLowerCase();
+              if (q.includes('skill') || q.includes('stack') || q.includes('tech') || q.includes('language')) {
+                return {
+                  text: "ABDUL SAMI UTHWAL specializes in Full Stack Development & AI Engineering!\n\n• **Frontend**: React, TypeScript, Next.js, Vite, Tailwind CSS, Three.js, GSAP\n• **Backend**: Node.js, Express, Python, REST APIs\n• **AI/ML**: Gemini API, OpenAI API, RAG Pipelines\n• **Databases & Cloud**: PostgreSQL, MongoDB, Firebase, Vercel, Docker",
+                  section: "#skills"
+                };
+              }
+              if (q.includes('project') || q.includes('work') || q.includes('portfolio') || q.includes('build')) {
+                return {
+                  text: "ABDUL SAMI UTHWAL has built high-impact projects including AI Web Applications, 3D Interactive Portfolios, and Full Stack SaaS platforms! You can explore all detailed case studies in the Projects section.",
+                  section: "#project"
+                };
+              }
+              if (q.includes('contact') || q.includes('hire') || q.includes('email') || q.includes('reach') || q.includes('phone')) {
+                return {
+                  text: "You can reach ABDUL SAMI UTHWAL directly:\n\n• **Email**: abdulsamiuthwal@gmail.com\n• **GitHub**: github.com/abdulsamiuthwal-eng\n\nFeel free to send a message via the Contact section below!",
+                  section: "#contact-page"
+                };
+              }
+              if (q.includes('experience') || q.includes('education') || q.includes('background') || q.includes('timeline')) {
+                return {
+                  text: "ABDUL SAMI UTHWAL is a Software & AI Engineer with extensive experience building scalable web applications and AI solutions. Check out his full timeline below!",
+                  section: "#timeline"
+                };
+              }
+              return {
+                text: "Hello! I am Abdul Sami Uthwal's AI Assistant 🤖\n\nI can tell you about his **Skills**, **Projects**, **Experience**, or **Contact details**. What would you like to know?",
+              };
+            };
+
+            if (!geminiKey) {
+              res.statusCode = 200;
+              res.setHeader('Content-Type', 'application/json');
+              res.end(JSON.stringify(getSmartFallback(messages)));
+              return;
+            }
+
             const contents = messages.map((msg: { role: string; text: string }) => ({
               role: msg.role === 'assistant' ? 'model' : 'user',
               parts: [{ text: msg.text }],
             }));
             try {
               const geminiRes = await fetch(
-                'https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-lite-latest:generateContent',
+                'https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent',
                 {
                   method: 'POST',
                   headers: { 'Content-Type': 'application/json', 'x-goog-api-key': geminiKey },
@@ -54,10 +88,9 @@ export default defineConfig(({ mode }) => {
                 }
               );
               if (!geminiRes.ok) {
-                const errText = await geminiRes.text();
-                res.statusCode = geminiRes.status;
+                res.statusCode = 200;
                 res.setHeader('Content-Type', 'application/json');
-                res.end(JSON.stringify({ error: errText }));
+                res.end(JSON.stringify(getSmartFallback(messages)));
                 return;
               }
               const data = await geminiRes.json() as any;
@@ -70,9 +103,9 @@ export default defineConfig(({ mode }) => {
                 section: sectionMatch ? sectionMatch[1] : undefined,
               }));
             } catch (err) {
-              res.statusCode = 500;
+              res.statusCode = 200;
               res.setHeader('Content-Type', 'application/json');
-              res.end(JSON.stringify({ error: err instanceof Error ? err.message : 'Unknown error' }));
+              res.end(JSON.stringify(getSmartFallback(messages)));
             }
           });
         },
