@@ -451,7 +451,7 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
           >
             <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#111827', fontSize: '13px', fontWeight: 600, textShadow: '0 1px 4px rgba(255,255,255,0.9)' }}>
               <div style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: '#22c55e', boxShadow: '0 0 8px #22c55e' }} />
-              <span>AI Assistant</span>
+              <span>Kitty (AI Assistant)</span>
             </div>
             <button
               onClick={handleClose}
@@ -589,7 +589,7 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
           {isMobile && (
             <div style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: '#22c55e', flexShrink: 0 }} />
           )}
-          <span style={{ fontSize: isMobile ? '15px' : '14px', fontWeight: 600 }}>AI Assistant</span>
+          <span style={{ fontSize: isMobile ? '15px' : '14px', fontWeight: 600 }}>Kitty (AI Assistant)</span>
         </div>
         <div style={{ display: 'flex', gap: '4px' }}>
           <button

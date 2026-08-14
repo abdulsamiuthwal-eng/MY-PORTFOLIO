@@ -22,7 +22,7 @@ const ChatIcon: React.FC<ChatIconProps> = ({ isContactPage, isMobileMenuOpen, on
 
   // Preserved chat state across open/close
   const [messages, setMessages] = useState<ChatMessage[]>([
-    { role: 'assistant', text: '👋 Welcome! Ask me anything about ABDUL SAMI UTHWAL — his skills, projects, experience, or anything else. You can type or use the mic!' },
+    { role: 'assistant', text: '👋 Welcome! Hi, I am Kitty! Ask me anything about ABDUL SAMI UTHWAL — his skills, projects, experience, or anything else. You can type or use the mic!' },
   ]);
   const [lastFailedMessage, setLastFailedMessage] = useState<string | null>(null);
   const [pendingSection, setPendingSection] = useState<string | null>(null);
