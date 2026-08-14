@@ -241,7 +241,7 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
     maxHeight: '85vh',
     borderRadius: '16px 16px 0 0',
     backgroundColor: '#ffffff',
-    boxShadow: '0 -8px 40px rgba(0,0,0,0.18)',
+    boxShadow: '0 -8px 30px rgba(0,0,0,0.22)',
     zIndex: 10000,
     display: 'flex',
     flexDirection: 'column',
@@ -249,7 +249,11 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
     fontFamily: 'var(--ptf-font-sans)',
     border: 'none',
     borderTop: '1px solid var(--ptf-border-color)',
-    animation: 'popUpMobileSheet 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards',
+    willChange: 'transform, opacity',
+    transform: 'translate3d(0,0,0)',
+    backfaceVisibility: 'hidden',
+    WebkitBackfaceVisibility: 'hidden',
+    animation: 'popUpMobileSheet 0.28s cubic-bezier(0.2, 0.8, 0.2, 1) forwards',
   } : {
     position: 'fixed',
     bottom: '166px',
@@ -266,6 +270,7 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
     overflow: 'hidden',
     fontFamily: 'var(--ptf-font-sans)',
     border: '1px solid var(--ptf-border-color)',
+    willChange: 'transform, opacity',
     animation: 'popOutFromIcon 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards',
   };
 
@@ -286,11 +291,11 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
         }
         @keyframes popUpMobileSheet {
           0% {
-            transform: translateY(100%) scale(0.95);
+            transform: translate3d(0, 100%, 0);
             opacity: 0;
           }
           100% {
-            transform: translateY(0) scale(1);
+            transform: translate3d(0, 0, 0);
             opacity: 1;
           }
         }
@@ -304,9 +309,8 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
           style={{
             position: 'fixed',
             inset: 0,
-            backgroundColor: 'rgba(0,0,0,0.4)',
+            backgroundColor: 'rgba(0,0,0,0.45)',
             zIndex: 9999,
-            backdropFilter: 'blur(2px)',
             touchAction: 'none',
           }}
         />
@@ -422,7 +426,7 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
                 <span>{isVideoMuted ? 'Unmute' : 'Sound On'}</span>
               </button>
 
-              {/* Seamless Skip Button (Inside Video Screen) */}
+              {/* Seamless Skip Button */}
               <button
                 onClick={handleFinishIntro}
                 style={{
