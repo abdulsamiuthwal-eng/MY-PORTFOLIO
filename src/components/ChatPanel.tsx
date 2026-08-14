@@ -22,39 +22,18 @@ const SUGGESTED_QUESTIONS = [
 ];
 
 const BotAvatarVideo: React.FC = () => {
-  const vidRef = useRef<HTMLVideoElement>(null);
-
-  useEffect(() => {
-    if (vidRef.current) {
-      vidRef.current.currentTime = 5;
-      vidRef.current.play().catch(() => {});
-    }
-  }, []);
-
-  const handleTimeUpdate = () => {
-    if (vidRef.current) {
-      if (vidRef.current.currentTime >= 10 || vidRef.current.currentTime < 5) {
-        vidRef.current.currentTime = 5;
-      }
-    }
-  };
-
   return (
     <video
-      ref={vidRef}
       src="/chatbot/boticon.mp4"
       autoPlay
       loop
       muted
       playsInline
-      onLoadedMetadata={() => {
-        if (vidRef.current) vidRef.current.currentTime = 5;
-      }}
-      onTimeUpdate={handleTimeUpdate}
       style={{
         width: '100%',
         height: '100%',
         objectFit: 'cover',
+        objectPosition: 'center 25%',
         borderRadius: '50%',
         display: 'block',
       }}
@@ -566,18 +545,18 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
             flexDirection: msg.role === 'user' ? 'row-reverse' : 'row',
           }}>
             <div style={{
-              width: '28px',
-              height: '28px',
+              width: '32px',
+              height: '32px',
               borderRadius: '50%',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              backgroundColor: msg.role === 'user' ? 'var(--ptf-accent-1)' : '#000000',
+              backgroundColor: msg.role === 'user' ? 'var(--ptf-accent-1)' : 'transparent',
               color: msg.role === 'user' ? '#fff' : '#495057',
               flexShrink: 0,
               overflow: 'hidden',
             }}>
-              {msg.role === 'user' ? <User size={14} /> : <BotAvatarVideo />}
+              {msg.role === 'user' ? <User size={18} /> : <BotAvatarVideo />}
             </div>
             <div style={{
             maxWidth: isMobile ? '85%' : '80%',
