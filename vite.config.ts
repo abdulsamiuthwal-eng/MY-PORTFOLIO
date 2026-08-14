@@ -37,25 +37,25 @@ export default defineConfig(({ mode }) => {
               const q = (lastMsg || '').toLowerCase();
               if (q.includes('skill') || q.includes('stack') || q.includes('tech') || q.includes('language')) {
                 return {
-                  text: "ABDUL SAMI UTHWAL specializes in Full Stack Development & AI Engineering!\n\n• **Frontend**: React, TypeScript, Next.js, Vite, Tailwind CSS, Three.js, GSAP\n• **Backend**: Node.js, Express, Python, REST APIs\n• **AI/ML**: Gemini API, OpenAI API, RAG Pipelines\n• **Databases & Cloud**: PostgreSQL, MongoDB, Firebase, Vercel, Docker",
+                  text: "ABDUL SAMI UTHWAL specializes in Full Stack Development & AI Engineering!\n\n• **Frontend**: React, TypeScript, Next.js, Vite, Tailwind CSS, Three.js, GSAP\n• **Backend**: Node.js, Express, Python, REST APIs\n• **AI/ML**: Gemini API, OpenAI API, RAG Pipelines\n• **Databases & Cloud**: PostgreSQL, MongoDB, Firebase, Vercel, Docker\n\nWould you like me to open his Tech Stacks section?",
                   section: "#skills"
                 };
               }
               if (q.includes('project') || q.includes('work') || q.includes('portfolio') || q.includes('build')) {
                 return {
-                  text: "ABDUL SAMI UTHWAL has built high-impact projects including AI Web Applications, 3D Interactive Portfolios, and Full Stack SaaS platforms! You can explore all detailed case studies in the Projects section.",
+                  text: "ABDUL SAMI UTHWAL has built high-impact projects including AI Web Applications, 3D Interactive Portfolios, and Full Stack SaaS platforms!\n\nWould you like me to open the Projects section for you?",
                   section: "#project"
                 };
               }
               if (q.includes('contact') || q.includes('hire') || q.includes('email') || q.includes('reach') || q.includes('phone')) {
                 return {
-                  text: "You can reach ABDUL SAMI UTHWAL directly:\n\n• **Email**: abdulsamiuthwal@gmail.com\n• **GitHub**: github.com/abdulsamiuthwal-eng\n\nFeel free to send a message via the Contact section below!",
+                  text: "You can reach ABDUL SAMI UTHWAL directly:\n\n• **Email**: abdulsamiuthwal@gmail.com\n• **GitHub**: github.com/abdulsamiuthwal-eng\n\nWould you like me to open the Contact page for you?",
                   section: "#contact-page"
                 };
               }
               if (q.includes('experience') || q.includes('education') || q.includes('background') || q.includes('timeline')) {
                 return {
-                  text: "ABDUL SAMI UTHWAL is a Software & AI Engineer with extensive experience building scalable web applications and AI solutions. Check out his full timeline below!",
+                  text: "ABDUL SAMI UTHWAL is a Software & AI Engineer with extensive experience building scalable web applications and AI solutions.\n\nWould you like me to open his Timeline & Experience section?",
                   section: "#timeline"
                 };
               }

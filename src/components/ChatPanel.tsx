@@ -180,11 +180,6 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
           clearInterval(typeInterval);
           typeIntervalRef.current = null;
           setIsStreaming(false);
-          if (result.section) {
-            setTimeout(() => {
-              scrollToSection(result.section!);
-            }, 1000);
-          }
         }
       }, 16);
 
