@@ -327,35 +327,36 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
             overflow: 'hidden',
           }}
         >
-          {/* Top Header overlay for close button */}
+          {/* Top Header overlay for close button (Transparent without black area) */}
           <div
             style={{
               position: 'absolute',
-              top: 0,
-              left: 0,
-              right: 0,
-              padding: '12px 16px',
+              top: '12px',
+              left: '16px',
+              right: '16px',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'space-between',
-              background: 'linear-gradient(to bottom, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0) 100%)',
-              zIndex: 110,
+              background: 'none',
+              zIndex: 120,
             }}
           >
-            <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#ffffff', fontSize: '13px', fontWeight: 600 }}>
-              <div style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: '#22c55e' }} />
+            <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#ffffff', fontSize: '13px', fontWeight: 600, textShadow: '0 2px 6px rgba(0,0,0,0.7)' }}>
+              <div style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: '#22c55e', boxShadow: '0 0 8px #22c55e' }} />
               <span>AI Assistant</span>
             </div>
             <button
               onClick={onClose}
               style={{
-                background: 'rgba(0,0,0,0.4)',
-                border: 'none',
+                background: 'rgba(0, 0, 0, 0.45)',
+                backdropFilter: 'blur(8px)',
+                border: '1px solid rgba(255, 255, 255, 0.2)',
                 color: '#ffffff',
                 cursor: 'pointer',
                 display: 'flex',
                 padding: '6px',
                 borderRadius: '50%',
+                transition: 'all 0.2s ease',
               }}
               aria-label="Close chat"
             >
