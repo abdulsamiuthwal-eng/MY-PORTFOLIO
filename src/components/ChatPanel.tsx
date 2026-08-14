@@ -347,12 +347,12 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
       <style>{`
         @keyframes popOutFromIcon {
           0% {
-            transform: scale(0.1) translate3d(120%, 120%, 0);
+            transform: scale3d(0.1, 0.1, 1);
             opacity: 0;
             transform-origin: bottom right;
           }
           100% {
-            transform: scale(1) translate3d(0, 0, 0);
+            transform: scale3d(1, 1, 1);
             opacity: 1;
             transform-origin: bottom right;
           }
