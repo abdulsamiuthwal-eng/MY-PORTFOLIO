@@ -45,7 +45,7 @@ const CustomScrollbar: React.FC<CustomScrollbarProps> = ({ isContactPage, isChat
         if (el) {
           const rect = el.getBoundingClientRect();
           if (rect.top <= targetY) {
-            setActiveSection(sec.id);
+            setActiveSection((prev) => (prev !== sec.id ? sec.id : prev));
             break;
           }
         }

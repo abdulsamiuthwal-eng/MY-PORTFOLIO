@@ -47,24 +47,27 @@ const Footer: React.FC = () => {
   const [showScrollTop, setShowScrollTop] = useState(false);
 
   useEffect(() => {
-    const handleScroll = () => {
+    let isTicking = false;
+
+    const checkScroll = () => {
       const biographySection = document.getElementById('biography');
       if (biographySection) {
-        if (window.scrollY > biographySection.offsetTop - 150) {
-          setShowScrollTop(true);
-        } else {
-          setShowScrollTop(false);
-        }
+        const rect = biographySection.getBoundingClientRect();
+        setShowScrollTop(rect.top <= 200);
       } else {
-        if (window.scrollY > 400) {
-          setShowScrollTop(true);
-        } else {
-          setShowScrollTop(false);
-        }
+        setShowScrollTop(window.scrollY > 400);
+      }
+      isTicking = false;
+    };
+
+    const handleScroll = () => {
+      if (!isTicking) {
+        isTicking = true;
+        requestAnimationFrame(checkScroll);
       }
     };
 
-    window.addEventListener('scroll', handleScroll);
+    window.addEventListener('scroll', handleScroll, { passive: true });
     handleScroll();
 
     return () => window.removeEventListener('scroll', handleScroll);

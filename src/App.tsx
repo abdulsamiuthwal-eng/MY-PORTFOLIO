@@ -258,20 +258,34 @@ const App: React.FC = () => {
 
   // Push floating icons smoothly above footer when footer enters viewport
   useEffect(() => {
-    const handleFooterPush = () => {
+    let lastPushVal = -1;
+    let isTicking = false;
+
+    const updateFooterPush = () => {
       const footer = document.querySelector('footer');
-      if (!footer) return;
+      if (footer) {
+        const footerTop = footer.getBoundingClientRect().top;
+        const windowHeight = window.innerHeight;
+        const visibleFooterHeight = Math.max(0, Math.round(windowHeight - footerTop));
 
-      const footerTop = footer.getBoundingClientRect().top;
-      const windowHeight = window.innerHeight;
-      const visibleFooterHeight = windowHeight - footerTop;
+        if (visibleFooterHeight !== lastPushVal) {
+          lastPushVal = visibleFooterHeight;
+          if (visibleFooterHeight > 0) {
+            document.documentElement.style.setProperty('--footer-push', `${visibleFooterHeight}px`);
+            document.documentElement.classList.add('footer-push');
+          } else {
+            document.documentElement.style.setProperty('--footer-push', '0px');
+            document.documentElement.classList.remove('footer-push');
+          }
+        }
+      }
+      isTicking = false;
+    };
 
-      if (visibleFooterHeight > 0) {
-        document.documentElement.style.setProperty('--footer-push', `${visibleFooterHeight}px`);
-        document.documentElement.classList.add('footer-push');
-      } else {
-        document.documentElement.style.setProperty('--footer-push', '0px');
-        document.documentElement.classList.remove('footer-push');
+    const handleFooterPush = () => {
+      if (!isTicking) {
+        isTicking = true;
+        requestAnimationFrame(updateFooterPush);
       }
     };
 
