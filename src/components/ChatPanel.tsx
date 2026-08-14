@@ -758,14 +758,18 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
               height: '36px',
               borderRadius: '50%',
               border: 'none',
-              backgroundColor: !input.trim() ? '#ccc' : 'var(--ptf-black-color)',
-              color: '#fff',
+              backgroundColor: input.trim() ? '#000000' : '#e0e0e0',
+              color: input.trim() ? '#ffffff' : '#999999',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              cursor: !input.trim() ? 'default' : 'pointer',
+              cursor: input.trim() ? 'pointer' : 'not-allowed',
               flexShrink: 0,
+              transition: 'all 0.2s ease',
+              boxShadow: input.trim() ? '0 2px 8px rgba(0, 0, 0, 0.25)' : 'none',
             }}
+            title={input.trim() ? 'Send message' : 'Type a message'}
+            aria-label="Send message"
           >
             <Send size={16} />
           </button>
