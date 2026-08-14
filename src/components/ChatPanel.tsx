@@ -255,23 +255,43 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
   // Defer video playback slightly until after 60 FPS drawer slide animation completes (prevents GPU decoding thread lag)
   useEffect(() => {
     if (showIntroVideo) {
+      // Safety fallback to guarantee video displays within 400ms on slow mobile connections
+      const fallbackTimer = setTimeout(() => {
+        setIsVideoReady(true);
+      }, 400);
+
       const playTimer = setTimeout(() => {
         if (videoRef.current) {
-          videoRef.current.currentTime = 2; // Skip first 2 seconds (total 8 seconds video)
+          try {
+            if (videoRef.current.readyState >= 1) {
+              videoRef.current.currentTime = 2; // Skip first 2 seconds if metadata is ready
+            }
+          } catch (e) {}
+
           const playPromise = videoRef.current.play();
           if (playPromise !== undefined) {
-            playPromise.catch(() => {
-              if (videoRef.current) {
-                videoRef.current.muted = true;
-                setIsVideoMuted(true);
-                videoRef.current.play().catch(() => {});
-              }
-            });
+            playPromise
+              .then(() => {
+                setIsVideoReady(true);
+              })
+              .catch(() => {
+                if (videoRef.current) {
+                  videoRef.current.muted = true;
+                  setIsVideoMuted(true);
+                  videoRef.current
+                    .play()
+                    .then(() => setIsVideoReady(true))
+                    .catch(() => setIsVideoReady(true));
+                }
+              });
           }
         }
-      }, 180);
+      }, 150);
 
-      return () => clearTimeout(playTimer);
+      return () => {
+        clearTimeout(playTimer);
+        clearTimeout(fallbackTimer);
+      };
     }
   }, [showIntroVideo]);
 
@@ -439,7 +459,11 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
               src="/chatbot/Robot_cleans_teeth_and_waves_202608142326.mp4"
               autoPlay
               playsInline
+              muted={isVideoMuted}
+              onLoadedMetadata={() => setIsVideoReady(true)}
               onLoadedData={() => setIsVideoReady(true)}
+              onCanPlay={() => setIsVideoReady(true)}
+              onPlay={() => setIsVideoReady(true)}
               onPlaying={() => setIsVideoReady(true)}
               onEnded={handleFinishIntro}
               style={{
