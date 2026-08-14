@@ -1481,7 +1481,7 @@ body {
 /* Floating Back to Top Button */
 .ptf-floating-back-to-top {
   position: fixed;
-  bottom: calc(40px + var(--footer-push, 0px));
+  bottom: 40px;
   right: 30px;
   width: 50px;
   height: 50px;
@@ -1495,12 +1495,13 @@ body {
   z-index: 100;
   box-shadow: none;
   border: none;
-  
+  will-change: transform;
+
   /* Hidden state by default */
   opacity: 0;
   pointer-events: none;
   transform: translateY(20px);
-  transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  transition: opacity 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94), transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
 .ptf-floating-back-to-top::after {
@@ -1524,6 +1525,11 @@ body {
   transform: translateY(0);
 }
 
+/* When footer is visible, push button up using translateY (compositor only, no layout) */
+.footer-push .ptf-floating-back-to-top.show {
+  transform: translateY(calc(-1 * var(--footer-push, 0px)));
+}
+
 .ptf-floating-back-to-top:hover {
   background-color: var(--ptf-accent-1);
   transform: translateY(-6px);
@@ -1540,8 +1546,15 @@ body {
 .ptf-chat-wrapper {
   position: fixed;
   right: 30px;
-  bottom: calc(104px + var(--footer-push, 0px));
+  bottom: 104px;
   pointer-events: none;
+  will-change: transform;
+  transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+/* When footer is visible, push chat icon up using translateY (compositor only, no layout) */
+.footer-push .ptf-chat-wrapper {
+  transform: translateY(calc(-1 * var(--footer-push, 0px)));
 }
 
 /* Chat Icon Default (Desktop) */
@@ -1554,14 +1567,14 @@ body {
 @media (max-width: 767.98px) {
   .ptf-floating-back-to-top {
     right: 16px;
-    bottom: calc(20px + var(--footer-push, 0px));
+    bottom: 20px;
     width: 44px;
     height: 44px;
   }
   
   .ptf-chat-wrapper {
     right: 16px;
-    bottom: calc(74px + var(--footer-push, 0px));
+    bottom: 74px;
   }
 
   .ptf-chat-tooltip {
