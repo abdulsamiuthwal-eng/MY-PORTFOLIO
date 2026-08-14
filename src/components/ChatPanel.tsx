@@ -252,13 +252,13 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
     }, 400);
   };
 
-  // Defer video playback slightly until after 60 FPS drawer slide animation completes (prevents GPU decoding thread lag)
+  // Start video playback ONLY AFTER the 280ms chatbox opening animation is 100% complete (prevents GPU animation jank)
   useEffect(() => {
     if (showIntroVideo) {
-      // Safety fallback to guarantee video displays within 400ms on slow mobile connections
+      // Safety fallback to guarantee video displays within 500ms on slow connections
       const fallbackTimer = setTimeout(() => {
         setIsVideoReady(true);
-      }, 400);
+      }, 500);
 
       const playTimer = setTimeout(() => {
         if (videoRef.current) {
@@ -286,7 +286,7 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
               });
           }
         }
-      }, 150);
+      }, 320);
 
       return () => {
         clearTimeout(playTimer);
@@ -493,7 +493,6 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
             <video
               ref={videoRef}
               src="/chatbot/Robot_cleans_teeth_and_waves_202608142326.mp4"
-              autoPlay
               playsInline
               muted={isVideoMuted}
               onLoadedMetadata={() => setIsVideoReady(true)}
