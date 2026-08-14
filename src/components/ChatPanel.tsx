@@ -581,19 +581,31 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
             }}>
               {msg.role === 'user' ? <User size={18} /> : <BotAvatarVideo />}
             </div>
-            <div style={{
-            maxWidth: isMobile ? '85%' : '80%',
-            padding: isMobile ? '12px 16px' : '10px 14px',
-            borderRadius: '12px',
-            fontSize: isMobile ? '14px' : '13px',
-            lineHeight: '1.5',
-            color: msg.role === 'user' ? '#fff' : '#212529',
-            backgroundColor: msg.role === 'user' ? 'var(--ptf-accent-1)' : '#ffffff',
-            border: msg.role === 'user' ? 'none' : '1px solid #e9ecef',
-            whiteSpace: 'pre-wrap',
-            wordBreak: 'break-word',
-          }}>
-              {msg.role === 'assistant' ? <FormattedText text={msg.text} /> : msg.text}
+            <div 
+              className={msg.role === 'assistant' ? 'gemini-message-fade' : ''}
+              style={{
+                maxWidth: isMobile ? '85%' : '80%',
+                padding: isMobile ? '12px 16px' : '10px 14px',
+                borderRadius: '12px',
+                fontSize: isMobile ? '14px' : '13px',
+                lineHeight: '1.5',
+                color: msg.role === 'user' ? '#fff' : '#212529',
+                backgroundColor: msg.role === 'user' ? 'var(--ptf-accent-1)' : '#ffffff',
+                border: msg.role === 'user' ? 'none' : '1px solid #e9ecef',
+                whiteSpace: 'pre-wrap',
+                wordBreak: 'break-word',
+              }}
+            >
+              {msg.role === 'assistant' ? (
+                <>
+                  <FormattedText text={msg.text} />
+                  {isStreaming && i === messages.length - 1 && (
+                    <span className="gemini-streaming-cursor" title="AI Streaming..." />
+                  )}
+                </>
+              ) : (
+                msg.text
+              )}
             </div>
           </div>
         ))}

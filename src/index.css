@@ -14,6 +14,48 @@
   --ptf-image-height: 90px;
 }
 
+/* Google Gemini UI Signature Fade-In & Streaming Animation */
+@keyframes geminiFadeIn {
+  0% {
+    opacity: 0;
+    transform: translateY(6px);
+    filter: blur(3px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+    filter: blur(0);
+  }
+}
+
+@keyframes geminiCursorPulse {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.3;
+    transform: scale(0.85);
+  }
+}
+
+.gemini-message-fade {
+  animation: geminiFadeIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  will-change: opacity, transform, filter;
+}
+
+.gemini-streaming-cursor {
+  display: inline-block;
+  width: 7px;
+  height: 14px;
+  margin-left: 4px;
+  vertical-align: middle;
+  background-color: var(--ptf-accent-1);
+  border-radius: 2px;
+  animation: geminiCursorPulse 0.8s ease-in-out infinite;
+  box-shadow: 0 0 6px rgba(250, 69, 41, 0.5);
+}
+
 html {
   scroll-behavior: auto;
   overflow-x: hidden;
