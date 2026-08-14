@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Send, X, User, Mic, MicOff, Volume2, VolumeX, SkipForward } from 'lucide-react';
+import { Send, X, User, Mic, MicOff, Volume2, VolumeX, SkipForward, Square } from 'lucide-react';
 import type { ChatMessage } from '../lib/chat';
 import { sendMessage } from '../lib/chat';
 
@@ -123,6 +123,19 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
     return /\b(han|haan|hn|yes|sure|open|karo|kr ?do|theek|thik|please)\b/.test(normalized);
   };
 
+  const typeIntervalRef = useRef<any>(null);
+
+  const handleStop = () => {
+    if (typeIntervalRef.current) {
+      clearInterval(typeIntervalRef.current);
+      typeIntervalRef.current = null;
+    }
+    if ('speechSynthesis' in window) {
+      window.speechSynthesis.cancel();
+    }
+    setLoading(false);
+  };
+
   const addMessage = async (userText: string) => {
     const userMsg: ChatMessage = { role: 'user', text: userText };
     const updated = [...messages, userMsg];
@@ -148,6 +161,8 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
 
       setMessages((prev) => [...prev, { role: 'assistant', text: '' }]);
 
+      if (typeIntervalRef.current) clearInterval(typeIntervalRef.current);
+
       const typeInterval = setInterval(() => {
         currIndex += 3;
         const chunk = fullText.slice(0, currIndex);
@@ -160,6 +175,7 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
 
         if (currIndex >= fullText.length) {
           clearInterval(typeInterval);
+          typeIntervalRef.current = null;
           if (result.section) {
             setTimeout(() => {
               scrollToSection(result.section!);
@@ -167,6 +183,8 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
           }
         }
       }, 16);
+
+      typeIntervalRef.current = typeInterval;
     } catch {
       setLastFailedMessage(userText);
       setMessages((prev) => [...prev, { role: 'assistant', text: '⚠️ Oops! Something went wrong. Please check your connection and try again.' }]);
@@ -691,25 +709,50 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
             fontFamily: 'inherit',
           }}
         />
-        <button
-          onClick={handleSend}
-          disabled={loading || !input.trim()}
-          style={{
-            width: '36px',
-            height: '36px',
-            borderRadius: '50%',
-            border: 'none',
-            backgroundColor: loading || !input.trim() ? '#ccc' : 'var(--ptf-black-color)',
-            color: '#fff',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            cursor: loading || !input.trim() ? 'default' : 'pointer',
-            flexShrink: 0,
-          }}
-        >
-          <Send size={16} />
-        </button>
+        {loading ? (
+          <button
+            onClick={handleStop}
+            style={{
+              width: '36px',
+              height: '36px',
+              borderRadius: '50%',
+              border: 'none',
+              backgroundColor: 'var(--ptf-accent-1)',
+              color: '#fff',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              cursor: 'pointer',
+              flexShrink: 0,
+              boxShadow: '0 2px 8px rgba(250, 69, 41, 0.4)',
+              transition: 'all 0.2s ease',
+            }}
+            title="Stop response"
+            aria-label="Stop response"
+          >
+            <Square size={13} fill="#ffffff" />
+          </button>
+        ) : (
+          <button
+            onClick={handleSend}
+            disabled={!input.trim()}
+            style={{
+              width: '36px',
+              height: '36px',
+              borderRadius: '50%',
+              border: 'none',
+              backgroundColor: !input.trim() ? '#ccc' : 'var(--ptf-black-color)',
+              color: '#fff',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              cursor: !input.trim() ? 'default' : 'pointer',
+              flexShrink: 0,
+            }}
+          >
+            <Send size={16} />
+          </button>
+        )}
       </div>
     </div>
     </>
