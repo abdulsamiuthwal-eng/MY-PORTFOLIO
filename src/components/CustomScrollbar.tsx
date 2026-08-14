@@ -26,15 +26,7 @@ const SLOT_HEIGHT = 28;
 const SLOT_GAP = 14;
 const TRACK_PADDING_TOP = 18;
 
-const getAbsoluteTop = (el: HTMLElement): number => {
-  let top = 0;
-  let curr: HTMLElement | null = el;
-  while (curr) {
-    top += curr.offsetTop;
-    curr = curr.offsetParent as HTMLElement | null;
-  }
-  return top;
-};
+
 
 const CustomScrollbar: React.FC<CustomScrollbarProps> = ({ isContactPage, isChatOpen }) => {
   const [activeSection, setActiveSection] = useState<string>('home');
@@ -42,7 +34,25 @@ const CustomScrollbar: React.FC<CustomScrollbarProps> = ({ isContactPage, isChat
   const [isHovered, setIsHovered] = useState<boolean>(false);
   const hideTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
+  const isTickingRef = useRef<boolean>(false);
+
   useEffect(() => {
+    const checkActiveSection = () => {
+      const targetY = window.innerHeight / 3;
+      for (let i = SECTIONS.length - 1; i >= 0; i--) {
+        const sec = SECTIONS[i];
+        const el = document.getElementById(sec.id);
+        if (el) {
+          const rect = el.getBoundingClientRect();
+          if (rect.top <= targetY) {
+            setActiveSection(sec.id);
+            break;
+          }
+        }
+      }
+      isTickingRef.current = false;
+    };
+
     const handleScroll = () => {
       // Don't show or update if chat panel is open or on contact page
       if (isChatOpen || isContactPage) {
@@ -57,17 +67,9 @@ const CustomScrollbar: React.FC<CustomScrollbarProps> = ({ isContactPage, isChat
         setIsVisible(false);
       }, 2000);
 
-      const scrollPos = window.scrollY + window.innerHeight / 3;
-      for (let i = SECTIONS.length - 1; i >= 0; i--) {
-        const sec = SECTIONS[i];
-        const el = document.getElementById(sec.id);
-        if (el) {
-          const absoluteTop = getAbsoluteTop(el);
-          if (scrollPos >= absoluteTop) {
-            setActiveSection(sec.id);
-            break;
-          }
-        }
+      if (!isTickingRef.current) {
+        isTickingRef.current = true;
+        requestAnimationFrame(checkActiveSection);
       }
     };
 
