@@ -200,6 +200,36 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
     setListening(true);
   };
 
+  const [showIntroVideo, setShowIntroVideo] = useState(true);
+  const [isVideoFading, setIsVideoFading] = useState(false);
+  const [isVideoMuted, setIsVideoMuted] = useState(false);
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  const handleFinishIntro = () => {
+    if (isVideoFading) return;
+    setIsVideoFading(true);
+    setTimeout(() => {
+      setShowIntroVideo(false);
+    }, 400);
+  };
+
+  useEffect(() => {
+    if (showIntroVideo && videoRef.current) {
+      videoRef.current.currentTime = 0;
+      const playPromise = videoRef.current.play();
+      if (playPromise !== undefined) {
+        playPromise.catch(() => {
+          // If unmuted autoplay is blocked by browser policy, fallback to muted autoplay
+          if (videoRef.current) {
+            videoRef.current.muted = true;
+            setIsVideoMuted(true);
+            videoRef.current.play().catch(() => {});
+          }
+        });
+      }
+    }
+  }, [showIntroVideo]);
+
   // Mobile: full-width bottom sheet, Desktop: side panel
   const panelStyle: React.CSSProperties = isMobile ? {
     position: 'fixed',
@@ -219,11 +249,13 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
     fontFamily: 'var(--ptf-font-sans)',
     border: 'none',
     borderTop: '1px solid var(--ptf-border-color)',
+    animation: 'popUpMobileSheet 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards',
   } : {
     position: 'fixed',
     bottom: '166px',
     right: '30px',
     width: '340px',
+    height: '480px',
     maxHeight: '480px',
     borderRadius: '12px',
     backgroundColor: '#ffffff',
@@ -234,10 +266,36 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
     overflow: 'hidden',
     fontFamily: 'var(--ptf-font-sans)',
     border: '1px solid var(--ptf-border-color)',
+    animation: 'popOutFromIcon 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards',
   };
 
   return (
     <>
+      <style>{`
+        @keyframes popOutFromIcon {
+          0% {
+            transform: scale(0.1) translate(120%, 120%);
+            opacity: 0;
+            transform-origin: bottom right;
+          }
+          100% {
+            transform: scale(1) translate(0, 0);
+            opacity: 1;
+            transform-origin: bottom right;
+          }
+        }
+        @keyframes popUpMobileSheet {
+          0% {
+            transform: translateY(100%) scale(0.95);
+            opacity: 0;
+          }
+          100% {
+            transform: translateY(0) scale(1);
+            opacity: 1;
+          }
+        }
+      `}</style>
+
       {/* Mobile backdrop overlay */}
       {isMobile && (
         <div
@@ -254,6 +312,140 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
         />
       )}
     <div style={panelStyle}>
+      {/* Intro Video Full-Boundary Overlay */}
+      {showIntroVideo && (
+        <div
+          style={{
+            position: 'absolute',
+            inset: 0,
+            zIndex: 100,
+            backgroundColor: '#000000',
+            display: 'flex',
+            flexDirection: 'column',
+            opacity: isVideoFading ? 0 : 1,
+            transition: 'opacity 0.4s ease',
+            overflow: 'hidden',
+          }}
+        >
+          {/* Top Header overlay for close button */}
+          <div
+            style={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              right: 0,
+              padding: '12px 16px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              background: 'linear-gradient(to bottom, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0) 100%)',
+              zIndex: 110,
+            }}
+          >
+            <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#ffffff', fontSize: '13px', fontWeight: 600 }}>
+              <div style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: '#22c55e' }} />
+              <span>AI Assistant</span>
+            </div>
+            <button
+              onClick={onClose}
+              style={{
+                background: 'rgba(0,0,0,0.4)',
+                border: 'none',
+                color: '#ffffff',
+                cursor: 'pointer',
+                display: 'flex',
+                padding: '6px',
+                borderRadius: '50%',
+              }}
+              aria-label="Close chat"
+            >
+              <X size={16} />
+            </button>
+          </div>
+
+          {/* Video element covering the ENTIRE container boundary */}
+          <div style={{ flex: 1, position: 'relative', width: '100%', height: '100%', overflow: 'hidden' }}>
+            <video
+              ref={videoRef}
+              src="/chatbot/Robot_waking_up_and_waving_202608142255.mp4"
+              autoPlay
+              playsInline
+              onEnded={handleFinishIntro}
+              style={{
+                width: '100%',
+                height: '100%',
+                objectFit: 'cover',
+                display: 'block',
+              }}
+            />
+          </div>
+
+          {/* Controls Bar BELOW the video feed */}
+          <div
+            style={{
+              padding: isMobile ? '12px 18px 20px' : '10px 14px',
+              backgroundColor: '#0c0c0e',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              borderTop: '1px solid rgba(255, 255, 255, 0.12)',
+              zIndex: 110,
+              flexShrink: 0,
+            }}
+          >
+            {/* Audio Toggle */}
+            <button
+              onClick={() => {
+                if (videoRef.current) {
+                  const newMuted = !videoRef.current.muted;
+                  videoRef.current.muted = newMuted;
+                  setIsVideoMuted(newMuted);
+                }
+              }}
+              style={{
+                background: 'rgba(255, 255, 255, 0.12)',
+                border: '1px solid rgba(255, 255, 255, 0.15)',
+                color: '#ffffff',
+                padding: '6px 12px',
+                borderRadius: '20px',
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '6px',
+                fontSize: '12px',
+                fontWeight: 500,
+                transition: 'all 0.2s ease',
+              }}
+            >
+              {isVideoMuted ? <VolumeX size={14} /> : <Volume2 size={14} />}
+              <span>{isVideoMuted ? 'Unmute' : 'Sound On'}</span>
+            </button>
+
+            {/* Skip Intro Button */}
+            <button
+              onClick={handleFinishIntro}
+              style={{
+                backgroundColor: 'var(--ptf-accent-1)',
+                color: '#ffffff',
+                border: 'none',
+                padding: '7px 16px',
+                borderRadius: '20px',
+                cursor: 'pointer',
+                fontSize: '12px',
+                fontWeight: 700,
+                display: 'flex',
+                alignItems: 'center',
+                gap: '6px',
+                boxShadow: '0 4px 14px rgba(250, 69, 41, 0.4)',
+                transition: 'all 0.2s ease',
+              }}
+            >
+              <span>Skip Intro</span>
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polygon points="5 4 15 12 5 20 5 4"></polygon><line x1="19" y1="5" x2="19" y2="19"></line></svg>
+            </button>
+          </div>
+        </div>
+      )}
       {/* Header */}
       <div style={{
         display: 'flex',
