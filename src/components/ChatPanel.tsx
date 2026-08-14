@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Send, X, Bot, User, Mic, MicOff, Volume2, VolumeX, SkipForward } from 'lucide-react';
+import { Send, X, User, Mic, MicOff, Volume2, VolumeX, SkipForward } from 'lucide-react';
 import type { ChatMessage } from '../lib/chat';
 import { sendMessage } from '../lib/chat';
 
@@ -20,6 +20,47 @@ const SUGGESTED_QUESTIONS = [
   '📞 How to contact him?',
   '🤝 Is he available for hire?',
 ];
+
+const BotAvatarVideo: React.FC = () => {
+  const vidRef = useRef<HTMLVideoElement>(null);
+
+  useEffect(() => {
+    if (vidRef.current) {
+      vidRef.current.currentTime = 5;
+      vidRef.current.play().catch(() => {});
+    }
+  }, []);
+
+  const handleTimeUpdate = () => {
+    if (vidRef.current) {
+      if (vidRef.current.currentTime >= 10 || vidRef.current.currentTime < 5) {
+        vidRef.current.currentTime = 5;
+      }
+    }
+  };
+
+  return (
+    <video
+      ref={vidRef}
+      src="/chatbot/boticon.mp4"
+      autoPlay
+      loop
+      muted
+      playsInline
+      onLoadedMetadata={() => {
+        if (vidRef.current) vidRef.current.currentTime = 5;
+      }}
+      onTimeUpdate={handleTimeUpdate}
+      style={{
+        width: '100%',
+        height: '100%',
+        objectFit: 'cover',
+        borderRadius: '50%',
+        display: 'block',
+      }}
+    />
+  );
+};
 
 const ChatPanel: React.FC<ChatPanelProps> = ({
   onClose,
@@ -531,11 +572,12 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              backgroundColor: msg.role === 'user' ? 'var(--ptf-accent-1)' : '#e9ecef',
+              backgroundColor: msg.role === 'user' ? 'var(--ptf-accent-1)' : '#000000',
               color: msg.role === 'user' ? '#fff' : '#495057',
               flexShrink: 0,
+              overflow: 'hidden',
             }}>
-              {msg.role === 'user' ? <User size={14} /> : <Bot size={14} />}
+              {msg.role === 'user' ? <User size={14} /> : <BotAvatarVideo />}
             </div>
             <div style={{
             maxWidth: isMobile ? '85%' : '80%',
