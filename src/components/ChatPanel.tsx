@@ -295,6 +295,16 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
     }
   }, [showIntroVideo]);
 
+  const [isClosing, setIsClosing] = useState(false);
+
+  const handleClose = () => {
+    if (isClosing) return;
+    setIsClosing(true);
+    setTimeout(() => {
+      onClose();
+    }, 220);
+  };
+
   // Mobile: full-width bottom sheet, Desktop: side panel
   const panelStyle: React.CSSProperties = isMobile ? {
     position: 'fixed',
@@ -318,7 +328,9 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
     transform: 'translate3d(0,0,0)',
     backfaceVisibility: 'hidden',
     WebkitBackfaceVisibility: 'hidden',
-    animation: 'popUpMobileSheet 0.24s cubic-bezier(0, 0, 0.2, 1) forwards',
+    animation: isClosing
+      ? 'popDownMobileSheet 0.22s cubic-bezier(0.4, 0, 0.2, 1) forwards'
+      : 'popUpMobileSheet 0.24s cubic-bezier(0, 0, 0.2, 1) forwards',
   } : {
     position: 'fixed',
     bottom: '166px',
@@ -339,7 +351,9 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
     transform: 'translate3d(0,0,0)',
     backfaceVisibility: 'hidden',
     WebkitBackfaceVisibility: 'hidden',
-    animation: 'popOutFromIcon 0.28s cubic-bezier(0, 0, 0.2, 1) forwards',
+    animation: isClosing
+      ? 'popInToIcon 0.22s cubic-bezier(0.4, 0, 0.2, 1) forwards'
+      : 'popOutFromIcon 0.28s cubic-bezier(0, 0, 0.2, 1) forwards',
   };
 
   return (
@@ -357,6 +371,18 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
             transform-origin: bottom right;
           }
         }
+        @keyframes popInToIcon {
+          0% {
+            transform: scale3d(1, 1, 1);
+            opacity: 1;
+            transform-origin: bottom right;
+          }
+          100% {
+            transform: scale3d(0.1, 0.1, 1);
+            opacity: 0;
+            transform-origin: bottom right;
+          }
+        }
         @keyframes popUpMobileSheet {
           0% {
             transform: translate3d(0, 100%, 0);
@@ -367,12 +393,22 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
             opacity: 1;
           }
         }
+        @keyframes popDownMobileSheet {
+          0% {
+            transform: translate3d(0, 0, 0);
+            opacity: 1;
+          }
+          100% {
+            transform: translate3d(0, 100%, 0);
+            opacity: 0;
+          }
+        }
       `}</style>
 
       {/* Mobile backdrop overlay */}
       {isMobile && (
         <div
-          onClick={onClose}
+          onClick={handleClose}
           onTouchMove={(e) => e.preventDefault()}
           style={{
             position: 'fixed',
@@ -418,7 +454,7 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
               <span>AI Assistant</span>
             </div>
             <button
-              onClick={onClose}
+              onClick={handleClose}
               style={{
                 background: 'rgba(0, 0, 0, 0.45)',
                 backdropFilter: 'blur(8px)',
@@ -573,7 +609,7 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
             {voiceEnabled ? <Volume2 size={16} /> : <VolumeX size={16} />}
           </button>
           <button
-            onClick={onClose}
+            onClick={handleClose}
             style={{
               background: 'none',
               border: 'none',
