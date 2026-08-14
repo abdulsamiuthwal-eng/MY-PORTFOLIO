@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { scrollToTop } from '../lib/scroll';
 
 interface Section {
   id: string;
@@ -20,11 +19,12 @@ const SECTIONS: Section[] = [
 
 interface CustomScrollbarProps {
   isContactPage?: boolean;
+  isChatOpen?: boolean;
 }
 
-const SLOT_HEIGHT = 28;      // Increased height of each dot slot for taller vertical size
-const SLOT_GAP = 14;         // Increased gap between slots for taller vertical size
-const TRACK_PADDING_TOP = 18; // Increased top padding for taller vertical size
+const SLOT_HEIGHT = 28;
+const SLOT_GAP = 14;
+const TRACK_PADDING_TOP = 18;
 
 const getAbsoluteTop = (el: HTMLElement): number => {
   let top = 0;
@@ -36,15 +36,20 @@ const getAbsoluteTop = (el: HTMLElement): number => {
   return top;
 };
 
-const CustomScrollbar: React.FC<CustomScrollbarProps> = ({ isContactPage }) => {
+const CustomScrollbar: React.FC<CustomScrollbarProps> = ({ isContactPage, isChatOpen }) => {
   const [activeSection, setActiveSection] = useState<string>('home');
-  const [isVisible, setIsVisible] = useState<boolean>(true);
+  const [isVisible, setIsVisible] = useState<boolean>(false);
   const [isHovered, setIsHovered] = useState<boolean>(false);
   const hideTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  // Return null on Contact Page (call hooks first or return null before hooks if safe, but hooks must be consistent)
   useEffect(() => {
     const handleScroll = () => {
+      // Don't show or update if chat panel is open or on contact page
+      if (isChatOpen || isContactPage) {
+        setIsVisible(false);
+        return;
+      }
+
       setIsVisible(true);
 
       if (hideTimerRef.current) clearTimeout(hideTimerRef.current);
@@ -67,14 +72,13 @@ const CustomScrollbar: React.FC<CustomScrollbarProps> = ({ isContactPage }) => {
     };
 
     window.addEventListener('scroll', handleScroll, { passive: true });
-    handleScroll();
-
     return () => {
       window.removeEventListener('scroll', handleScroll);
       if (hideTimerRef.current) clearTimeout(hideTimerRef.current);
     };
-  }, []);
+  }, [isChatOpen, isContactPage]);
 
+  // Strictly return null only on Contact Page
   if (isContactPage) {
     return null;
   }
@@ -82,35 +86,32 @@ const CustomScrollbar: React.FC<CustomScrollbarProps> = ({ isContactPage }) => {
   const handleDotClick = (sectionId: string) => {
     if (sectionId === 'home' || sectionId === 'contact-page') {
       if (window.location.hash !== `#${sectionId}`) {
-        window.location.hash = sectionId === 'home' ? '#home' : '#contact-page';
-      } else {
-        scrollToTop();
+        window.location.hash = `#${sectionId}`;
       }
-    } else {
-      const el = document.getElementById(sectionId);
-      if (el) {
-        el.scrollIntoView({ behavior: 'smooth' });
-      }
+      return;
+    }
+    const el = document.getElementById(sectionId);
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth' });
     }
   };
 
   const handleMouseEnter = () => {
-    setIsHovered(true);
-    setIsVisible(true);
+    if (isChatOpen) return;
     if (hideTimerRef.current) clearTimeout(hideTimerRef.current);
+    setIsHovered(true);
   };
 
   const handleMouseLeave = () => {
     setIsHovered(false);
-    if (hideTimerRef.current) clearTimeout(hideTimerRef.current);
     hideTimerRef.current = setTimeout(() => {
       setIsVisible(false);
-    }, 2000);
+    }, 1500);
   };
 
   const activeIndex = SECTIONS.findIndex((s) => s.id === activeSection);
   const safeActiveIndex = activeIndex >= 0 ? activeIndex : 0;
-  const isShown = isVisible || isHovered;
+  const isShown = !isChatOpen && (isVisible || isHovered);
 
   const activeRingTop = TRACK_PADDING_TOP + safeActiveIndex * (SLOT_HEIGHT + SLOT_GAP) + (SLOT_HEIGHT - 20) / 2;
 
@@ -124,15 +125,14 @@ const CustomScrollbar: React.FC<CustomScrollbarProps> = ({ isContactPage }) => {
         style={{
           position: 'fixed',
           right: 0,
-          top: 0,
-          width: '24px',
-          height: '100vh',
+          top: '30%',
+          bottom: '30%',
+          width: '28px',
           zIndex: 9989,
-          pointerEvents: 'auto',
         }}
       />
 
-      {/* Main Floating Custom Scrollbar Wrapper */}
+      {/* Custom Scrollbar Widget Track */}
       <div
         className="ptf-custom-scrollbar-wrapper"
         onMouseEnter={handleMouseEnter}
@@ -148,15 +148,15 @@ const CustomScrollbar: React.FC<CustomScrollbarProps> = ({ isContactPage }) => {
           zIndex: 9990,
           padding: '4px',
           display: 'flex',
-          flexDirection: 'column',
           alignItems: 'center',
+          justifyContent: 'center',
         }}
       >
-        {/* Outer Track Pill Container */}
         <div
+          className="ptf-scrollbar-track-container"
           style={{
             position: 'relative',
-            backgroundColor: 'rgba(255, 255, 255, 0.92)',
+            backgroundColor: 'rgba(255, 255, 255, 0.75)',
             backdropFilter: 'blur(10px)',
             WebkitBackdropFilter: 'blur(10px)',
             border: '1.5px solid var(--ptf-border-color)',
@@ -165,12 +165,10 @@ const CustomScrollbar: React.FC<CustomScrollbarProps> = ({ isContactPage }) => {
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
-            gap: `${SLOT_GAP}px`,
-            boxShadow: '0 10px 30px rgba(0, 0, 0, 0.1)',
-            overflow: 'hidden',
+            boxShadow: '0 8px 32px rgba(0, 0, 0, 0.08)',
           }}
         >
-          {/* Top Half-Curved Orange Accent Cap */}
+          {/* Top Capsule Cap Highlight */}
           <div
             style={{
               position: 'absolute',
@@ -185,7 +183,7 @@ const CustomScrollbar: React.FC<CustomScrollbarProps> = ({ isContactPage }) => {
             }}
           />
 
-          {/* Bottom Half-Curved Orange Accent Cap */}
+          {/* Bottom Capsule Cap Highlight */}
           <div
             style={{
               position: 'absolute',
@@ -200,7 +198,7 @@ const CustomScrollbar: React.FC<CustomScrollbarProps> = ({ isContactPage }) => {
             }}
           />
 
-          {/* Smooth Gliding Active Orange Ring */}
+          {/* Glowing Active Ring Indicator */}
           <div
             style={{
               position: 'absolute',
@@ -210,19 +208,20 @@ const CustomScrollbar: React.FC<CustomScrollbarProps> = ({ isContactPage }) => {
               borderRadius: '50%',
               border: '2px solid var(--ptf-accent-1)',
               backgroundColor: 'rgba(250, 69, 41, 0.18)',
-              transition: 'top 0.4s cubic-bezier(0.25, 1, 0.5, 1), transform 0.4s cubic-bezier(0.25, 1, 0.5, 1)',
+              boxShadow: '0 0 10px rgba(250, 69, 41, 0.4)',
+              transition: 'top 0.4s cubic-bezier(0.25, 1, 0.5, 1)',
               pointerEvents: 'none',
-              zIndex: 2,
             }}
           />
 
-          {/* 9 Section Dots */}
-          {SECTIONS.map((sec, idx) => {
-            const isActive = idx === safeActiveIndex;
+          {/* Section Dots List */}
+          {SECTIONS.map((sec) => {
+            const isActive = sec.id === activeSection;
             return (
               <div
                 key={sec.id}
                 onClick={() => handleDotClick(sec.id)}
+                className="ptf-scrollbar-dot-slot"
                 title={sec.label}
                 style={{
                   position: 'relative',
@@ -233,15 +232,15 @@ const CustomScrollbar: React.FC<CustomScrollbarProps> = ({ isContactPage }) => {
                   height: `${SLOT_HEIGHT}px`,
                   cursor: 'pointer',
                   zIndex: 3,
+                  marginBottom: `${SLOT_GAP}px`,
                 }}
               >
-                {/* Dot Center */}
                 <div
                   style={{
-                    width: isActive ? '7px' : '5px',
-                    height: isActive ? '7px' : '5px',
+                    width: isActive ? '8px' : '5px',
+                    height: isActive ? '8px' : '5px',
                     borderRadius: '50%',
-                    backgroundColor: isActive ? 'var(--ptf-accent-1)' : '#777777',
+                    backgroundColor: isActive ? 'var(--ptf-accent-1)' : '#a0aec0',
                     transition: 'all 0.3s ease',
                   }}
                 />

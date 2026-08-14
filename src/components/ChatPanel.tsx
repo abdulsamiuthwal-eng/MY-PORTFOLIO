@@ -241,6 +241,7 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
   const [showIntroVideo, setShowIntroVideo] = useState(true);
   const [isVideoFading, setIsVideoFading] = useState(false);
   const [isVideoMuted, setIsVideoMuted] = useState(false);
+  const [isVideoReady, setIsVideoReady] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
 
   const handleFinishIntro = () => {
@@ -251,7 +252,7 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
     }, 400);
   };
 
-  // Defer video playback slightly until after drawer slide animation completes (prevents GPU decoding lag)
+  // Defer video playback slightly until after 60 FPS drawer slide animation completes (prevents GPU decoding thread lag)
   useEffect(() => {
     if (showIntroVideo) {
       const playTimer = setTimeout(() => {
@@ -268,7 +269,7 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
             });
           }
         }
-      }, 150);
+      }, 180);
 
       return () => clearTimeout(playTimer);
     }
@@ -315,7 +316,10 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
     fontFamily: 'var(--ptf-font-sans)',
     border: '1px solid var(--ptf-border-color)',
     willChange: 'transform, opacity',
-    animation: 'popOutFromIcon 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards',
+    transform: 'translate3d(0,0,0)',
+    backfaceVisibility: 'hidden',
+    WebkitBackfaceVisibility: 'hidden',
+    animation: 'popOutFromIcon 0.28s cubic-bezier(0, 0, 0.2, 1) forwards',
   };
 
   return (
@@ -323,12 +327,12 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
       <style>{`
         @keyframes popOutFromIcon {
           0% {
-            transform: scale(0.1) translate(120%, 120%);
+            transform: scale(0.1) translate3d(120%, 120%, 0);
             opacity: 0;
             transform-origin: bottom right;
           }
           100% {
-            transform: scale(1) translate(0, 0);
+            transform: scale(1) translate3d(0, 0, 0);
             opacity: 1;
             transform-origin: bottom right;
           }
@@ -413,18 +417,22 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
           </div>
 
           {/* Video element covering the ENTIRE container boundary */}
-          <div style={{ flex: 1, position: 'relative', width: '100%', height: '100%', overflow: 'hidden', backgroundColor: '#000000' }}>
+          <div style={{ flex: 1, position: 'relative', width: '100%', height: '100%', overflow: 'hidden', backgroundColor: 'transparent' }}>
             <video
               ref={videoRef}
               src="/chatbot/Robot_cleans_teeth_and_waves_202608142326.mp4"
               autoPlay
               playsInline
+              onLoadedData={() => setIsVideoReady(true)}
+              onPlaying={() => setIsVideoReady(true)}
               onEnded={handleFinishIntro}
               style={{
                 width: '100%',
                 height: '100%',
                 objectFit: 'cover',
                 display: 'block',
+                opacity: isVideoReady ? 1 : 0,
+                transition: 'opacity 0.25s ease-out',
               }}
             />
 

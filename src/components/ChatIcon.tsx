@@ -6,10 +6,15 @@ import ChatPanel from './ChatPanel';
 interface ChatIconProps {
   isContactPage?: boolean;
   isMobileMenuOpen?: boolean;
+  onChatToggle?: (isOpen: boolean) => void;
 }
 
-const ChatIcon: React.FC<ChatIconProps> = ({ isContactPage, isMobileMenuOpen }) => {
+const ChatIcon: React.FC<ChatIconProps> = ({ isContactPage, isMobileMenuOpen, onChatToggle }) => {
   const [isOpen, setIsOpen] = useState(false);
+
+  useEffect(() => {
+    onChatToggle?.(isOpen);
+  }, [isOpen, onChatToggle]);
   const [isHovered, setIsHovered] = useState(false);
   const [tooltipState, setTooltipState] = useState<'hidden' | 'fade-in' | 'visible' | 'fade-out'>('hidden');
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 480);
