@@ -19,12 +19,10 @@
   0% {
     opacity: 0;
     transform: translateY(6px);
-    filter: blur(3px);
   }
   100% {
     opacity: 1;
     transform: translateY(0);
-    filter: blur(0);
   }
 }
 
@@ -41,7 +39,7 @@
 
 .gemini-message-fade {
   animation: geminiFadeIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-  will-change: opacity, transform, filter;
+  will-change: opacity, transform;
 }
 
 .gemini-streaming-cursor {
@@ -120,11 +118,13 @@ body {
   border: 1px solid var(--ptf-accent-1);
   border-radius: 50%;
   position: fixed;
-  transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%) scale(1);
   pointer-events: none;
   z-index: 999999;
-  transition: width 0.3s, height 0.3s, background-color 0.3s, opacity 0.15s;
+  /* Only transition compositor-safe properties to avoid CPU paint */
+  transition: transform 0.25s ease, opacity 0.15s ease;
   background-color: rgba(250, 69, 41, 0.05);
+  will-change: transform;
 }
 
 .cursor-inner {
@@ -137,12 +137,12 @@ body {
   pointer-events: none;
   z-index: 999999;
   transition: transform 0.1s;
+  will-change: transform;
 }
 
-/* Hover State for Cursor */
+/* Hover State for Cursor — use scale() instead of width/height to avoid layout paint */
 .cursor-hover-outer {
-  width: 50px;
-  height: 50px;
+  transform: translate(-50%, -50%) scale(1.56);
   background-color: rgba(250, 69, 41, 0.15);
   border-color: transparent;
 }

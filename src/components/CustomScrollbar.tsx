@@ -159,8 +159,8 @@ const CustomScrollbar: React.FC<CustomScrollbarProps> = ({ isContactPage, isChat
           style={{
             position: 'relative',
             backgroundColor: 'rgba(255, 255, 255, 0.75)',
-            backdropFilter: 'blur(10px)',
-            WebkitBackdropFilter: 'blur(10px)',
+            backdropFilter: 'blur(4px)',
+            WebkitBackdropFilter: 'blur(4px)',
             border: '1.5px solid var(--ptf-border-color)',
             borderRadius: '24px',
             padding: `${TRACK_PADDING_TOP}px 7px`,
