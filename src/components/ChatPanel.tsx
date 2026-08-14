@@ -364,14 +364,14 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
         />
       )}
     <div style={panelStyle}>
-      {/* Intro Video Full-Boundary Overlay */}
+      {/* Intro Video Full-Boundary Overlay (White Theme Buffer) */}
       {showIntroVideo && (
         <div
           style={{
             position: 'absolute',
             inset: 0,
             zIndex: 100,
-            backgroundColor: '#000000',
+            backgroundColor: '#ffffff',
             display: 'flex',
             flexDirection: 'column',
             opacity: isVideoFading ? 0 : 1,
@@ -379,7 +379,7 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
             overflow: 'hidden',
           }}
         >
-          {/* Top Header overlay for close button (Transparent without black area) */}
+          {/* Top Header overlay for close button */}
           <div
             style={{
               position: 'absolute',
@@ -393,7 +393,7 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
               zIndex: 120,
             }}
           >
-            <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#ffffff', fontSize: '13px', fontWeight: 600, textShadow: '0 2px 6px rgba(0,0,0,0.7)' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#111827', fontSize: '13px', fontWeight: 600, textShadow: '0 1px 4px rgba(255,255,255,0.9)' }}>
               <div style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: '#22c55e', boxShadow: '0 0 8px #22c55e' }} />
               <span>AI Assistant</span>
             </div>
@@ -402,7 +402,7 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
               style={{
                 background: 'rgba(0, 0, 0, 0.45)',
                 backdropFilter: 'blur(8px)',
-                border: '1px solid rgba(255, 255, 255, 0.2)',
+                border: '1px solid rgba(255, 255, 255, 0.3)',
                 color: '#ffffff',
                 cursor: 'pointer',
                 display: 'flex',
@@ -416,8 +416,24 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
             </button>
           </div>
 
-          {/* Video element covering the ENTIRE container boundary */}
-          <div style={{ flex: 1, position: 'relative', width: '100%', height: '100%', overflow: 'hidden', backgroundColor: 'transparent' }}>
+          {/* Video element covering the ENTIRE container boundary over White theme */}
+          <div style={{ flex: 1, position: 'relative', width: '100%', height: '100%', overflow: 'hidden', backgroundColor: '#ffffff' }}>
+            {!isVideoReady && (
+              <div style={{
+                position: 'absolute',
+                inset: 0,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                backgroundColor: '#ffffff',
+                color: '#6c757d',
+                fontSize: '12px',
+                gap: '8px',
+              }}>
+                <div style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: 'var(--ptf-accent-1)', animation: 'pulse 1s infinite' }} />
+                <span>Loading Assistant...</span>
+              </div>
+            )}
             <video
               ref={videoRef}
               src="/chatbot/Robot_cleans_teeth_and_waves_202608142326.mp4"
@@ -432,7 +448,7 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
                 objectFit: 'cover',
                 display: 'block',
                 opacity: isVideoReady ? 1 : 0,
-                transition: 'opacity 0.25s ease-out',
+                transition: 'opacity 0.35s ease-out',
               }}
             />
 
