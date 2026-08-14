@@ -364,10 +364,10 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
           </div>
 
           {/* Video element covering the ENTIRE container boundary */}
-          <div style={{ flex: 1, position: 'relative', width: '100%', height: '100%', overflow: 'hidden' }}>
+          <div style={{ flex: 1, position: 'relative', width: '100%', height: '100%', overflow: 'hidden', backgroundColor: '#000000' }}>
             <video
               ref={videoRef}
-              src="/chatbot/Robot_waking_up_and_waving_202608142255.mp4"
+              src="/chatbot/Robot_cleans_teeth_and_waves_202608142326.mp4"
               autoPlay
               playsInline
               onEnded={handleFinishIntro}
@@ -378,71 +378,73 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
                 display: 'block',
               }}
             />
-          </div>
 
-          {/* Controls Bar BELOW the video feed */}
-          <div
-            style={{
-              padding: isMobile ? '12px 18px 20px' : '10px 14px',
-              backgroundColor: '#0c0c0e',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              borderTop: '1px solid rgba(255, 255, 255, 0.12)',
-              zIndex: 110,
-              flexShrink: 0,
-            }}
-          >
-            {/* Audio Toggle */}
-            <button
-              onClick={() => {
-                if (videoRef.current) {
-                  const newMuted = !videoRef.current.muted;
-                  videoRef.current.muted = newMuted;
-                  setIsVideoMuted(newMuted);
-                }
-              }}
+            {/* Seamless Floating Controls Overlay INSIDE Video Bottom Area (Under feet) */}
+            <div
               style={{
-                background: 'rgba(255, 255, 255, 0.12)',
-                border: '1px solid rgba(255, 255, 255, 0.15)',
-                color: '#ffffff',
-                padding: '6px 12px',
-                borderRadius: '20px',
-                cursor: 'pointer',
+                position: 'absolute',
+                bottom: isMobile ? '24px' : '16px',
+                left: '16px',
+                right: '16px',
                 display: 'flex',
                 alignItems: 'center',
-                gap: '6px',
-                fontSize: '12px',
-                fontWeight: 500,
-                transition: 'all 0.2s ease',
+                justifyContent: 'space-between',
+                zIndex: 120,
               }}
             >
-              {isVideoMuted ? <VolumeX size={14} /> : <Volume2 size={14} />}
-              <span>{isVideoMuted ? 'Unmute' : 'Sound On'}</span>
-            </button>
+              {/* Sound Toggle */}
+              <button
+                onClick={() => {
+                  if (videoRef.current) {
+                    const newMuted = !videoRef.current.muted;
+                    videoRef.current.muted = newMuted;
+                    setIsVideoMuted(newMuted);
+                  }
+                }}
+                style={{
+                  background: 'rgba(0, 0, 0, 0.45)',
+                  backdropFilter: 'blur(8px)',
+                  border: '1px solid rgba(255, 255, 255, 0.2)',
+                  color: '#ffffff',
+                  padding: '6px 12px',
+                  borderRadius: '20px',
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  fontSize: '12px',
+                  fontWeight: 500,
+                  transition: 'all 0.2s ease',
+                }}
+              >
+                {isVideoMuted ? <VolumeX size={14} /> : <Volume2 size={14} />}
+                <span>{isVideoMuted ? 'Unmute' : 'Sound On'}</span>
+              </button>
 
-            {/* Skip Intro Button */}
-            <button
-              onClick={handleFinishIntro}
-              style={{
-                backgroundColor: 'var(--ptf-accent-1)',
-                color: '#ffffff',
-                border: 'none',
-                padding: '7px 16px',
-                borderRadius: '20px',
-                cursor: 'pointer',
-                fontSize: '12px',
-                fontWeight: 700,
-                display: 'flex',
-                alignItems: 'center',
-                gap: '6px',
-                boxShadow: '0 4px 14px rgba(250, 69, 41, 0.4)',
-                transition: 'all 0.2s ease',
-              }}
-            >
-              <span>Skip Intro</span>
-              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polygon points="5 4 15 12 5 20 5 4"></polygon><line x1="19" y1="5" x2="19" y2="19"></line></svg>
-            </button>
+              {/* Seamless Skip Button (Inside Video Screen) */}
+              <button
+                onClick={handleFinishIntro}
+                style={{
+                  background: 'rgba(0, 0, 0, 0.5)',
+                  backdropFilter: 'blur(8px)',
+                  border: '1px solid rgba(255, 255, 255, 0.25)',
+                  color: '#ffffff',
+                  padding: '7px 16px',
+                  borderRadius: '20px',
+                  cursor: 'pointer',
+                  fontSize: '12px',
+                  fontWeight: 600,
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  transition: 'all 0.2s ease',
+                  boxShadow: '0 4px 15px rgba(0,0,0,0.3)',
+                }}
+              >
+                <span>Skip</span>
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polygon points="5 4 15 12 5 20 5 4"></polygon><line x1="19" y1="5" x2="19" y2="19"></line></svg>
+              </button>
+            </div>
           </div>
         </div>
       )}
