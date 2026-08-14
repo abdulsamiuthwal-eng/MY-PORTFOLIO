@@ -166,6 +166,16 @@ const ChatIcon: React.FC<ChatIconProps> = ({ isContactPage, isMobileMenuOpen }) 
           </div>
         )}
       </div>
+
+      {/* Hidden preloader video so GPU VRAM holds decoded 1st frame in memory prior to click */}
+      <video
+        src="/chatbot/Robot_cleans_teeth_and_waves_202608142326.mp4"
+        preload="auto"
+        muted
+        playsInline
+        aria-hidden="true"
+        style={{ display: 'none', position: 'fixed', top: -9999, left: -9999, width: 1, height: 1, opacity: 0, pointerEvents: 'none' }}
+      />
     </>
   );
 };
