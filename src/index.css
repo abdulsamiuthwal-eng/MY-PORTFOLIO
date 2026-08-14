@@ -71,18 +71,22 @@ body {
   position: relative;
 }
 
-/* Hide default native browser scrollbar across all browsers */
+/* Hide default native browser scrollbar globally across ALL elements and browsers */
+*, *::before, *::after, html, body, #root, main {
+  -ms-overflow-style: none !important;  /* IE and Edge */
+  scrollbar-width: none !important;     /* Firefox */
+}
+
+::-webkit-scrollbar,
+*::-webkit-scrollbar,
 html::-webkit-scrollbar,
 body::-webkit-scrollbar,
 #root::-webkit-scrollbar {
   display: none !important;
-  width: 0 !important;
-  height: 0 !important;
-}
-
-html, body, #root {
-  -ms-overflow-style: none !important;  /* IE and Edge */
-  scrollbar-width: none !important;  /* Firefox */
+  width: 0px !important;
+  height: 0px !important;
+  background: transparent !important;
+  opacity: 0 !important;
 }
 
 @media (max-width: 991px) {
