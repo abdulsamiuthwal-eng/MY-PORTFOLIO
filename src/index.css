@@ -54,19 +54,14 @@
   box-shadow: 0 0 6px rgba(250, 69, 41, 0.5);
 }
 
-html, body, #root, main {
-  overflow-x: hidden !important;
-  max-width: 100vw !important;
-  width: 100% !important;
-  box-sizing: border-box;
-}
-
 html {
+  overflow-x: clip;
   scroll-behavior: auto;
 }
 
 body {
   position: relative;
+  width: 100%;
 }
 
 /* Hide default native browser scrollbar globally across ALL elements and browsers */
