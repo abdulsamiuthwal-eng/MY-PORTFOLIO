@@ -123,6 +123,7 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
     return /\b(han|haan|hn|yes|sure|open|karo|kr ?do|theek|thik|please)\b/.test(normalized);
   };
 
+  const [isStreaming, setIsStreaming] = useState(false);
   const typeIntervalRef = useRef<any>(null);
 
   const handleStop = () => {
@@ -134,6 +135,7 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
       window.speechSynthesis.cancel();
     }
     setLoading(false);
+    setIsStreaming(false);
   };
 
   const addMessage = async (userText: string) => {
@@ -148,6 +150,7 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
     }
 
     setLoading(true);
+    setIsStreaming(true);
 
     try {
       const result = await sendMessage(updated);
@@ -176,6 +179,7 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
         if (currIndex >= fullText.length) {
           clearInterval(typeInterval);
           typeIntervalRef.current = null;
+          setIsStreaming(false);
           if (result.section) {
             setTimeout(() => {
               scrollToSection(result.section!);
@@ -190,6 +194,7 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
       setMessages((prev) => [...prev, { role: 'assistant', text: '⚠️ Oops! Something went wrong. Please check your connection and try again.' }]);
       setPendingSection(null);
       setLoading(false);
+      setIsStreaming(false);
     }
   };
 
@@ -709,7 +714,7 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
             fontFamily: 'inherit',
           }}
         />
-        {loading ? (
+        {(loading || isStreaming) ? (
           <button
             onClick={handleStop}
             style={{
@@ -727,8 +732,8 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
               boxShadow: '0 2px 8px rgba(250, 69, 41, 0.4)',
               transition: 'all 0.2s ease',
             }}
-            title="Stop response"
-            aria-label="Stop response"
+            title="Stop generating"
+            aria-label="Stop generating"
           >
             <Square size={13} fill="#ffffff" />
           </button>
