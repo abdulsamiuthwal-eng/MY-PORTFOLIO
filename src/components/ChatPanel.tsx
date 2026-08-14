@@ -213,20 +213,26 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
     }, 400);
   };
 
+  // Defer video playback slightly until after drawer slide animation completes (prevents GPU decoding lag)
   useEffect(() => {
-    if (showIntroVideo && videoRef.current) {
-      videoRef.current.currentTime = 0;
-      const playPromise = videoRef.current.play();
-      if (playPromise !== undefined) {
-        playPromise.catch(() => {
-          // If unmuted autoplay is blocked by browser policy, fallback to muted autoplay
-          if (videoRef.current) {
-            videoRef.current.muted = true;
-            setIsVideoMuted(true);
-            videoRef.current.play().catch(() => {});
+    if (showIntroVideo) {
+      const playTimer = setTimeout(() => {
+        if (videoRef.current) {
+          videoRef.current.currentTime = 0;
+          const playPromise = videoRef.current.play();
+          if (playPromise !== undefined) {
+            playPromise.catch(() => {
+              if (videoRef.current) {
+                videoRef.current.muted = true;
+                setIsVideoMuted(true);
+                videoRef.current.play().catch(() => {});
+              }
+            });
           }
-        });
-      }
+        }
+      }, 150);
+
+      return () => clearTimeout(playTimer);
     }
   }, [showIntroVideo]);
 
@@ -253,7 +259,7 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
     transform: 'translate3d(0,0,0)',
     backfaceVisibility: 'hidden',
     WebkitBackfaceVisibility: 'hidden',
-    animation: 'popUpMobileSheet 0.28s cubic-bezier(0.2, 0.8, 0.2, 1) forwards',
+    animation: 'popUpMobileSheet 0.24s cubic-bezier(0, 0, 0.2, 1) forwards',
   } : {
     position: 'fixed',
     bottom: '166px',
