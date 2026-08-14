@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Send, X, Bot, User, Mic, MicOff, Volume2, VolumeX } from 'lucide-react';
+import { Send, X, Bot, User, Mic, MicOff, Volume2, VolumeX, SkipForward } from 'lucide-react';
 import type { ChatMessage } from '../lib/chat';
 import { sendMessage } from '../lib/chat';
 
@@ -218,7 +218,7 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
     if (showIntroVideo) {
       const playTimer = setTimeout(() => {
         if (videoRef.current) {
-          videoRef.current.currentTime = 0;
+          videoRef.current.currentTime = 2; // Skip first 2 seconds (total 8 seconds video)
           const playPromise = videoRef.current.play();
           if (playPromise !== undefined) {
             playPromise.catch(() => {
@@ -403,7 +403,7 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
                 zIndex: 120,
               }}
             >
-              {/* Sound Toggle */}
+              {/* Sound Toggle (Transparent Icon-Only) */}
               <button
                 onClick={() => {
                   if (videoRef.current) {
@@ -413,47 +413,40 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
                   }
                 }}
                 style={{
-                  background: 'rgba(0, 0, 0, 0.45)',
-                  backdropFilter: 'blur(8px)',
-                  border: '1px solid rgba(255, 255, 255, 0.2)',
+                  background: 'none',
+                  border: 'none',
                   color: '#ffffff',
-                  padding: '6px 12px',
-                  borderRadius: '20px',
+                  padding: '8px',
                   cursor: 'pointer',
                   display: 'flex',
                   alignItems: 'center',
-                  gap: '6px',
-                  fontSize: '12px',
-                  fontWeight: 500,
-                  transition: 'all 0.2s ease',
+                  justifyContent: 'center',
+                  transition: 'transform 0.2s ease',
+                  filter: 'drop-shadow(0 2px 5px rgba(0,0,0,0.8))',
                 }}
+                aria-label={isVideoMuted ? 'Unmute video' : 'Mute video'}
               >
-                {isVideoMuted ? <VolumeX size={14} /> : <Volume2 size={14} />}
-                <span>{isVideoMuted ? 'Unmute' : 'Sound On'}</span>
+                {isVideoMuted ? <VolumeX size={22} /> : <Volume2 size={22} />}
               </button>
 
-              {/* Seamless Skip Button */}
+              {/* Seamless Skip Button (Transparent Icon-Only) */}
               <button
                 onClick={handleFinishIntro}
                 style={{
-                  background: 'rgba(0, 0, 0, 0.5)',
-                  backdropFilter: 'blur(8px)',
-                  border: '1px solid rgba(255, 255, 255, 0.25)',
+                  background: 'none',
+                  border: 'none',
                   color: '#ffffff',
-                  padding: '7px 16px',
-                  borderRadius: '20px',
+                  padding: '8px',
                   cursor: 'pointer',
-                  fontSize: '12px',
-                  fontWeight: 600,
                   display: 'flex',
                   alignItems: 'center',
-                  gap: '6px',
-                  transition: 'all 0.2s ease',
-                  boxShadow: '0 4px 15px rgba(0,0,0,0.3)',
+                  justifyContent: 'center',
+                  transition: 'transform 0.2s ease',
+                  filter: 'drop-shadow(0 2px 5px rgba(0,0,0,0.8))',
                 }}
+                aria-label="Skip video intro"
               >
-                <span>Skip</span>
-                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polygon points="5 4 15 12 5 20 5 4"></polygon><line x1="19" y1="5" x2="19" y2="19"></line></svg>
+                <SkipForward size={22} />
               </button>
             </div>
           </div>
