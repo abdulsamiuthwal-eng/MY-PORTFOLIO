@@ -31,69 +31,64 @@ const CustomScrollbar: React.FC<CustomScrollbarProps> = ({ isContactPage, isChat
   const [isVisible, setIsVisible] = useState<boolean>(false);
   const [isHovered, setIsHovered] = useState<boolean>(false);
   const hideTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const observerRef = useRef<IntersectionObserver | null>(null);
-  const sectionElementsRef = useRef<Map<string, HTMLElement>>(new Map());
-
   useEffect(() => {
     if (isContactPage) return;
 
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            const id = entry.target.id;
-            if (SECTIONS.some((s) => s.id === id)) {
-              setActiveSection((prev) => (prev !== id ? id : prev));
-            }
+    let isTicking = false;
+
+    const checkActiveSection = () => {
+      const triggerY = window.innerHeight * 0.4;
+      const docHeight = document.documentElement.scrollHeight;
+      const winHeight = window.innerHeight;
+
+      // If scrolled to bottom of page, highlight the last section (circular-cta)
+      if (window.scrollY + winHeight >= docHeight - 80) {
+        setActiveSection('circular-cta');
+        isTicking = false;
+        return;
+      }
+
+      // Check sections from bottom to top
+      for (let i = SECTIONS.length - 1; i >= 0; i--) {
+        const sec = SECTIONS[i];
+        const el = document.getElementById(sec.id);
+        if (el) {
+          const rect = el.getBoundingClientRect();
+          if (rect.top <= triggerY) {
+            setActiveSection((prev) => (prev !== sec.id ? sec.id : prev));
+            isTicking = false;
+            return;
           }
-        });
-      },
-      {
-        rootMargin: '-33% 0px -66% 0px',
-        threshold: 0,
+        }
       }
-    );
 
-    observerRef.current = observer;
-
-    SECTIONS.forEach((sec) => {
-      const el = document.getElementById(sec.id);
-      if (el) {
-        sectionElementsRef.current.set(sec.id, el);
-        observer.observe(el);
-      }
-    });
-
-    return () => {
-      observer.disconnect();
+      setActiveSection('home');
+      isTicking = false;
     };
-  }, [isContactPage]);
 
-  useEffect(() => {
-    if (isContactPage) return;
-
-    let ticking = false;
     const handleScroll = () => {
       if (isChatOpen) {
         setIsVisible(false);
         return;
       }
 
-      if (!ticking) {
-        ticking = true;
-        requestAnimationFrame(() => {
-          setIsVisible(true);
-          ticking = false;
-        });
-      }
+      setIsVisible(true);
 
       if (hideTimerRef.current) clearTimeout(hideTimerRef.current);
       hideTimerRef.current = setTimeout(() => {
         if (!isHovered) setIsVisible(false);
       }, 2000);
+
+      if (!isTicking) {
+        isTicking = true;
+        requestAnimationFrame(checkActiveSection);
+      }
     };
 
     window.addEventListener('scroll', handleScroll, { passive: true });
+    // Initial check on mount
+    checkActiveSection();
+
     return () => {
       window.removeEventListener('scroll', handleScroll);
       if (hideTimerRef.current) clearTimeout(hideTimerRef.current);

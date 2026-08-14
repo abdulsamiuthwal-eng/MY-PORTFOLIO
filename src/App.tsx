@@ -309,7 +309,7 @@ const App: React.FC = () => {
 
         {/* Main Portfolio Home View */}
         {!isContactPage && !isProjectDetailPage && (
-          <div id="home">
+          <div className="ptf-home-view">
             <Hero />
             <About />
             <Skills />
