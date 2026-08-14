@@ -26,51 +26,71 @@ const SLOT_HEIGHT = 28;
 const SLOT_GAP = 14;
 const TRACK_PADDING_TOP = 18;
 
-
-
 const CustomScrollbar: React.FC<CustomScrollbarProps> = ({ isContactPage, isChatOpen }) => {
   const [activeSection, setActiveSection] = useState<string>('home');
   const [isVisible, setIsVisible] = useState<boolean>(false);
   const [isHovered, setIsHovered] = useState<boolean>(false);
   const hideTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-
-  const isTickingRef = useRef<boolean>(false);
+  const observerRef = useRef<IntersectionObserver | null>(null);
+  const sectionElementsRef = useRef<Map<string, HTMLElement>>(new Map());
 
   useEffect(() => {
-    const checkActiveSection = () => {
-      const targetY = window.innerHeight / 3;
-      for (let i = SECTIONS.length - 1; i >= 0; i--) {
-        const sec = SECTIONS[i];
-        const el = document.getElementById(sec.id);
-        if (el) {
-          const rect = el.getBoundingClientRect();
-          if (rect.top <= targetY) {
-            setActiveSection((prev) => (prev !== sec.id ? sec.id : prev));
-            break;
-          }
-        }
-      }
-      isTickingRef.current = false;
-    };
+    if (isContactPage) return;
 
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            const id = entry.target.id;
+            if (SECTIONS.some((s) => s.id === id)) {
+              setActiveSection((prev) => (prev !== id ? id : prev));
+            }
+          }
+        });
+      },
+      {
+        rootMargin: '-33% 0px -66% 0px',
+        threshold: 0,
+      }
+    );
+
+    observerRef.current = observer;
+
+    SECTIONS.forEach((sec) => {
+      const el = document.getElementById(sec.id);
+      if (el) {
+        sectionElementsRef.current.set(sec.id, el);
+        observer.observe(el);
+      }
+    });
+
+    return () => {
+      observer.disconnect();
+    };
+  }, [isContactPage]);
+
+  useEffect(() => {
+    if (isContactPage) return;
+
+    let ticking = false;
     const handleScroll = () => {
-      // Don't show or update if chat panel is open or on contact page
-      if (isChatOpen || isContactPage) {
+      if (isChatOpen) {
         setIsVisible(false);
         return;
       }
 
-      setIsVisible(true);
+      if (!ticking) {
+        ticking = true;
+        requestAnimationFrame(() => {
+          setIsVisible(true);
+          ticking = false;
+        });
+      }
 
       if (hideTimerRef.current) clearTimeout(hideTimerRef.current);
       hideTimerRef.current = setTimeout(() => {
-        setIsVisible(false);
+        if (!isHovered) setIsVisible(false);
       }, 2000);
-
-      if (!isTickingRef.current) {
-        isTickingRef.current = true;
-        requestAnimationFrame(checkActiveSection);
-      }
     };
 
     window.addEventListener('scroll', handleScroll, { passive: true });
@@ -78,12 +98,9 @@ const CustomScrollbar: React.FC<CustomScrollbarProps> = ({ isContactPage, isChat
       window.removeEventListener('scroll', handleScroll);
       if (hideTimerRef.current) clearTimeout(hideTimerRef.current);
     };
-  }, [isChatOpen, isContactPage]);
+  }, [isChatOpen, isContactPage, isHovered]);
 
-  // Strictly return null only on Contact Page
-  if (isContactPage) {
-    return null;
-  }
+  if (isContactPage) return null;
 
   const handleDotClick = (sectionId: string) => {
     if (sectionId === 'home' || sectionId === 'contact-page') {
@@ -119,7 +136,6 @@ const CustomScrollbar: React.FC<CustomScrollbarProps> = ({ isContactPage, isChat
 
   return (
     <>
-      {/* Right Edge Invisible Hover Trigger Area */}
       <div
         className="ptf-scrollbar-hover-zone"
         onMouseEnter={handleMouseEnter}
@@ -134,7 +150,6 @@ const CustomScrollbar: React.FC<CustomScrollbarProps> = ({ isContactPage, isChat
         }}
       />
 
-      {/* Custom Scrollbar Widget Track */}
       <div
         className="ptf-custom-scrollbar-wrapper"
         onMouseEnter={handleMouseEnter}
@@ -170,7 +185,6 @@ const CustomScrollbar: React.FC<CustomScrollbarProps> = ({ isContactPage, isChat
             boxShadow: '0 8px 32px rgba(0, 0, 0, 0.08)',
           }}
         >
-          {/* Top Capsule Cap Highlight */}
           <div
             style={{
               position: 'absolute',
@@ -184,8 +198,6 @@ const CustomScrollbar: React.FC<CustomScrollbarProps> = ({ isContactPage, isChat
               pointerEvents: 'none',
             }}
           />
-
-          {/* Bottom Capsule Cap Highlight */}
           <div
             style={{
               position: 'absolute',
@@ -199,8 +211,6 @@ const CustomScrollbar: React.FC<CustomScrollbarProps> = ({ isContactPage, isChat
               pointerEvents: 'none',
             }}
           />
-
-          {/* Glowing Active Ring Indicator */}
           <div
             style={{
               position: 'absolute',
@@ -215,8 +225,6 @@ const CustomScrollbar: React.FC<CustomScrollbarProps> = ({ isContactPage, isChat
               pointerEvents: 'none',
             }}
           />
-
-          {/* Section Dots List */}
           {SECTIONS.map((sec) => {
             const isActive = sec.id === activeSection;
             return (

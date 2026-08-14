@@ -4,42 +4,31 @@ const CustomCursor: React.FC = () => {
   const innerRef = useRef<HTMLDivElement>(null);
   const outerRef = useRef<HTMLDivElement>(null);
 
-  const mouseCoords = useRef({ x: -100, y: -100 });
-  const outerCoords = useRef({ x: -100, y: -100 });
-
   useEffect(() => {
+    const inner = innerRef.current;
+    const outer = outerRef.current;
+    if (!inner || !outer) return;
+
+    let mouseX = 0;
+    let mouseY = 0;
+    let outerX = 0;
+    let outerY = 0;
+    let rafId: number;
+
     const handleMouseMove = (e: MouseEvent) => {
-      mouseCoords.current.x = e.clientX;
-      mouseCoords.current.y = e.clientY;
-
-      if (innerRef.current) {
-        innerRef.current.style.left = `${e.clientX}px`;
-        innerRef.current.style.top = `${e.clientY}px`;
-      }
+      mouseX = e.clientX;
+      mouseY = e.clientY;
+      inner.style.transform = `translate(${mouseX}px, ${mouseY}px) translate(-50%, -50%)`;
     };
 
-    // Interpolate outer circle position for smooth trailing effect
-    let animationFrameId: number;
-    const updatePosition = () => {
-      const ease = 0.16; // trailing speed
-      const dx = mouseCoords.current.x - outerCoords.current.x;
-      const dy = mouseCoords.current.y - outerCoords.current.y;
-
-      outerCoords.current.x += dx * ease;
-      outerCoords.current.y += dy * ease;
-
-      if (outerRef.current) {
-        outerRef.current.style.left = `${outerCoords.current.x}px`;
-        outerRef.current.style.top = `${outerCoords.current.y}px`;
-      }
-
-      animationFrameId = requestAnimationFrame(updatePosition);
+    const animateOuter = () => {
+      const ease = 0.16;
+      outerX += (mouseX - outerX) * ease;
+      outerY += (mouseY - outerY) * ease;
+      outer.style.transform = `translate(${outerX}px, ${outerY}px) translate(-50%, -50%)`;
+      rafId = requestAnimationFrame(animateOuter);
     };
 
-    updatePosition();
-    window.addEventListener('mousemove', handleMouseMove);
-
-    // Dynamic hover handler to scale cursor on hover
     const handleMouseOver = (e: MouseEvent) => {
       const target = e.target as HTMLElement;
       const isInteractive = 
@@ -53,24 +42,23 @@ const CustomCursor: React.FC = () => {
         target.tagName === 'TEXTAREA' ||
         target.tagName === 'SELECT';
 
-      if (outerRef.current) {
-        if (isInteractive) {
-          outerRef.current.classList.add('cursor-hover-outer');
-        } else {
-          outerRef.current.classList.remove('cursor-hover-outer');
-        }
+      if (isInteractive) {
+        outer.classList.add('cursor-hover-outer');
+      } else {
+        outer.classList.remove('cursor-hover-outer');
       }
     };
 
-    window.addEventListener('mouseover', handleMouseOver);
-
-    // Hide default cursor when on body
+    window.addEventListener('mousemove', handleMouseMove, { passive: true });
+    window.addEventListener('mouseover', handleMouseOver, { passive: true });
     document.body.style.cursor = 'none';
+
+    animateOuter();
 
     return () => {
       window.removeEventListener('mousemove', handleMouseMove);
       window.removeEventListener('mouseover', handleMouseOver);
-      cancelAnimationFrame(animationFrameId);
+      cancelAnimationFrame(rafId);
       document.body.style.cursor = 'auto';
     };
   }, []);

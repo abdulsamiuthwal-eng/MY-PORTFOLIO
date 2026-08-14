@@ -33,21 +33,19 @@ if (window.location.hash && window.location.hash !== '#contact-page') {
 }
 
 // Re-run AOS animations for the currently visible view after a view switch.
-// Transitions are temporarily disabled while elements are reset to their hidden
-// state, then a forced reflow commits that hidden state (without this the
-// browser treats the class flip as a 1->1 no-op and nothing replays). Once
-// transitions are restored, AOS.refreshHard() animates everything back in.
 const replayAOS = () => {
-  const elements = document.querySelectorAll<HTMLElement>('[data-aos]');
-  elements.forEach(el => {
-    el.style.transition = 'none';
-    el.classList.remove('aos-animate');
+  requestAnimationFrame(() => {
+    const elements = document.querySelectorAll<HTMLElement>('[data-aos]');
+    elements.forEach((el) => {
+      el.style.transition = 'none';
+      el.classList.remove('aos-animate');
+    });
+    void document.body.offsetHeight;
+    elements.forEach((el) => {
+      el.style.transition = '';
+    });
+    AOS.refreshHard();
   });
-  void document.body.offsetHeight;
-  elements.forEach(el => {
-    el.style.transition = '';
-  });
-  AOS.refreshHard();
 };
 
 const App: React.FC = () => {
@@ -72,8 +70,9 @@ const App: React.FC = () => {
   useEffect(() => {
     AOS.init({
       duration: 1000,
-      once: true,
+      once: false,
       easing: 'ease-out-cubic',
+      disable: false,
     });
 
     // Link clicks can scroll the page before navigation (e.g. Navbar scrolls to
@@ -256,46 +255,36 @@ const App: React.FC = () => {
     }
   }, [currentHash]);
 
-  // Push floating icons smoothly above footer when footer enters viewport
+  // Push floating icons smoothly above footer when footer enters viewport (IntersectionObserver)
   useEffect(() => {
-    let lastPushVal = -1;
-    let isTicking = false;
+    const footer = document.querySelector('footer');
+    if (!footer) return;
 
-    const updateFooterPush = () => {
-      const footer = document.querySelector('footer');
-      if (footer) {
-        const footerTop = footer.getBoundingClientRect().top;
-        const windowHeight = window.innerHeight;
-        const visibleFooterHeight = Math.max(0, Math.round(windowHeight - footerTop));
-
-        if (visibleFooterHeight !== lastPushVal) {
-          lastPushVal = visibleFooterHeight;
-          if (visibleFooterHeight > 0) {
-            document.documentElement.style.setProperty('--footer-push', `${visibleFooterHeight}px`);
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            const visibleHeight = Math.round(entry.intersectionRect.height);
+            document.documentElement.style.setProperty('--footer-push', `${visibleHeight}px`);
             document.documentElement.classList.add('footer-push');
           } else {
             document.documentElement.style.setProperty('--footer-push', '0px');
             document.documentElement.classList.remove('footer-push');
           }
-        }
+        });
+      },
+      {
+        rootMargin: '0px',
+        threshold: [0, 0.1, 0.25, 0.5, 0.75, 1],
       }
-      isTicking = false;
-    };
+    );
 
-    const handleFooterPush = () => {
-      if (!isTicking) {
-        isTicking = true;
-        requestAnimationFrame(updateFooterPush);
-      }
-    };
-
-    window.addEventListener('scroll', handleFooterPush, { passive: true });
-    window.addEventListener('resize', handleFooterPush, { passive: true });
-    handleFooterPush();
+    observer.observe(footer);
 
     return () => {
-      window.removeEventListener('scroll', handleFooterPush);
-      window.removeEventListener('resize', handleFooterPush);
+      observer.disconnect();
+      document.documentElement.style.setProperty('--footer-push', '0px');
+      document.documentElement.classList.remove('footer-push');
     };
   }, [currentHash]);
 
