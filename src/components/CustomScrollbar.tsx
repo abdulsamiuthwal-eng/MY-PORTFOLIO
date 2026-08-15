@@ -137,7 +137,7 @@ const CustomScrollbar: React.FC<CustomScrollbarProps> = ({ isContactPage, isChat
         onMouseLeave={handleMouseLeave}
         style={{
           position: 'fixed',
-          right: 0,
+          left: 0,
           top: '30%',
           bottom: '30%',
           width: '28px',
@@ -151,9 +151,9 @@ const CustomScrollbar: React.FC<CustomScrollbarProps> = ({ isContactPage, isChat
         onMouseLeave={handleMouseLeave}
         style={{
           position: 'fixed',
-          right: '12px',
+          left: '12px',
           top: '42%',
-          transform: `translateY(-42%) translateX(${isShown ? '0px' : '120px'})`,
+          transform: `translateY(-42%) translateX(${isShown ? '0px' : '-120px'})`,
           opacity: isShown ? 1 : 0,
           pointerEvents: isShown ? 'auto' : 'none',
           transition: 'transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94), opacity 0.6s ease',
