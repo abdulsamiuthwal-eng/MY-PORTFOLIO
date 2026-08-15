@@ -35,7 +35,8 @@
 | `src/index.css` | Global styles, typography (`Inter`, `Amiri`), CSS variables (`--ptf-accent-1: #fa4529`), custom cursor classes, native scrollbar hiding rules, and momentum scrolling (`html { overflow-x: clip; }`). |
 | `src/components/CustomScrollbar.tsx` | 9-section desktop custom dot sidebar widget (positioned on left-side). Features top/bottom orange capsule caps, gliding active ring, section dot highlighting (`#fa4529`), left hover zone, and auto-hide timer. Throttled with `requestAnimationFrame`. |
 | `src/components/ChatIcon.tsx` | Floating AI assistant trigger button at bottom-right. Manages chat opening/closing state, unread counter, and audio recording. |
-| `src/components/ChatPanel.tsx` | Full AI Chat panel for **Kitty**. Includes intro video (`botintro.mp4`), message video loop (`boticon.mp4`), streaming response cursor, voice mic input, and smooth 60 FPS open/close GPU scale animations. |
+| `src/components/ChatPanel.tsx` | Full AI Chat panel for **Kitty**. Includes intro video (`botintro.mp4`), message video loop (`boticon.mp4`), streaming response cursor, voice mic input, glowing rotating glassy orange orb button, and smooth 60 FPS open/close GPU scale animations. |
+| `src/components/VoiceChat.tsx` | Interactive full-screen Voice Mode modal for **Kitty**. Plays avatar robot video (`Robot_waves_and_nods...mp4`) synchronized with browser TTS speech at exact timestamps (`2.03s`, `5.18s`, `7.18s`), captures user voice through Web Speech Recognition, and streams responses with animated glowing audio rings. |
 | `src/components/CustomCursor.tsx` | Hardware-accelerated custom cursor with `will-change: transform` and `requestAnimationFrame` interpolation. |
 | `src/components/Navbar.tsx` | Desktop & mobile responsive header, menu drawer with backdrop blur, and smooth section navigation links. |
 | `src/components/Hero.tsx` | Hero introduction section (`#home`) with avatar, social badges, and CTAs. |
