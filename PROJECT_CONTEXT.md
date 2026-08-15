@@ -33,7 +33,7 @@
 |---|---|
 | `src/App.tsx` | Main root app, routing between Home view, `#contact-page`, `#project/:id`, AOS lifecycle management, and global event coordination. |
 | `src/index.css` | Global styles, typography (`Inter`, `Amiri`), CSS variables (`--ptf-accent-1: #fa4529`), custom cursor classes, native scrollbar hiding rules, and momentum scrolling (`html { overflow-x: clip; }`). |
-| `src/components/CustomScrollbar.tsx` | 9-section desktop custom dot sidebar widget. Features top/bottom orange capsule caps, gliding active ring, section dot highlighting (`#fa4529`), and auto-hide timer. Throttled with `requestAnimationFrame`. |
+| `src/components/CustomScrollbar.tsx` | 9-section desktop custom dot sidebar widget (positioned on left-side). Features top/bottom orange capsule caps, gliding active ring, section dot highlighting (`#fa4529`), left hover zone, and auto-hide timer. Throttled with `requestAnimationFrame`. |
 | `src/components/ChatIcon.tsx` | Floating AI assistant trigger button at bottom-right. Manages chat opening/closing state, unread counter, and audio recording. |
 | `src/components/ChatPanel.tsx` | Full AI Chat panel for **Kitty**. Includes intro video (`botintro.mp4`), message video loop (`boticon.mp4`), streaming response cursor, voice mic input, and smooth 60 FPS open/close GPU scale animations. |
 | `src/components/CustomCursor.tsx` | Hardware-accelerated custom cursor with `will-change: transform` and `requestAnimationFrame` interpolation. |
