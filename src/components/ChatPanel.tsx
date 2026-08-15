@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { Send, X, User, Mic, MicOff, Volume2, VolumeX, SkipForward, Square } from 'lucide-react';
 import type { ChatMessage } from '../lib/chat';
 import { sendMessage } from '../lib/chat';
+import VoiceChat from './VoiceChat';
 
 interface ChatPanelProps {
   onClose: () => void;
@@ -54,6 +55,7 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
   const [loading, setLoading] = useState(false);
   const [listening, setListening] = useState(false);
   const [voiceEnabled, setVoiceEnabled] = useState(false);
+  const [voiceChatOpen, setVoiceChatOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 480);
   const listRef = useRef<HTMLDivElement>(null);
   const recognitionRef = useRef<any>(null);
@@ -336,7 +338,7 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
     position: 'fixed',
     bottom: '166px',
     right: '30px',
-    width: '340px',
+    width: '360px',
     height: '480px',
     maxHeight: '480px',
     borderRadius: '12px',
@@ -399,6 +401,27 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
           100% {
             transform: translate3d(0, 100%, 0);
           }
+        }
+        @keyframes glassOrbSwirl {
+          0% {
+            transform: rotate(0deg);
+          }
+          100% {
+            transform: rotate(360deg);
+          }
+        }
+        .ptf-glass-voice-orb-btn {
+          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+          transition: transform 0.25s cubic-bezier(0.25, 0.46, 0.45, 0.94), box-shadow 0.25s ease;
+        }
+        .ptf-glass-voice-orb-btn:hover {
+          transform: scale(1.12) !important;
+          box-shadow: 0 4px 18px rgba(0, 0, 0, 0.5), 0 0 22px rgba(250, 69, 41, 0.8), 0 0 36px rgba(224, 61, 36, 0.35) !important;
+        }
+        .ptf-send-btn:hover:not(:disabled) {
+          background-color: #ffe8e0 !important;
+          color: #fa4529 !important;
+          box-shadow: 0 2px 10px rgba(250, 69, 41, 0.2) !important;
         }
       `}</style>
 
@@ -760,11 +783,12 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
       <div style={{
         display: 'flex',
         alignItems: 'center',
-        gap: '8px',
-        padding: isMobile ? '12px 16px 20px' : '10px 12px',
+        gap: '10px',
+        padding: isMobile ? '12px 16px 20px' : '10px 14px 10px 14px',
         borderTop: '1px solid var(--ptf-border-color)',
         backgroundColor: '#fff',
         flexShrink: 0,
+        overflow: 'visible',
       }}>
         <button
           onClick={toggleMic}
@@ -793,6 +817,7 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
           placeholder="Ask anything..."
           style={{
             flex: 1,
+            minWidth: 0,
             border: '1px solid #e9ecef',
             borderRadius: '8px',
             padding: isMobile ? '12px 14px' : '10px 12px',
@@ -828,6 +853,20 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
           <button
             onClick={handleSend}
             disabled={!input.trim()}
+            onMouseEnter={e => {
+              if (input.trim()) {
+                (e.currentTarget as HTMLButtonElement).style.backgroundColor = '#ffe0d6';
+                (e.currentTarget as HTMLButtonElement).style.color = '#fa4529';
+                (e.currentTarget as HTMLButtonElement).style.boxShadow = '0 2px 12px rgba(250,69,41,0.22)';
+              }
+            }}
+            onMouseLeave={e => {
+              if (input.trim()) {
+                (e.currentTarget as HTMLButtonElement).style.backgroundColor = '#000000';
+                (e.currentTarget as HTMLButtonElement).style.color = '#ffffff';
+                (e.currentTarget as HTMLButtonElement).style.boxShadow = '0 2px 8px rgba(0,0,0,0.25)';
+              }
+            }}
             style={{
               width: '36px',
               height: '36px',
@@ -840,7 +879,7 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
               justifyContent: 'center',
               cursor: input.trim() ? 'pointer' : 'not-allowed',
               flexShrink: 0,
-              transition: 'all 0.2s ease',
+              transition: 'background-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease',
               boxShadow: input.trim() ? '0 2px 8px rgba(0, 0, 0, 0.25)' : 'none',
             }}
             title={input.trim() ? 'Send message' : 'Type a message'}
@@ -849,8 +888,89 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
             <Send size={16} />
           </button>
         )}
+
+        {/* Glowing Glassy Sphere AI Voice Orb Button */}
+        <button
+          onClick={() => setVoiceChatOpen(true)}
+          className="ptf-glass-voice-orb-btn"
+          style={{
+            width: '34px',
+            height: '34px',
+            borderRadius: '50%',
+            border: '1px solid rgba(255, 255, 255, 0.32)',
+            position: 'relative',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            cursor: 'pointer',
+            flexShrink: 0,
+            overflow: 'hidden',
+            padding: 0,
+            backgroundColor: '#05070a',
+
+          }}
+          title={listening ? 'Listening... Click to stop' : 'Start Voice Chat'}
+          aria-label="Start Voice Chat"
+        >
+          {/* Internal rotating orange-amber-white fluid — no black */}
+          <div
+            style={{
+              position: 'absolute',
+              inset: '-45%',
+              width: '190%',
+              height: '190%',
+              background: 'conic-gradient(from 45deg, #fa4529 0deg, #ff7840 60deg, #ffb347 110deg, #fff0e0 155deg, #ffb347 200deg, #ff7840 250deg, #e03d24 300deg, #fa4529 360deg)',
+              borderRadius: '50%',
+              filter: 'blur(3px)',
+              animation: 'glassOrbSwirl 4.5s linear infinite',
+              opacity: 1,
+            }}
+          />
+
+          {/* Bright warm orange center core — no dark */}
+          <div
+            style={{
+              position: 'absolute',
+              width: '24px',
+              height: '24px',
+              borderRadius: '50%',
+              background: 'radial-gradient(circle at 40% 38%, #fff0e0 0%, #ffb347 35%, #fa4529 70%, #e03d24 100%)',
+              boxShadow: '0 0 10px rgba(250, 69, 41, 0.7)',
+              zIndex: 1,
+            }}
+          />
+
+          {/* Spherical 3D Glass Dome — pure white specular highlight */}
+          <div
+            style={{
+              position: 'absolute',
+              inset: 0,
+              borderRadius: '50%',
+              background: 'radial-gradient(circle at 32% 24%, rgba(255, 255, 255, 0.72) 0%, rgba(255, 220, 160, 0.18) 40%, rgba(250, 69, 41, 0.08) 75%, transparent 100%)',
+              boxShadow: 'inset 1.5px 1.8px 3px rgba(255, 255, 255, 0.95), inset -1px -1.2px 2px rgba(250, 69, 41, 0.4)',
+              zIndex: 2,
+              pointerEvents: 'none',
+            }}
+          />
+
+          {/* Active Listening Status Indicator */}
+          {listening && (
+            <div
+              style={{
+                position: 'relative',
+                zIndex: 3,
+                width: '7px',
+                height: '7px',
+                borderRadius: '50%',
+                backgroundColor: '#22c55e',
+                boxShadow: '0 0 10px #22c55e',
+              }}
+            />
+          )}
+        </button>
       </div>
     </div>
+    {voiceChatOpen && <VoiceChat onClose={() => setVoiceChatOpen(false)} />}
     </>
   );
 };
