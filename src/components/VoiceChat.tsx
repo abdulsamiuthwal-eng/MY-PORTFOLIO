@@ -80,6 +80,16 @@ const VoiceChat: React.FC<VoiceChatProps> = ({ onClose }) => {
   const speak = useCallback(async (text: string, onEnd?: () => void) => {
     if (muted || !isMountedRef.current) { onEnd?.(); return; }
 
+    // Ensure no browser speechSynthesis bleeds into Voice Mode - ever.
+    window.speechSynthesis?.cancel();
+
+    // Kill any currently playing audio before starting new one (strict single-audio lock)
+    if (currentAudioRef.current) {
+      currentAudioRef.current.pause();
+      currentAudioRef.current.src = '';
+      currentAudioRef.current = null;
+    }
+
     try {
       const res = await fetch('/api/tts', {
         method: 'POST',
@@ -87,55 +97,54 @@ const VoiceChat: React.FC<VoiceChatProps> = ({ onClose }) => {
         body: JSON.stringify({ text }),
       });
 
-      if (res.ok && isMountedRef.current) {
+      if (!isMountedRef.current) return;
+
+      if (res.ok) {
         const blob = await res.blob();
+        if (!isMountedRef.current) return;
         const audioUrl = URL.createObjectURL(blob);
         const audio = new Audio(audioUrl);
         currentAudioRef.current = audio;
         audio.onended = () => {
           URL.revokeObjectURL(audioUrl);
+          currentAudioRef.current = null;
           if (isMountedRef.current) onEnd?.();
         };
         audio.onerror = () => {
           URL.revokeObjectURL(audioUrl);
+          currentAudioRef.current = null;
+          // Call onEnd so the conversation loop doesn't get stuck
           if (isMountedRef.current) onEnd?.();
         };
         await audio.play();
         return;
       }
     } catch (err) {
-      console.warn('TTS streaming fallback to speech synthesis', err);
+      console.warn('[VoiceChat] ElevenLabs TTS failed, skipping utterance silently:', err);
     }
 
-    if (!isMountedRef.current) return;
-    window.speechSynthesis.cancel();
-    const utt = new SpeechSynthesisUtterance(text.replace(/[*#`_~•]/g, ''));
-    utt.rate = 0.92;
-    utt.pitch = 1.05;
-    utt.lang = 'en-US';
-    if (onEnd) {
-      utt.onend = () => {
-        if (isMountedRef.current) onEnd();
-      };
-    }
-    window.speechSynthesis.speak(utt);
+    // If ElevenLabs failed: do NOT fall back to robotic browser voice.
+    // Simply fire onEnd so hands-free loop continues cleanly.
+    if (isMountedRef.current) onEnd?.();
   }, [muted]);
 
-  const playCueAudio = useCallback((audioSrc: string, fallbackText: string) => {
+  const playCueAudio = useCallback((audioSrc: string, _fallbackText: string) => {
     if (muted || !isMountedRef.current) return;
+    // Kill any previously playing audio first
+    if (currentAudioRef.current) {
+      currentAudioRef.current.pause();
+      currentAudioRef.current.src = '';
+      currentAudioRef.current = null;
+    }
     try {
-      if (currentAudioRef.current) {
-        currentAudioRef.current.pause();
-      }
       const audio = new Audio(audioSrc);
       currentAudioRef.current = audio;
-      audio.play().catch(() => {
-        if (isMountedRef.current) speak(fallbackText);
-      });
+      // If cue mp3 fails to load/play, skip silently — never invoke browser speech synthesis
+      audio.play().catch(() => { currentAudioRef.current = null; });
     } catch {
-      if (isMountedRef.current) speak(fallbackText);
+      // Silent fail — no browser robotic voice fallback in Voice Mode
     }
-  }, [muted, speak]);
+  }, [muted]);
 
   const FILLER_AUDIOS = [
     '/chatbot/voice-robot/filler1.mp3',
@@ -212,8 +221,8 @@ const VoiceChat: React.FC<VoiceChatProps> = ({ onClose }) => {
       setPhase('speaking');
       setBotText('Thinking…');
       
-      // Play instant natural filler audio ("Hmm... Got it!" / "Aha...")
-      playFiller();
+      // Await filler FULLY before starting ElevenLabs answer — prevents double-voice race condition
+      await playFiller();
 
       try {
         const res = await fetch('/api/chat', {
