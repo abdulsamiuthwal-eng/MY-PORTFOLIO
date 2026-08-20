@@ -264,12 +264,6 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
 
       const playTimer = setTimeout(() => {
         if (videoRef.current) {
-          try {
-            if (videoRef.current.readyState >= 1) {
-              videoRef.current.currentTime = 2; // Skip first 2 seconds if metadata is ready
-            }
-          } catch (e) {}
-
           const playPromise = videoRef.current.play();
           if (playPromise !== undefined) {
             playPromise
