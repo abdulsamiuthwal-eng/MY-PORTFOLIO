@@ -119,7 +119,9 @@ const VoiceChat: React.FC<VoiceChatProps> = ({ onClose }) => {
       setMicActive(false);
       const final = transcriptRef.current.trim();
       if (!final) { setPhase('idle'); return; }
-      setPhase('thinking');
+      
+      // Shift to speaking phase so talking.mp4 animation plays while speaking
+      setPhase('speaking');
       setBotText('Thinking…');
       
       // Play instant natural filler audio ("Hmm... Got it!" / "Aha...")
@@ -177,6 +179,16 @@ const VoiceChat: React.FC<VoiceChatProps> = ({ onClose }) => {
   const ringColor = phase === 'listening' ? '#22c55e' : '#fa4529';
   const ringGlow = phase === 'listening' ? 'rgba(34,197,94,0.35)' : 'rgba(250,69,41,0.3)';
 
+  const getVideoSrc = () => {
+    if (phase === 'intro') {
+      return '/chatbot/voice-robot/Robot_waving_and_greeting_camera_compressed.mp4';
+    }
+    if (phase === 'speaking') {
+      return '/chatbot/voice-robot/talking.mp4';
+    }
+    return '/chatbot/voice-robot/kitty-listening-loop.mp4';
+  };
+
   return (
     <div style={{ position:'fixed', inset:0, zIndex:99999, display:'flex', alignItems:'center', justifyContent:'center', background:'rgba(0,0,0,0.75)', backdropFilter:'blur(10px)', WebkitBackdropFilter:'blur(10px)', animation:'vcFadeIn 0.3s ease' }}>
       <style>{`
@@ -205,9 +217,9 @@ const VoiceChat: React.FC<VoiceChatProps> = ({ onClose }) => {
         {/* Robot Video */}
         <div style={{ width:'220px', height:'220px', marginTop:'24px', borderRadius:'50%', overflow:'hidden', border:`3px solid ${ringColor}`, boxShadow:`0 0 32px ${ringGlow}`, transition:'border-color 0.4s,box-shadow 0.4s', backgroundColor:'#111', flexShrink:0 }}>
           <video
-            key={phase === 'intro' ? 'intro' : 'listening'}
+            key={phase === 'intro' ? 'intro' : phase === 'speaking' ? 'speaking' : 'listening'}
             ref={videoRef}
-            src={phase === 'intro' ? '/chatbot/voice-robot/Robot_waving_and_greeting_camera_compressed.mp4' : '/chatbot/voice-robot/kitty-listening-loop.mp4'}
+            src={getVideoSrc()}
             autoPlay
             loop={phase !== 'intro'}
             playsInline
