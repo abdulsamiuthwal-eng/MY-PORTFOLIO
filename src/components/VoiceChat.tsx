@@ -172,7 +172,7 @@ const VoiceChat: React.FC<VoiceChatProps> = ({ onClose }) => {
 
         {/* Robot Video */}
         <div style={{ width:'220px', height:'220px', marginTop:'24px', borderRadius:'50%', overflow:'hidden', border:`3px solid ${ringColor}`, boxShadow:`0 0 32px ${ringGlow}`, transition:'border-color 0.4s,box-shadow 0.4s', backgroundColor:'#111', flexShrink:0 }}>
-          <video ref={videoRef} src="/chatbot/voice-robot/Robot_waving_and_greeting_camera_compressed.mp4" autoPlay playsInline style={{ width:'100%', height:'100%', objectFit:'cover', objectPosition:'center top', display:'block' }} />
+          <video ref={videoRef} src="/chatbot/voice-robot/Robot_waving_and_greeting_camera_compressed.mp4" autoPlay playsInline muted={true} style={{ width:'100%', height:'100%', objectFit:'cover', objectPosition:'center top', display:'block' }} />
         </div>
 
         {/* Phase Status */}
