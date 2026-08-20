@@ -506,7 +506,7 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
             )}
             <video
               ref={videoRef}
-              src="/chatbot/robot-cleans-teeth-and-waves-202608142326_Pf71GIQx.mp4"
+              src="/chatbot/robot-transforms-from-energy-orb-202608210109_AUNUEX4t.mp4"
               playsInline
               muted={isVideoMuted}
               onLoadedMetadata={() => setIsVideoReady(true)}
