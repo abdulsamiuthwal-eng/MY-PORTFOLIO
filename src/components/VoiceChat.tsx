@@ -90,8 +90,9 @@ const VoiceChat: React.FC<VoiceChatProps> = ({ onClose }) => {
         });
       };
       const onEnded = () => {
-        setPhase('idle');
-        setBotText('Go ahead, I am listening!');
+        setPhase('listening');
+        setBotText('I am listening...');
+        startListening();
       };
       video.addEventListener('timeupdate', onTimeUpdate);
       video.addEventListener('ended', onEnded);
@@ -104,12 +105,21 @@ const VoiceChat: React.FC<VoiceChatProps> = ({ onClose }) => {
 
   const startListening = useCallback(() => {
     const SR = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
-    if (!SR) { alert('Speech recognition not supported in this browser.'); return; }
+    if (!SR) return;
+    try {
+      recognitionRef.current?.stop();
+    } catch {}
+
     const rec = new SR();
     rec.lang = 'en-US';
     rec.interimResults = true;
     rec.continuous = false;
-    rec.onstart = () => { setPhase('listening'); setMicActive(true); setDisplayTranscript(''); transcriptRef.current = ''; };
+    rec.onstart = () => {
+      setPhase('listening');
+      setMicActive(true);
+      setDisplayTranscript('');
+      transcriptRef.current = '';
+    };
     rec.onresult = (e: any) => {
       const txt = Array.from(e.results).map((r: any) => r[0].transcript).join('');
       transcriptRef.current = txt;
@@ -118,7 +128,15 @@ const VoiceChat: React.FC<VoiceChatProps> = ({ onClose }) => {
     rec.onend = async () => {
       setMicActive(false);
       const final = transcriptRef.current.trim();
-      if (!final) { setPhase('idle'); return; }
+      if (!final) {
+        // If user didn't speak anything, seamlessly resume listening
+        setPhase('listening');
+        setBotText('I am listening...');
+        try {
+          setTimeout(() => startListening(), 400);
+        } catch {}
+        return;
+      }
       
       // Shift to speaking phase so talking.mp4 animation plays while speaking
       setPhase('speaking');
@@ -139,24 +157,31 @@ const VoiceChat: React.FC<VoiceChatProps> = ({ onClose }) => {
         setDisplayTranscript('');
         setPhase('speaking');
         speak(reply, () => {
-          setPhase('idle');
+          // Immediately after speaking finishes, resume listening automatically (Hands-Free!)
+          setPhase('listening');
           setBotText('I am listening...');
+          setTimeout(() => startListening(), 300);
         });
       } catch {
         setBotText('Oops! Something went wrong.');
-        setPhase('idle');
+        setPhase('listening');
+        setTimeout(() => startListening(), 1000);
       }
     };
-    rec.onerror = () => { setMicActive(false); setPhase('idle'); };
+    rec.onerror = () => {
+      setMicActive(false);
+      // Auto reconnect speech listener on silence/error
+      setTimeout(() => {
+        if (phase !== 'intro' && phase !== 'speaking') {
+          startListening();
+        }
+      }, 600);
+    };
     recognitionRef.current = rec;
-    rec.start();
-  }, [playFiller, speak]);
-
-  const stopListening = useCallback(() => {
-    recognitionRef.current?.stop();
-    setMicActive(false);
-    setPhase('idle');
-  }, []);
+    try {
+      rec.start();
+    } catch {}
+  }, [phase, playFiller, speak]);
 
   useEffect(() => {
     return () => {
@@ -164,20 +189,22 @@ const VoiceChat: React.FC<VoiceChatProps> = ({ onClose }) => {
         currentAudioRef.current.pause();
       }
       window.speechSynthesis.cancel();
-      recognitionRef.current?.stop();
+      try {
+        recognitionRef.current?.stop();
+      } catch {}
     };
   }, []);
 
   const phaseLabel: Record<Phase, string> = {
     intro: '👋 Introducing…',
-    idle: '🎙️ Tap mic to speak',
-    listening: '👂 Listening…',
-    thinking: '🤔 Thinking…',
+    idle: '👂 Listening to you...',
+    listening: '👂 Listening to you...',
+    thinking: '🤔 Processing…',
     speaking: '🗣️ Speaking…',
   };
 
   const ringColor = phase === 'listening' ? '#22c55e' : '#fa4529';
-  const ringGlow = phase === 'listening' ? 'rgba(34,197,94,0.35)' : 'rgba(250,69,41,0.3)';
+  const ringGlow = phase === 'listening' ? 'rgba(34,197,94,0.4)' : 'rgba(250,69,41,0.3)';
 
   const getVideoSrc = () => {
     if (phase === 'intro') {
@@ -196,13 +223,14 @@ const VoiceChat: React.FC<VoiceChatProps> = ({ onClose }) => {
         @keyframes vcPulse { 0%,100%{box-shadow:0 0 0 0 rgba(250,69,41,0.55)} 50%{box-shadow:0 0 0 14px rgba(250,69,41,0)} }
         @keyframes vcPulseGreen { 0%,100%{box-shadow:0 0 0 0 rgba(34,197,94,0.55)} 50%{box-shadow:0 0 0 14px rgba(34,197,94,0)} }
         @keyframes vcDots { 0%,80%,100%{opacity:0.2;transform:scale(0.8)} 40%{opacity:1;transform:scale(1)} }
+        @keyframes liveVoiceWave { 0%,100%{height:6px} 50%{height:20px} }
       `}</style>
       <div style={{ position:'relative', width:'360px', background:'linear-gradient(160deg,#0f0f0f 0%,#1a0a05 100%)', borderRadius:'24px', border:'1px solid rgba(250,69,41,0.25)', boxShadow:'0 32px 80px rgba(0,0,0,0.7)', overflow:'hidden', padding:'0 0 32px', display:'flex', flexDirection:'column', alignItems:'center' }}>
         {/* Header */}
         <div style={{ width:'100%', display:'flex', alignItems:'center', justifyContent:'space-between', padding:'16px 20px 12px', borderBottom:'1px solid rgba(255,255,255,0.06)' }}>
           <div style={{ display:'flex', alignItems:'center', gap:'8px' }}>
             <div style={{ width:'8px', height:'8px', borderRadius:'50%', backgroundColor: phase==='listening'?'#22c55e':'#fa4529', animation: phase==='listening'?'vcPulseGreen 1.2s infinite':'none' }} />
-            <span style={{ color:'#fff', fontWeight:600, fontSize:'14px', fontFamily:'Inter,sans-serif' }}>Kitty — Voice Mode</span>
+            <span style={{ color:'#fff', fontWeight:600, fontSize:'14px', fontFamily:'Inter,sans-serif' }}>Kitty — Live Hands-Free Mode</span>
           </div>
           <div style={{ display:'flex', gap:'8px' }}>
             <button onClick={() => setMuted(m=>!m)} style={{ background:'rgba(255,255,255,0.08)', border:'none', borderRadius:'50%', width:'32px', height:'32px', display:'flex', alignItems:'center', justifyContent:'center', cursor:'pointer', color: muted?'#fa4529':'#aaa' }} title={muted?'Unmute':'Mute'}>
@@ -214,10 +242,9 @@ const VoiceChat: React.FC<VoiceChatProps> = ({ onClose }) => {
           </div>
         </div>
 
-        {/* Robot Video */}
+        {/* Robot Video Box (Same container, no box flashing or frame rebuild) */}
         <div style={{ width:'220px', height:'220px', marginTop:'24px', borderRadius:'50%', overflow:'hidden', border:`3px solid ${ringColor}`, boxShadow:`0 0 32px ${ringGlow}`, transition:'border-color 0.4s,box-shadow 0.4s', backgroundColor:'#111', flexShrink:0 }}>
           <video
-            key={phase === 'intro' ? 'intro' : phase === 'speaking' ? 'speaking' : 'listening'}
             ref={videoRef}
             src={getVideoSrc()}
             autoPlay
@@ -229,25 +256,35 @@ const VoiceChat: React.FC<VoiceChatProps> = ({ onClose }) => {
         </div>
 
         {/* Phase Status */}
-        <div style={{ marginTop:'16px', fontSize:'13px', color:'rgba(255,255,255,0.5)', fontFamily:'Inter,sans-serif' }}>{phaseLabel[phase]}</div>
+        <div style={{ marginTop:'16px', fontSize:'13px', color:'rgba(255,255,255,0.6)', fontFamily:'Inter,sans-serif' }}>{phaseLabel[phase]}</div>
 
         {/* Bot / Transcript Text */}
         <div style={{ marginTop:'10px', minHeight:'56px', padding:'0 28px', textAlign:'center', fontSize:'14px', color:'#fff', lineHeight:1.6, fontFamily:'Inter,sans-serif' }}>
-          {phase==='listening' && displayTranscript ? <span style={{ color:'#fa4529' }}>{displayTranscript}</span> : botText}
+          {phase==='listening' && displayTranscript ? <span style={{ color:'#22c55e', fontWeight:500 }}>"{displayTranscript}"</span> : botText}
         </div>
 
-        {/* Mic Button */}
-        {(phase==='idle'||phase==='listening') && (
-          <button onClick={micActive?stopListening:startListening} style={{ marginTop:'20px', width:'64px', height:'64px', borderRadius:'50%', border:'none', background: micActive?'linear-gradient(135deg,#22c55e,#16a34a)':'linear-gradient(135deg,#fa4529,#e03d24)', color:'#fff', display:'flex', alignItems:'center', justifyContent:'center', cursor:'pointer', animation: micActive?'vcPulseGreen 1.2s infinite':'vcPulse 0s', boxShadow: micActive?'0 4px 20px rgba(34,197,94,0.5)':'0 4px 20px rgba(250,69,41,0.5)', transition:'background 0.3s,box-shadow 0.3s' }} title={micActive?'Stop':'Speak'}>
-            {micActive ? <MicOff size={26}/> : <Mic size={26}/>}
-          </button>
-        )}
+        {/* Live Audio Visualizer (Auto Active — No Button Required!) */}
+        <div style={{ display:'flex', alignItems:'center', justifyContent:'center', gap:'4px', height:'28px', marginTop:'16px' }}>
+          {[0.1, 0.3, 0.5, 0.2, 0.4].map((delay, idx) => (
+            <div
+              key={idx}
+              style={{
+                width: '4px',
+                borderRadius: '4px',
+                backgroundColor: phase === 'listening' ? '#22c55e' : '#fa4529',
+                animation: phase === 'listening' || phase === 'speaking' ? `liveVoiceWave 1s ease-in-out infinite ${delay}s` : 'none',
+                height: phase === 'listening' || phase === 'speaking' ? '16px' : '6px',
+                transition: 'background-color 0.3s, height 0.3s',
+              }}
+            />
+          ))}
+        </div>
 
         {/* Thinking Dots */}
         {phase==='thinking' && (
-          <div style={{ display:'flex', gap:'6px', marginTop:'24px' }}>
+          <div style={{ display:'flex', gap:'6px', marginTop:'16px' }}>
             {[0,1,2].map(i=>(
-              <div key={i} style={{ width:'10px', height:'10px', borderRadius:'50%', backgroundColor:'#fa4529', animation:`vcDots 1.2s ${i*0.2}s infinite` }}/>
+              <div key={i} style={{ width:'8px', height:'8px', borderRadius:'50%', backgroundColor:'#fa4529', animation:`vcDots 1.2s ${i*0.2}s infinite` }}/>
             ))}
           </div>
         )}
