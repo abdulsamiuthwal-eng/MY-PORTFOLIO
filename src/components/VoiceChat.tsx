@@ -14,7 +14,9 @@ interface VoiceChatProps {
 type Phase = 'intro' | 'idle' | 'listening' | 'thinking' | 'speaking';
 
 const VoiceChat: React.FC<VoiceChatProps> = ({ onClose }) => {
-  const videoRef = useRef<HTMLVideoElement>(null);
+  const introVideoRef = useRef<HTMLVideoElement>(null);
+  const listeningVideoRef = useRef<HTMLVideoElement>(null);
+  const talkingVideoRef = useRef<HTMLVideoElement>(null);
   const recognitionRef = useRef<any>(null);
   const spokenCuesRef = useRef<Set<number>>(new Set());
   const transcriptRef = useRef<string>('');
@@ -74,33 +76,12 @@ const VoiceChat: React.FC<VoiceChatProps> = ({ onClose }) => {
     });
   }, [muted]);
 
+  // Pre-start all 3 video streams in GPU cache for instant zero-black-screen transitions
   useEffect(() => {
-    const video = videoRef.current;
-    if (!video) return;
-
-    if (phase === 'intro') {
-      const onTimeUpdate = () => {
-        const t = video.currentTime;
-        INTRO_CUES.forEach((cue, idx) => {
-          if (t >= cue.start && t <= cue.end && !spokenCuesRef.current.has(idx)) {
-            spokenCuesRef.current.add(idx);
-            playCueAudio(cue.audio, cue.text);
-          }
-        });
-      };
-      const onEnded = () => {
-        setPhase('listening');
-        setBotText('I am listening...');
-        startListening();
-      };
-      video.addEventListener('timeupdate', onTimeUpdate);
-      video.addEventListener('ended', onEnded);
-      return () => {
-        video.removeEventListener('timeupdate', onTimeUpdate);
-        video.removeEventListener('ended', onEnded);
-      };
-    }
-  }, [phase, playCueAudio]);
+    introVideoRef.current?.play().catch(() => {});
+    listeningVideoRef.current?.play().catch(() => {});
+    talkingVideoRef.current?.play().catch(() => {});
+  }, []);
 
   const startListening = useCallback(() => {
     const SR = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
@@ -180,6 +161,34 @@ const VoiceChat: React.FC<VoiceChatProps> = ({ onClose }) => {
   }, [phase, playFiller, speak]);
 
   useEffect(() => {
+    const video = introVideoRef.current;
+    if (!video) return;
+
+    if (phase === 'intro') {
+      const onTimeUpdate = () => {
+        const t = video.currentTime;
+        INTRO_CUES.forEach((cue, idx) => {
+          if (t >= cue.start && t <= cue.end && !spokenCuesRef.current.has(idx)) {
+            spokenCuesRef.current.add(idx);
+            playCueAudio(cue.audio, cue.text);
+          }
+        });
+      };
+      const onEnded = () => {
+        setPhase('listening');
+        setBotText('I am listening...');
+        startListening();
+      };
+      video.addEventListener('timeupdate', onTimeUpdate);
+      video.addEventListener('ended', onEnded);
+      return () => {
+        video.removeEventListener('timeupdate', onTimeUpdate);
+        video.removeEventListener('ended', onEnded);
+      };
+    }
+  }, [phase, playCueAudio, startListening]);
+
+  useEffect(() => {
     return () => {
       if (currentAudioRef.current) {
         currentAudioRef.current.pause();
@@ -202,18 +211,8 @@ const VoiceChat: React.FC<VoiceChatProps> = ({ onClose }) => {
   const ringColor = phase === 'listening' ? '#22c55e' : '#fa4529';
   const ringGlow = phase === 'listening' ? 'rgba(34,197,94,0.4)' : 'rgba(250,69,41,0.3)';
 
-  const getVideoSrc = () => {
-    if (phase === 'intro') {
-      return '/chatbot/voice-robot/Robot_waving_and_greeting_camera_compressed.mp4';
-    }
-    if (phase === 'speaking') {
-      return '/chatbot/voice-robot/talking.mp4';
-    }
-    return '/chatbot/voice-robot/kitty-listening-loop.mp4';
-  };
-
   return (
-    <div style={{ position:'fixed', inset:0, zIndex:99999, display:'flex', alignItems:'center', justifyContent:'center', background:'rgba(0,0,0,0.75)', backdropFilter:'blur(10px)', WebkitBackdropFilter:'blur(10px)', animation:'vcFadeIn 0.3s ease' }}>
+    <div style={{ position:'fixed', inset:0, zIndex:99999, display:'flex', alignItems:'center', justifyContent:'center', background:'rgba(0,0,0,0.82)', backdropFilter:'blur(8px)', WebkitBackdropFilter:'blur(8px)', animation:'vcFadeIn 0.3s ease' }}>
       <style>{`
         @keyframes vcFadeIn { from{opacity:0;transform:scale(0.94)} to{opacity:1;transform:scale(1)} }
         @keyframes vcPulse { 0%,100%{box-shadow:0 0 0 0 rgba(250,69,41,0.55)} 50%{box-shadow:0 0 0 14px rgba(250,69,41,0)} }
@@ -221,7 +220,7 @@ const VoiceChat: React.FC<VoiceChatProps> = ({ onClose }) => {
         @keyframes vcDots { 0%,80%,100%{opacity:0.2;transform:scale(0.8)} 40%{opacity:1;transform:scale(1)} }
         @keyframes liveVoiceWave { 0%,100%{height:6px} 50%{height:20px} }
       `}</style>
-      <div style={{ position:'relative', width:'360px', background:'linear-gradient(160deg,#0f0f0f 0%,#1a0a05 100%)', borderRadius:'24px', border:'1px solid rgba(250,69,41,0.25)', boxShadow:'0 32px 80px rgba(0,0,0,0.7)', overflow:'hidden', padding:'0 0 32px', display:'flex', flexDirection:'column', alignItems:'center' }}>
+      <div style={{ position:'relative', width:'360px', maxWidth:'calc(100vw - 32px)', background:'linear-gradient(160deg,#0f0f0f 0%,#1a0a05 100%)', borderRadius:'24px', border:'1px solid rgba(250,69,41,0.25)', boxShadow:'0 32px 80px rgba(0,0,0,0.85)', overflow:'hidden', padding:'0 0 32px', display:'flex', flexDirection:'column', alignItems:'center', transform:'translateZ(0)' }}>
         {/* Header */}
         <div style={{ width:'100%', display:'flex', alignItems:'center', justifyContent:'space-between', padding:'16px 20px 12px', borderBottom:'1px solid rgba(255,255,255,0.06)' }}>
           <div style={{ display:'flex', alignItems:'center', gap:'8px' }}>
@@ -238,16 +237,77 @@ const VoiceChat: React.FC<VoiceChatProps> = ({ onClose }) => {
           </div>
         </div>
 
-        {/* Robot Video Box (Same container, no box flashing or frame rebuild) */}
-        <div style={{ width:'220px', height:'220px', marginTop:'24px', borderRadius:'50%', overflow:'hidden', border:`3px solid ${ringColor}`, boxShadow:`0 0 32px ${ringGlow}`, transition:'border-color 0.4s,box-shadow 0.4s', backgroundColor:'#111', flexShrink:0 }}>
+        {/* Robot Video Box (3-Layer Preloaded Hardware Crossfade Stack — ZERO Black Screen, 60 FPS Mobile GPU Optimized) */}
+        <div style={{ position:'relative', width:'220px', height:'220px', marginTop:'24px', borderRadius:'50%', overflow:'hidden', border:`3px solid ${ringColor}`, boxShadow:`0 0 32px ${ringGlow}`, transition:'border-color 0.4s,box-shadow 0.4s', backgroundColor:'#0a0a0a', flexShrink:0, transform:'translateZ(0)', WebkitTransform:'translateZ(0)' }}>
+          {/* Layer 1: Intro Greeting Video */}
           <video
-            ref={videoRef}
-            src={getVideoSrc()}
+            ref={introVideoRef}
+            src="/chatbot/voice-robot/Robot_waving_and_greeting_camera_compressed.mp4"
             autoPlay
-            loop={phase !== 'intro'}
             playsInline
             muted={true}
-            style={{ width:'100%', height:'100%', objectFit:'cover', objectPosition:'center top', display:'block' }}
+            preload="auto"
+            style={{
+              position: 'absolute',
+              inset: 0,
+              width: '100%',
+              height: '100%',
+              objectFit: 'cover',
+              objectPosition: 'center top',
+              opacity: phase === 'intro' ? 1 : 0,
+              transition: 'opacity 0.35s ease-in-out',
+              pointerEvents: 'none',
+              transform: 'translateZ(0)',
+              willChange: 'opacity',
+            }}
+          />
+
+          {/* Layer 2: Listening & Attentive Loop Video */}
+          <video
+            ref={listeningVideoRef}
+            src="/chatbot/voice-robot/kitty-listening-loop.mp4"
+            autoPlay
+            loop
+            playsInline
+            muted={true}
+            preload="auto"
+            style={{
+              position: 'absolute',
+              inset: 0,
+              width: '100%',
+              height: '100%',
+              objectFit: 'cover',
+              objectPosition: 'center top',
+              opacity: phase !== 'intro' && phase !== 'speaking' ? 1 : 0,
+              transition: 'opacity 0.35s ease-in-out',
+              pointerEvents: 'none',
+              transform: 'translateZ(0)',
+              willChange: 'opacity',
+            }}
+          />
+
+          {/* Layer 3: Talking / Answering Loop Video */}
+          <video
+            ref={talkingVideoRef}
+            src="/chatbot/voice-robot/talking.mp4"
+            autoPlay
+            loop
+            playsInline
+            muted={true}
+            preload="auto"
+            style={{
+              position: 'absolute',
+              inset: 0,
+              width: '100%',
+              height: '100%',
+              objectFit: 'cover',
+              objectPosition: 'center top',
+              opacity: phase === 'speaking' ? 1 : 0,
+              transition: 'opacity 0.35s ease-in-out',
+              pointerEvents: 'none',
+              transform: 'translateZ(0)',
+              willChange: 'opacity',
+            }}
           />
         </div>
 
