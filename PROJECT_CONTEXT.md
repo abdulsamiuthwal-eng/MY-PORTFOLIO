@@ -86,12 +86,12 @@
 - **Explicit Consent**: Ask for confirmation before pushing to GitHub / deploying to Vercel.
 - **Explaining First**: When Sami asks to diagnose or explain (*"srf dkh ka bataoo... krna kuch niiii"*), inspect and explain clearly before editing any files.
 - **Future Roadmap & Kitty Upgrades**:
-  - **Upcoming Female Robot Greeting Video (Google Flow / Veo 10s Prompt - Toothpick & Orange Accents)**:
+  - **Upcoming Female Robot Greeting Video (Google Flow / Veo 10s Prompt - Natural Dental Toothpick & Orange Accents)**:
     - **Visual Specs**: Pure white background matching portfolio, sleek white/silver metallic humanoid female robot with rich glowing electric orange neon accents (`#fa4529`) along waist, spine, shoulders, forearms, and glowing orange eyes. Prominent curved chest plate with pulsing orange core.
     - **Action & Natural Voice Sync Timing Breakdown (10s Total)**:
-      - `0s – 3s`: Casually reclining/leaning back, casually picking teeth with a small thin toothpick/stick after a meal.
-      - `3s – 5s`: Notices camera, pauses toothpick hand, removes stick, turns glowing orange eyes curiously toward camera.
-      - `5s – 7s`: Gracefully rises to upright standing posture, discards stick.
+      - `0s – 3s`: Casually lounging back, delicately holding a thin dental toothpick between thumb and index finger, performing precise, realistic tooth-cleaning between teeth (strictly NO chewing/eating motions).
+      - `3s – 5s`: Notices camera, instantly stops cleaning, cleanly pulls toothpick away from lips, lowers hand, turns glowing orange eyes curiously toward camera.
+      - `5s – 7s`: Fluidly and gracefully rises to an elegant upright standing posture, stepping forward and discarding pick.
       - `7s – 8s`: **1-second pause** after standing upright, settles posture, readies a warm smile.
       - `8s – 10s`: Smiles warmly, raises hand in polite wave, mouths/speaks: *"Hi Sir! Welcome!"* (Exact timestamp to sync custom natural female voice greeting).
   - **Full Real-Time Voice Mode**: ChatGPT-style low-latency bidirectional voice interaction with natural female TTS/audio.
