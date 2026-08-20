@@ -2,9 +2,9 @@ import React, { useEffect, useRef, useState, useCallback } from 'react';
 import { X, Mic, MicOff, Volume2, VolumeX } from 'lucide-react';
 
 const INTRO_CUES = [
-  { start: 2.03, end: 3.23, text: 'Hi!' },
-  { start: 5.18, end: 6.13, text: "I'm Kitty, Sami's personal assistant!" },
-  { start: 7.18, end: 8.22, text: 'How can I help you today?' },
+  { start: 2.0, end: 3.5, text: 'Hi...', audio: '/chatbot/voice-robot/cue1.mp3' },
+  { start: 4.5, end: 6.8, text: "I'm Kitty... Sami's personal assistant!", audio: '/chatbot/voice-robot/cue2.mp3' },
+  { start: 7.0, end: 9.2, text: 'How can I help you today?', audio: '/chatbot/voice-robot/cue3.mp3' },
 ];
 
 interface VoiceChatProps {
@@ -18,6 +18,7 @@ const VoiceChat: React.FC<VoiceChatProps> = ({ onClose }) => {
   const recognitionRef = useRef<any>(null);
   const spokenCuesRef = useRef<Set<number>>(new Set());
   const transcriptRef = useRef<string>('');
+  const currentAudioRef = useRef<HTMLAudioElement | null>(null);
 
   const [phase, setPhase] = useState<Phase>('intro');
   const [displayTranscript, setDisplayTranscript] = useState('');
@@ -36,6 +37,22 @@ const VoiceChat: React.FC<VoiceChatProps> = ({ onClose }) => {
     window.speechSynthesis.speak(utt);
   }, [muted]);
 
+  const playCueAudio = useCallback((audioSrc: string, fallbackText: string) => {
+    if (muted) return;
+    try {
+      if (currentAudioRef.current) {
+        currentAudioRef.current.pause();
+      }
+      const audio = new Audio(audioSrc);
+      currentAudioRef.current = audio;
+      audio.play().catch(() => {
+        speak(fallbackText);
+      });
+    } catch {
+      speak(fallbackText);
+    }
+  }, [muted, speak]);
+
   useEffect(() => {
     const video = videoRef.current;
     if (!video) return;
@@ -44,7 +61,7 @@ const VoiceChat: React.FC<VoiceChatProps> = ({ onClose }) => {
       INTRO_CUES.forEach((cue, idx) => {
         if (t >= cue.start && t <= cue.end && !spokenCuesRef.current.has(idx)) {
           spokenCuesRef.current.add(idx);
-          speak(cue.text);
+          playCueAudio(cue.audio, cue.text);
         }
       });
     };
@@ -58,7 +75,7 @@ const VoiceChat: React.FC<VoiceChatProps> = ({ onClose }) => {
       video.removeEventListener('timeupdate', onTimeUpdate);
       video.removeEventListener('ended', onEnded);
     };
-  }, [speak]);
+  }, [playCueAudio]);
 
   const startListening = useCallback(() => {
     const SR = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
@@ -108,7 +125,13 @@ const VoiceChat: React.FC<VoiceChatProps> = ({ onClose }) => {
   }, []);
 
   useEffect(() => {
-    return () => { window.speechSynthesis.cancel(); recognitionRef.current?.stop(); };
+    return () => {
+      if (currentAudioRef.current) {
+        currentAudioRef.current.pause();
+      }
+      window.speechSynthesis.cancel();
+      recognitionRef.current?.stop();
+    };
   }, []);
 
   const phaseLabel: Record<Phase, string> = {
