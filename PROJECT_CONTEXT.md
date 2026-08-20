@@ -92,5 +92,23 @@
     - **Concept 2 (AI Developer at Holographic Desk)**: Typing fast on floating orange code/ML screens (0-3s) -> alerts to visitor (3-5s) -> collapses code screens into tiny orange orb & stands up (5-7s) -> pauses 1s (7-8s) -> waves & speaks *"Hello Sir! How can I help you explore Sami's work today?"* (8-10s).
     - **Concept 3 (Glowing Orb Morph - SELECTED)**: Electric orange glass orb floats & spins (0-3s) -> morphs fluidly into full female humanoid robot landing on white floor (3-6s) -> stretches & powers up to 100% (6-8s) -> polite wave & mouths/speaks: *"Hello Sir! How can I help you today?"* (8-10s). Exact timestamp for natural voice sync.
     - **Concept 4 (VIP Luxury AI Concierge)**: Standing poised with transparent glass tablet (0-3s) -> senses visitor & lowers tablet (3-5s) -> graceful VIP welcome bow with hand on chest (5-7s) -> straightens up with radiant smile (7-8s) -> waves & speaks *"Welcome Sir! Ready to explore Abdul Sami's portfolio?"* (8-10s).
-  - **Kitty Official Voice Persona**: **Lily Rose** (Soft, soothing, conversational, calm pacing). All intro cues (`cue1.mp3`, `cue2.mp3`, `cue3.mp3`) and live dynamic Gemini AI responses will consistently use the Lily Rose voice profile.
-  - **Full Real-Time Voice Mode**: ChatGPT-style low-latency bidirectional voice interaction with natural Lily Rose female TTS/audio.
+- **Kitty Official Voice Persona**: **Lily Rose** (Soft, soothing, conversational, calm pacing). All intro cues (`cue1.mp3`, `cue2.mp3`, `cue3.mp3`), instant human fillers (`filler1.mp3`, `filler2.mp3`, `filler3.mp3`), and live dynamic Gemini AI responses (`api/tts.js`) use the exact same Lily Rose voice profile (`t4U671CQHG58R11znrVj`).
+- **Kitty Full-Screen Voice Mode Architecture**:
+  - **Asset Manifest**:
+    - `Robot_waving_and_greeting_camera_compressed.mp4` (1.5MB intro greeting avatar video)
+    - `kitty-listening-loop.mp4` (1.4MB silent active listening loop with ear tilt & nod)
+    - `talking.mp4` (2.48MB speaking animation loop with fluid lip movements)
+    - `cue1.mp3`, `cue2.mp3`, `cue3.mp3` (Intro speech audio cues synchronized at 1.8s, 3.5s, 6.6s)
+    - `filler1.mp3`, `filler2.mp3`, `filler3.mp3` (0.1s instant conversational filler audios)
+  - **3-Layer Preloaded GPU Video Crossfade Stack**:
+    - Teeno video layers (`Intro`, `Listening Loop`, `Talking Loop`) DOM me preloaded rehte hain with `opacity` crossfades (`translateZ(0)`, `will-change: opacity`).
+    - Eliminates video decoder buffer flush, guaranteeing **ZERO black screen flash and 60 FPS silky smooth mobile performance**.
+  - **Hands-Free Continuous Voice Engine**:
+    - Zero mic button clicking required. Voice Activity Detection (VAD) automatically starts listening when intro finishes and restarts immediately after each answer is spoken.
+  - **Real-Time Streaming Text-to-Speech (`api/tts.js`)**:
+    - Calls ElevenLabs Multilingual v2 model with voice `t4U671CQHG58R11znrVj`.
+    - Automatically cleans markdown syntax tokens before speech synthesis.
+    - Streams MP3 binary buffer to frontend with browser `SpeechSynthesis` resilient fallback.
+  - **Strict Hardware Microphone Lifecycle**:
+    - Microphone is ONLY activated when Voice Mode is open.
+    - Modal close / backdrop click forcefully aborts Web Speech Recognition (`recognition.abort()`, `recognition.stop()`), destroys audio streams, and clears all timers instantly.
