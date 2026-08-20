@@ -2,9 +2,9 @@ import React, { useEffect, useRef, useState, useCallback } from 'react';
 import { X, Mic, MicOff, Volume2, VolumeX } from 'lucide-react';
 
 const INTRO_CUES = [
-  { start: 2.0, end: 3.5, text: 'Hi...', audio: '/chatbot/voice-robot/cue1.mp3' },
-  { start: 4.5, end: 6.8, text: "I'm Kitty... Sami's personal assistant!", audio: '/chatbot/voice-robot/cue2.mp3' },
-  { start: 7.0, end: 9.2, text: 'How can I help you today?', audio: '/chatbot/voice-robot/cue3.mp3' },
+  { start: 1.8, end: 3.2, text: 'Hi...', audio: '/chatbot/voice-robot/cue1.mp3' },
+  { start: 3.5, end: 6.2, text: "I'm Kitty... Sami's personal assistant!", audio: '/chatbot/voice-robot/cue2.mp3' },
+  { start: 6.6, end: 9.2, text: 'How can I help you today?', audio: '/chatbot/voice-robot/cue3.mp3' },
 ];
 
 interface VoiceChatProps {
