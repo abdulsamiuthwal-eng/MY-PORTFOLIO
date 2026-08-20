@@ -501,7 +501,7 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
                 gap: '8px',
               }}>
                 <div style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: 'var(--ptf-accent-1)', animation: 'pulse 1s infinite' }} />
-                <span>Loading Assistant...</span>
+                <span>✨ Waking up Kitty...</span>
               </div>
             )}
             <video
