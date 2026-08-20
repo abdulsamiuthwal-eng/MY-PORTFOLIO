@@ -11,13 +11,15 @@ export default async function handler(req, res) {
   }
 
   const apiKey = process.env.ELEVENLABS_API_KEY || 'sk_73393b6f0b98c45870eb0ffefd8bde6a725b83ff5c6d9621';
-  const voiceId = process.env.ELEVENLABS_VOICE_ID || 't4U671CQHG58R11znrVj';
+  // Official ElevenLabs Free-Tier Certified Voice: Bella (EXAVITQu4vr4xnSDxMaL)
+  const voiceId = process.env.ELEVENLABS_VOICE_ID || 'EXAVITQu4vr4xnSDxMaL';
 
   // Clean Markdown & system tokens for silky natural speech
   const cleanText = text
     .replace(/---SECTION:[^-\s]+---/gi, '')
-    .replace(/[*#`_~]/g, '')
-    .replace(/•/g, '')
+    .replace(/[*#`_~•]/g, '')
+    .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1')
+    .replace(/https?:\/\/\S+/g, '')
     .replace(/\s+/g, ' ')
     .trim();
 
@@ -38,7 +40,7 @@ export default async function handler(req, res) {
         },
         body: JSON.stringify({
           text: cleanText,
-          model_id: 'eleven_multilingual_v2',
+          model_id: 'eleven_flash_v2_5',
           voice_settings: {
             stability: 0.5,
             similarity_boost: 0.8,

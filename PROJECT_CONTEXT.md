@@ -22,7 +22,7 @@
 - **Animations**: AOS (Animate on Scroll) + Custom 60 FPS GPU Compositor Keyframes (`translate3d`, `scale3d`)
 - **Backend / Serverless**:
   - `api/chat.js` (Vercel Serverless Function — Google Gemini API with resilient multi-key fallback)
-  - `api/tts.js` (Vercel Serverless Function — ElevenLabs real-time streaming Text-To-Speech with **Lily Rose** voice `t4U671CQHG58R11znrVj`)
+  - `api/tts.js` (Vercel Serverless Function — ElevenLabs real-time streaming Text-To-Speech with **Bella** voice `EXAVITQu4vr4xnSDxMaL` on `eleven_flash_v2_5`)
   - `api/web3forms.js` (Vercel Serverless Function — Web3Forms contact submission proxy)
 - **Deployment**: GitHub (`origin/main`) synced directly with Vercel Production CLI (`npx vercel --prod --yes`)
 
