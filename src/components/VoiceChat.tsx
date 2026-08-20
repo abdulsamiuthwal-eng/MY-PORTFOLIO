@@ -27,19 +27,73 @@ const VoiceChat: React.FC<VoiceChatProps> = ({ onClose }) => {
   const [botText, setBotText] = useState('');
   const [muted, setMuted] = useState(false);
 
+  const isMountedRef = useRef(true);
+  const timeoutsRef = useRef<number[]>([]);
+
+  const safeTimeout = useCallback((fn: () => void, ms: number) => {
+    const id = window.setTimeout(() => {
+      if (isMountedRef.current) {
+        fn();
+      }
+    }, ms);
+    timeoutsRef.current.push(id);
+    return id;
+  }, []);
+
+  const terminateMicrophone = useCallback(() => {
+    if (recognitionRef.current) {
+      try {
+        recognitionRef.current.onstart = null;
+        recognitionRef.current.onresult = null;
+        recognitionRef.current.onerror = null;
+        recognitionRef.current.onend = null;
+        recognitionRef.current.abort?.();
+        recognitionRef.current.stop?.();
+      } catch {}
+      recognitionRef.current = null;
+    }
+  }, []);
+
+  const cleanupAll = useCallback(() => {
+    isMountedRef.current = false;
+    terminateMicrophone();
+    timeoutsRef.current.forEach(id => clearTimeout(id));
+    timeoutsRef.current = [];
+    if (currentAudioRef.current) {
+      try {
+        currentAudioRef.current.pause();
+        currentAudioRef.current.src = '';
+      } catch {}
+      currentAudioRef.current = null;
+    }
+    window.speechSynthesis?.cancel();
+    introVideoRef.current?.pause();
+    listeningVideoRef.current?.pause();
+    talkingVideoRef.current?.pause();
+  }, [terminateMicrophone]);
+
+  const handleClose = useCallback(() => {
+    cleanupAll();
+    onClose();
+  }, [cleanupAll, onClose]);
+
   const speak = useCallback((text: string, onEnd?: () => void) => {
-    if (muted) { onEnd?.(); return; }
+    if (muted || !isMountedRef.current) { onEnd?.(); return; }
     window.speechSynthesis.cancel();
     const utt = new SpeechSynthesisUtterance(text);
     utt.rate = 0.92;
     utt.pitch = 1.05;
     utt.lang = 'en-US';
-    if (onEnd) utt.onend = onEnd;
+    if (onEnd) {
+      utt.onend = () => {
+        if (isMountedRef.current) onEnd();
+      };
+    }
     window.speechSynthesis.speak(utt);
   }, [muted]);
 
   const playCueAudio = useCallback((audioSrc: string, fallbackText: string) => {
-    if (muted) return;
+    if (muted || !isMountedRef.current) return;
     try {
       if (currentAudioRef.current) {
         currentAudioRef.current.pause();
@@ -47,10 +101,10 @@ const VoiceChat: React.FC<VoiceChatProps> = ({ onClose }) => {
       const audio = new Audio(audioSrc);
       currentAudioRef.current = audio;
       audio.play().catch(() => {
-        speak(fallbackText);
+        if (isMountedRef.current) speak(fallbackText);
       });
     } catch {
-      speak(fallbackText);
+      if (isMountedRef.current) speak(fallbackText);
     }
   }, [muted, speak]);
 
@@ -62,7 +116,7 @@ const VoiceChat: React.FC<VoiceChatProps> = ({ onClose }) => {
 
   const playFiller = useCallback((): Promise<void> => {
     return new Promise((resolve) => {
-      if (muted) { resolve(); return; }
+      if (muted || !isMountedRef.current) { resolve(); return; }
       try {
         const randomFiller = FILLER_AUDIOS[Math.floor(Math.random() * FILLER_AUDIOS.length)];
         const audio = new Audio(randomFiller);
@@ -78,41 +132,50 @@ const VoiceChat: React.FC<VoiceChatProps> = ({ onClose }) => {
 
   // Pre-start all 3 video streams in GPU cache for instant zero-black-screen transitions
   useEffect(() => {
+    isMountedRef.current = true;
     introVideoRef.current?.play().catch(() => {});
     listeningVideoRef.current?.play().catch(() => {});
     talkingVideoRef.current?.play().catch(() => {});
-  }, []);
+
+    return () => {
+      cleanupAll();
+    };
+  }, [cleanupAll]);
 
   const startListening = useCallback(() => {
+    if (!isMountedRef.current) return;
     const SR = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
     if (!SR) return;
-    try {
-      recognitionRef.current?.stop();
-    } catch {}
+    
+    terminateMicrophone();
 
     const rec = new SR();
     rec.lang = 'en-US';
     rec.interimResults = true;
     rec.continuous = false;
     rec.onstart = () => {
+      if (!isMountedRef.current) {
+        rec.abort?.();
+        return;
+      }
       setPhase('listening');
       setDisplayTranscript('');
       transcriptRef.current = '';
     };
     rec.onresult = (e: any) => {
+      if (!isMountedRef.current) return;
       const txt = Array.from(e.results).map((r: any) => r[0].transcript).join('');
       transcriptRef.current = txt;
       setDisplayTranscript(txt);
     };
     rec.onend = async () => {
+      if (!isMountedRef.current) return;
       const final = transcriptRef.current.trim();
       if (!final) {
         // If user didn't speak anything, seamlessly resume listening
         setPhase('listening');
         setBotText('I am listening...');
-        try {
-          setTimeout(() => startListening(), 400);
-        } catch {}
+        safeTimeout(() => startListening(), 400);
         return;
       }
       
@@ -130,26 +193,30 @@ const VoiceChat: React.FC<VoiceChatProps> = ({ onClose }) => {
           body: JSON.stringify({ messages: [{ role: 'user', content: final }] }),
         });
         const data = await res.json();
+        if (!isMountedRef.current) return;
         const reply: string = data.reply || data.message || data.text || 'I am right here to help!';
         setBotText(reply);
         setDisplayTranscript('');
         setPhase('speaking');
         speak(reply, () => {
+          if (!isMountedRef.current) return;
           // Immediately after speaking finishes, resume listening automatically (Hands-Free!)
           setPhase('listening');
           setBotText('I am listening...');
-          setTimeout(() => startListening(), 300);
+          safeTimeout(() => startListening(), 300);
         });
       } catch {
+        if (!isMountedRef.current) return;
         setBotText('Oops! Something went wrong.');
         setPhase('listening');
-        setTimeout(() => startListening(), 1000);
+        safeTimeout(() => startListening(), 1000);
       }
     };
     rec.onerror = () => {
-      // Auto reconnect speech listener on silence/error
-      setTimeout(() => {
-        if (phase !== 'intro' && phase !== 'speaking') {
+      if (!isMountedRef.current) return;
+      // Auto reconnect speech listener on silence/error only if still active
+      safeTimeout(() => {
+        if (isMountedRef.current && phase !== 'intro' && phase !== 'speaking') {
           startListening();
         }
       }, 600);
@@ -158,7 +225,7 @@ const VoiceChat: React.FC<VoiceChatProps> = ({ onClose }) => {
     try {
       rec.start();
     } catch {}
-  }, [phase, playFiller, speak]);
+  }, [phase, playFiller, safeTimeout, speak, terminateMicrophone]);
 
   useEffect(() => {
     const video = introVideoRef.current;
@@ -175,6 +242,7 @@ const VoiceChat: React.FC<VoiceChatProps> = ({ onClose }) => {
         });
       };
       const onEnded = () => {
+        if (!isMountedRef.current) return;
         setPhase('listening');
         setBotText('I am listening...');
         startListening();
@@ -187,18 +255,6 @@ const VoiceChat: React.FC<VoiceChatProps> = ({ onClose }) => {
       };
     }
   }, [phase, playCueAudio, startListening]);
-
-  useEffect(() => {
-    return () => {
-      if (currentAudioRef.current) {
-        currentAudioRef.current.pause();
-      }
-      window.speechSynthesis.cancel();
-      try {
-        recognitionRef.current?.stop();
-      } catch {}
-    };
-  }, []);
 
   const phaseLabel: Record<Phase, string> = {
     intro: '👋 Introducing…',
@@ -231,7 +287,7 @@ const VoiceChat: React.FC<VoiceChatProps> = ({ onClose }) => {
             <button onClick={() => setMuted(m=>!m)} style={{ background:'rgba(255,255,255,0.08)', border:'none', borderRadius:'50%', width:'32px', height:'32px', display:'flex', alignItems:'center', justifyContent:'center', cursor:'pointer', color: muted?'#fa4529':'#aaa' }} title={muted?'Unmute':'Mute'}>
               {muted ? <VolumeX size={15}/> : <Volume2 size={15}/>}
             </button>
-            <button onClick={onClose} style={{ background:'rgba(255,255,255,0.08)', border:'none', borderRadius:'50%', width:'32px', height:'32px', display:'flex', alignItems:'center', justifyContent:'center', cursor:'pointer', color:'#aaa' }}>
+            <button onClick={handleClose} style={{ background:'rgba(255,255,255,0.08)', border:'none', borderRadius:'50%', width:'32px', height:'32px', display:'flex', alignItems:'center', justifyContent:'center', cursor:'pointer', color:'#aaa' }}>
               <X size={15}/>
             </button>
           </div>
