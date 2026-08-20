@@ -86,12 +86,12 @@
 - **Explicit Consent**: Ask for confirmation before pushing to GitHub / deploying to Vercel.
 - **Explaining First**: When Sami asks to diagnose or explain (*"srf dkh ka bataoo... krna kuch niiii"*), inspect and explain clearly before editing any files.
 - **Future Roadmap & Kitty Upgrades**:
-  - **Upcoming Female Robot Greeting Video (Google Flow / Veo 10s Prompt - Natural Dental Toothpick & Orange Accents)**:
-    - **Visual Specs**: Pure white background matching portfolio, sleek white/silver metallic humanoid female robot with rich glowing electric orange neon accents (`#fa4529`) along waist, spine, shoulders, forearms, and glowing orange eyes. Prominent curved chest plate with pulsing orange core.
+  - **Upcoming Female Robot Greeting Video (Google Flow / Veo 10s Prompt - Concept 4: VIP Luxury AI Concierge)**:
+    - **Visual Specs**: Pure white background matching portfolio, sleek pearl-white & chrome metallic humanoid female robot with rich glowing electric orange neon accents (`#fa4529`) along waist, spine, shoulders, forearms, and glowing orange eyes. Prominent curved chest plate with pulsing orange core.
     - **Action & Natural Voice Sync Timing Breakdown (10s Total)**:
-      - `0s – 3s`: Casually lounging back, delicately holding a thin dental toothpick between thumb and index finger, performing precise, realistic tooth-cleaning between teeth (strictly NO chewing/eating motions).
-      - `3s – 5s`: Notices camera, instantly stops cleaning, cleanly pulls toothpick away from lips, lowers hand, turns glowing orange eyes curiously toward camera.
-      - `5s – 7s`: Fluidly and gracefully rises to an elegant upright standing posture, stepping forward and discarding pick.
-      - `7s – 8s`: **1-second pause** after standing upright, settles posture, readies a warm smile.
-      - `8s – 10s`: Smiles warmly, raises hand in polite wave, mouths/speaks: *"Hi Sir! Welcome!"* (Exact timestamp to sync custom natural female voice greeting).
+      - `0s – 3s`: Standing poised with transparent holographic glass tablet, tapping lightly to review info.
+      - `3s – 5s`: Senses visitor, gracefully lowers tablet to side, turns luminous orange eyes attentively toward camera.
+      - `5s – 7s`: Places hand over chest/heart and performs a graceful, respectful slight welcome bow (VIP concierge greeting).
+      - `7s – 8s`: Straightens up with immaculate posture, flashing a warm, charming, confident smile.
+      - `8s – 10s`: Raises right hand in polite wave & welcoming open-palm gesture, mouths/speaks: *"Welcome Sir! Ready to explore Abdul Sami's portfolio?"* (Exact timestamp to sync custom natural female voice greeting).
   - **Full Real-Time Voice Mode**: ChatGPT-style low-latency bidirectional voice interaction with natural female TTS/audio.
