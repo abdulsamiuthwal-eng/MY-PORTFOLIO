@@ -86,12 +86,9 @@
 - **Explicit Consent**: Ask for confirmation before pushing to GitHub / deploying to Vercel.
 - **Explaining First**: When Sami asks to diagnose or explain (*"srf dkh ka bataoo... krna kuch niiii"*), inspect and explain clearly before editing any files.
 - **Future Roadmap & Kitty Upgrades**:
-  - **Upcoming Female Robot Greeting Video (Google Flow / Veo 10s Prompt - Concept 4: VIP Luxury AI Concierge)**:
-    - **Visual Specs**: Pure white background matching portfolio, sleek pearl-white & chrome metallic humanoid female robot with rich glowing electric orange neon accents (`#fa4529`) along waist, spine, shoulders, forearms, and glowing orange eyes. Prominent curved chest plate with pulsing orange core.
-    - **Action & Natural Voice Sync Timing Breakdown (10s Total)**:
-      - `0s – 3s`: Standing poised with transparent holographic glass tablet, tapping lightly to review info.
-      - `3s – 5s`: Senses visitor, gracefully lowers tablet to side, turns luminous orange eyes attentively toward camera.
-      - `5s – 7s`: Places hand over chest/heart and performs a graceful, respectful slight welcome bow (VIP concierge greeting).
-      - `7s – 8s`: Straightens up with immaculate posture, flashing a warm, charming, confident smile.
-      - `8s – 10s`: Raises right hand in polite wave & welcoming open-palm gesture, mouths/speaks: *"Welcome Sir! Ready to explore Abdul Sami's portfolio?"* (Exact timestamp to sync custom natural female voice greeting).
+  - **Upcoming Female Robot Greeting Video Options (Google Flow / Veo 10s Prompts)**:
+    - **Concept 1 (Sci-Fi Hologram Activation)**: Dormant charging pose on clean white studio -> chest reactor pulses orange (`#fa4529`) & eyes blink open (0-3s) -> steps forward with holographic neural data rings (3-6s) -> dismisses holographic window (6-8s) -> waves & greets *"Hi! I'm Kitty! Welcome to Sami's portfolio!"* (8-10s).
+    - **Concept 2 (AI Developer at Holographic Desk)**: Typing fast on floating orange code/ML screens (0-3s) -> alerts to visitor (3-5s) -> collapses code screens into tiny orange orb & stands up (5-7s) -> pauses 1s (7-8s) -> waves & speaks *"Hello Sir! How can I help you explore Sami's work today?"* (8-10s).
+    - **Concept 3 (Glowing Orb Morph)**: Electric orange glass orb floats & spins (0-3s) -> morphs fluidly into full female humanoid robot landing on white floor (3-6s) -> stretches & powers up (6-8s) -> head tilt, wave & *"Hey there! Welcome! Ask me anything!"* (8-10s).
+    - **Concept 4 (VIP Luxury AI Concierge)**: Standing poised with transparent glass tablet (0-3s) -> senses visitor & lowers tablet (3-5s) -> graceful VIP welcome bow with hand on chest (5-7s) -> straightens up with radiant smile (7-8s) -> waves & speaks *"Welcome Sir! Ready to explore Abdul Sami's portfolio?"* (8-10s).
   - **Full Real-Time Voice Mode**: ChatGPT-style low-latency bidirectional voice interaction with natural female TTS/audio.
