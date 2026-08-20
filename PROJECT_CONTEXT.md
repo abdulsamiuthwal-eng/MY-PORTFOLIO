@@ -85,4 +85,12 @@
 - **Local Testing First**: Always test and verify changes on `localhost:5173` before pushing.
 - **Explicit Consent**: Ask for confirmation before pushing to GitHub / deploying to Vercel.
 - **Explaining First**: When Sami asks to diagnose or explain (*"srf dkh ka bataoo... krna kuch niiii"*), inspect and explain clearly before editing any files.
-- **Future Roadmap**: Potential upcoming upgrade discussed with user: Full real-time female voice chat (ChatGPT-style voice mode for Kitty).
+- **Future Roadmap & Kitty Upgrades**:
+  - **Upcoming Female Robot Greeting Video (Google Flow / Veo 10s Prompt)**:
+    - **Visual Specs**: Pure white background matching portfolio, sleek white/silver metallic humanoid female robot with glowing orange accents (`#fa4529`), soft digital eyes, prominent curved chest plate with glowing orange core.
+    - **Action & Natural Voice Sync Timing Breakdown (10s Total)**:
+      - `0s – 3s`: Casually reclining/lying down, playfully cleaning teeth with stick/brush.
+      - `3s – 6s`: Notices camera, gently pauses, turns glowing eyes softly toward camera.
+      - `6s – 8s`: Gracefully rises and stands upright, poised and elegant.
+      - `8s – 10s`: Smiles warmly, raises hand in gentle wave, mouths/gestures "Hi!" (Exact timestamp to sync custom natural female voice greeting).
+  - **Full Real-Time Voice Mode**: ChatGPT-style low-latency bidirectional voice interaction with natural female TTS/audio.
