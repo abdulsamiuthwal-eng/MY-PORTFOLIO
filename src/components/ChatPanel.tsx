@@ -518,8 +518,8 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
               style={{
                 width: '100%',
                 height: '100%',
-                objectFit: 'contain',
-                objectPosition: 'center center',
+                objectFit: 'cover',
+                objectPosition: 'center top',
                 display: 'block',
                 opacity: isVideoReady ? 1 : 0,
                 transition: 'opacity 0.35s ease-out',
