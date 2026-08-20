@@ -77,10 +77,39 @@ const VoiceChat: React.FC<VoiceChatProps> = ({ onClose }) => {
     onClose();
   }, [cleanupAll, onClose]);
 
-  const speak = useCallback((text: string, onEnd?: () => void) => {
+  const speak = useCallback(async (text: string, onEnd?: () => void) => {
     if (muted || !isMountedRef.current) { onEnd?.(); return; }
+
+    try {
+      const res = await fetch('/api/tts', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text }),
+      });
+
+      if (res.ok && isMountedRef.current) {
+        const blob = await res.blob();
+        const audioUrl = URL.createObjectURL(blob);
+        const audio = new Audio(audioUrl);
+        currentAudioRef.current = audio;
+        audio.onended = () => {
+          URL.revokeObjectURL(audioUrl);
+          if (isMountedRef.current) onEnd?.();
+        };
+        audio.onerror = () => {
+          URL.revokeObjectURL(audioUrl);
+          if (isMountedRef.current) onEnd?.();
+        };
+        await audio.play();
+        return;
+      }
+    } catch (err) {
+      console.warn('TTS streaming fallback to speech synthesis', err);
+    }
+
+    if (!isMountedRef.current) return;
     window.speechSynthesis.cancel();
-    const utt = new SpeechSynthesisUtterance(text);
+    const utt = new SpeechSynthesisUtterance(text.replace(/[*#`_~•]/g, ''));
     utt.rate = 0.92;
     utt.pitch = 1.05;
     utt.lang = 'en-US';

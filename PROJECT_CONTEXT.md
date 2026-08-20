@@ -22,6 +22,7 @@
 - **Animations**: AOS (Animate on Scroll) + Custom 60 FPS GPU Compositor Keyframes (`translate3d`, `scale3d`)
 - **Backend / Serverless**:
   - `api/chat.js` (Vercel Serverless Function — Google Gemini API with resilient multi-key fallback)
+  - `api/tts.js` (Vercel Serverless Function — ElevenLabs real-time streaming Text-To-Speech with **Lily Rose** voice `t4U671CQHG58R11znrVj`)
   - `api/web3forms.js` (Vercel Serverless Function — Web3Forms contact submission proxy)
 - **Deployment**: GitHub (`origin/main`) synced directly with Vercel Production CLI (`npx vercel --prod --yes`)
 
@@ -36,7 +37,7 @@
 | `src/components/CustomScrollbar.tsx` | 9-section desktop custom dot sidebar widget (positioned on left-side). Features top/bottom orange capsule caps, gliding active ring, section dot highlighting (`#fa4529`), left hover zone, and auto-hide timer. Throttled with `requestAnimationFrame`. |
 | `src/components/ChatIcon.tsx` | Floating AI assistant trigger button at bottom-right. Manages chat opening/closing state, unread counter, and audio recording. |
 | `src/components/ChatPanel.tsx` | Full AI Chat panel for **Kitty**. Includes greeting intro video (`robot-transforms-from-energy-orb-compressed.mp4` — Concept 3 energy orb morph compressed to 1.5MB, NO `currentTime` seek to prevent mobile freeze), message video loop (`boticon.mp4`), streaming response cursor, voice mic input, glowing rotating glassy orange orb button, and smooth 60 FPS open/close GPU scale animations. |
-| `src/components/VoiceChat.tsx` | Interactive full-screen Voice Mode modal for **Kitty**. Plays avatar robot video (`Robot_waving_and_greeting_camera_compressed.mp4`) synchronized with real **Lily Rose** studio MP3 audio cues (`cue1.mp3`, `cue2.mp3`, `cue3.mp3`) at timestamps (`2.0s`, `4.5s`, `7.0s`), captures user voice through Web Speech Recognition, and streams responses with animated glowing audio rings. |
+| `src/components/VoiceChat.tsx` | Full-screen Hands-Free Voice Mode for **Kitty**. 3-layer preloaded GPU crossfade stack (`Intro` -> `Listening` -> `Talking`), continuous hands-free VAD speech detection, instant Lily Rose filler triggers (`filler1-3.mp3`), dynamic real-time ElevenLabs TTS audio streaming (`api/tts.js` with Lily Rose voice `t4U671CQHG58R11znrVj`), and strict hardware microphone abort on close. |
 | `src/components/CustomCursor.tsx` | Hardware-accelerated custom cursor with `will-change: transform` and `requestAnimationFrame` interpolation. |
 | `src/components/Navbar.tsx` | Desktop & mobile responsive header, menu drawer with backdrop blur, and smooth section navigation links. |
 | `src/components/Hero.tsx` | Hero introduction section (`#home`) with avatar, social badges, and CTAs. |
