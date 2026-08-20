@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState, useCallback } from 'react';
-import { X, Mic, MicOff, Volume2, VolumeX } from 'lucide-react';
+import { X, Volume2, VolumeX } from 'lucide-react';
 
 const INTRO_CUES = [
   { start: 1.8, end: 3.2, text: 'Hi...', audio: '/chatbot/voice-robot/cue1.mp3' },
@@ -24,7 +24,6 @@ const VoiceChat: React.FC<VoiceChatProps> = ({ onClose }) => {
   const [displayTranscript, setDisplayTranscript] = useState('');
   const [botText, setBotText] = useState('');
   const [muted, setMuted] = useState(false);
-  const [micActive, setMicActive] = useState(false);
 
   const speak = useCallback((text: string, onEnd?: () => void) => {
     if (muted) { onEnd?.(); return; }
@@ -116,7 +115,6 @@ const VoiceChat: React.FC<VoiceChatProps> = ({ onClose }) => {
     rec.continuous = false;
     rec.onstart = () => {
       setPhase('listening');
-      setMicActive(true);
       setDisplayTranscript('');
       transcriptRef.current = '';
     };
@@ -126,7 +124,6 @@ const VoiceChat: React.FC<VoiceChatProps> = ({ onClose }) => {
       setDisplayTranscript(txt);
     };
     rec.onend = async () => {
-      setMicActive(false);
       const final = transcriptRef.current.trim();
       if (!final) {
         // If user didn't speak anything, seamlessly resume listening
@@ -169,7 +166,6 @@ const VoiceChat: React.FC<VoiceChatProps> = ({ onClose }) => {
       }
     };
     rec.onerror = () => {
-      setMicActive(false);
       // Auto reconnect speech listener on silence/error
       setTimeout(() => {
         if (phase !== 'intro' && phase !== 'speaking') {
