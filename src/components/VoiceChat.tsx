@@ -53,29 +53,54 @@ const VoiceChat: React.FC<VoiceChatProps> = ({ onClose }) => {
     }
   }, [muted, speak]);
 
+  const FILLER_AUDIOS = [
+    '/chatbot/voice-robot/filler1.mp3',
+    '/chatbot/voice-robot/filler2.mp3',
+    '/chatbot/voice-robot/filler3.mp3',
+  ];
+
+  const playFiller = useCallback((): Promise<void> => {
+    return new Promise((resolve) => {
+      if (muted) { resolve(); return; }
+      try {
+        const randomFiller = FILLER_AUDIOS[Math.floor(Math.random() * FILLER_AUDIOS.length)];
+        const audio = new Audio(randomFiller);
+        currentAudioRef.current = audio;
+        audio.onended = () => resolve();
+        audio.onerror = () => resolve();
+        audio.play().catch(() => resolve());
+      } catch {
+        resolve();
+      }
+    });
+  }, [muted]);
+
   useEffect(() => {
     const video = videoRef.current;
     if (!video) return;
-    const onTimeUpdate = () => {
-      const t = video.currentTime;
-      INTRO_CUES.forEach((cue, idx) => {
-        if (t >= cue.start && t <= cue.end && !spokenCuesRef.current.has(idx)) {
-          spokenCuesRef.current.add(idx);
-          playCueAudio(cue.audio, cue.text);
-        }
-      });
-    };
-    const onEnded = () => {
-      setPhase('idle');
-      setBotText('Go ahead, ask me anything!');
-    };
-    video.addEventListener('timeupdate', onTimeUpdate);
-    video.addEventListener('ended', onEnded);
-    return () => {
-      video.removeEventListener('timeupdate', onTimeUpdate);
-      video.removeEventListener('ended', onEnded);
-    };
-  }, [playCueAudio]);
+
+    if (phase === 'intro') {
+      const onTimeUpdate = () => {
+        const t = video.currentTime;
+        INTRO_CUES.forEach((cue, idx) => {
+          if (t >= cue.start && t <= cue.end && !spokenCuesRef.current.has(idx)) {
+            spokenCuesRef.current.add(idx);
+            playCueAudio(cue.audio, cue.text);
+          }
+        });
+      };
+      const onEnded = () => {
+        setPhase('idle');
+        setBotText('Go ahead, I am listening!');
+      };
+      video.addEventListener('timeupdate', onTimeUpdate);
+      video.addEventListener('ended', onEnded);
+      return () => {
+        video.removeEventListener('timeupdate', onTimeUpdate);
+        video.removeEventListener('ended', onEnded);
+      };
+    }
+  }, [phase, playCueAudio]);
 
   const startListening = useCallback(() => {
     const SR = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
@@ -96,6 +121,10 @@ const VoiceChat: React.FC<VoiceChatProps> = ({ onClose }) => {
       if (!final) { setPhase('idle'); return; }
       setPhase('thinking');
       setBotText('Thinking…');
+      
+      // Play instant natural filler audio ("Hmm... Got it!" / "Aha...")
+      playFiller();
+
       try {
         const res = await fetch('/api/chat', {
           method: 'POST',
@@ -103,11 +132,14 @@ const VoiceChat: React.FC<VoiceChatProps> = ({ onClose }) => {
           body: JSON.stringify({ messages: [{ role: 'user', content: final }] }),
         });
         const data = await res.json();
-        const reply: string = data.reply || data.message || 'Sorry, I could not understand.';
+        const reply: string = data.reply || data.message || data.text || 'I am right here to help!';
         setBotText(reply);
         setDisplayTranscript('');
         setPhase('speaking');
-        speak(reply, () => setPhase('idle'));
+        speak(reply, () => {
+          setPhase('idle');
+          setBotText('I am listening...');
+        });
       } catch {
         setBotText('Oops! Something went wrong.');
         setPhase('idle');
@@ -116,7 +148,7 @@ const VoiceChat: React.FC<VoiceChatProps> = ({ onClose }) => {
     rec.onerror = () => { setMicActive(false); setPhase('idle'); };
     recognitionRef.current = rec;
     rec.start();
-  }, [speak]);
+  }, [playFiller, speak]);
 
   const stopListening = useCallback(() => {
     recognitionRef.current?.stop();
@@ -172,7 +204,16 @@ const VoiceChat: React.FC<VoiceChatProps> = ({ onClose }) => {
 
         {/* Robot Video */}
         <div style={{ width:'220px', height:'220px', marginTop:'24px', borderRadius:'50%', overflow:'hidden', border:`3px solid ${ringColor}`, boxShadow:`0 0 32px ${ringGlow}`, transition:'border-color 0.4s,box-shadow 0.4s', backgroundColor:'#111', flexShrink:0 }}>
-          <video ref={videoRef} src="/chatbot/voice-robot/Robot_waving_and_greeting_camera_compressed.mp4" autoPlay playsInline muted={true} style={{ width:'100%', height:'100%', objectFit:'cover', objectPosition:'center top', display:'block' }} />
+          <video
+            key={phase === 'intro' ? 'intro' : 'listening'}
+            ref={videoRef}
+            src={phase === 'intro' ? '/chatbot/voice-robot/Robot_waving_and_greeting_camera_compressed.mp4' : '/chatbot/voice-robot/kitty-listening-loop.mp4'}
+            autoPlay
+            loop={phase !== 'intro'}
+            playsInline
+            muted={true}
+            style={{ width:'100%', height:'100%', objectFit:'cover', objectPosition:'center top', display:'block' }}
+          />
         </div>
 
         {/* Phase Status */}
