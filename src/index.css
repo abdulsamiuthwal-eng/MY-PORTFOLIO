@@ -1580,14 +1580,41 @@ body {
 
 @media (max-width: 767px) {
   .ptf-footer--contact-video {
-    min-height: 380px;
-    padding: 40px 0 25px 0;
+    min-height: 400px;
+    padding: 50px 0 25px 0;
   }
 
+  /* Horse positioned slightly to the left of center on mobile */
+  .ptf-footer--contact-video .ptf-footer-video-element {
+    object-position: 12% center;
+  }
+
+  /* Remove box, border, shadow, backdrop-filter on mobile for pure transparency */
   .ptf-footer--contact-video .ptf-footer-inner {
-    border-radius: 22px;
-    padding: 18px 20px;
-    gap: 14px;
+    background: transparent !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    border: none !important;
+    box-shadow: none !important;
+    padding: 10px 15px;
+    gap: 12px;
+  }
+
+  .ptf-footer--contact-video .ptf-footer-copyright span {
+    color: #000000;
+    font-weight: 600;
+    text-shadow: 0 1px 4px rgba(255, 255, 255, 0.8);
+  }
+
+  .ptf-footer--contact-video .ptf-footer-email a {
+    color: #000000;
+    font-weight: 700;
+    text-shadow: 0 1px 4px rgba(255, 255, 255, 0.8);
+  }
+
+  .ptf-footer--contact-video .ptf-footer-social-link {
+    color: #000000;
+    filter: drop-shadow(0 1px 3px rgba(255, 255, 255, 0.8));
   }
 }
 
