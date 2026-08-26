@@ -321,7 +321,7 @@ const App: React.FC = () => {
           </div>
         )}
       </main>
-      <Footer />
+      <Footer isContactPage={isContactPage} />
     </>
   );
 };

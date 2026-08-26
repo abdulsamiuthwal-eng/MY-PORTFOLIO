@@ -42,7 +42,11 @@ const WhatsappIcon = (props: React.SVGProps<SVGSVGElement>) => (
   </svg>
 );
 
-const Footer: React.FC = () => {
+interface FooterProps {
+  isContactPage?: boolean;
+}
+
+const Footer: React.FC<FooterProps> = ({ isContactPage = false }) => {
   const currentYear = new Date().getFullYear();
   const [showScrollTop, setShowScrollTop] = useState(false);
 
@@ -74,8 +78,23 @@ const Footer: React.FC = () => {
   }, []);
 
   return (
-    <footer className="ptf-footer">
-      <div className="container-xxl">
+    <footer className={`ptf-footer ${isContactPage ? 'ptf-footer--contact-video' : ''}`}>
+      {isContactPage && (
+        <div className="ptf-footer-video-bg" aria-hidden="true">
+          <video
+            className="ptf-footer-video-element"
+            src="/horse-smoke-footer.mp4"
+            autoPlay
+            loop
+            muted
+            playsInline
+            preload="auto"
+          />
+          <div className="ptf-footer-video-overlay" />
+        </div>
+      )}
+
+      <div className="container-xxl ptf-footer-content-wrapper">
         <div className="ptf-footer-inner">
           {/* Left: Copyright */}
           <div className="ptf-footer-copyright">
