@@ -164,7 +164,7 @@ const ContactPage: React.FC = () => {
   };
 
   return (
-    <div id="contact-page" className="ptf-contact-page-view" style={{ backgroundColor: 'var(--ptf-white-color)', minHeight: '100vh', paddingTop: '120px', paddingBottom: '100px' }}>
+    <div id="contact-page" className="ptf-contact-page-view" style={{ backgroundColor: 'var(--ptf-white-color)', minHeight: '100vh', paddingTop: '120px', paddingBottom: '40px' }}>
       <div className="container-xxl">
         {/* Header Hero Section */}
         <div className="row align-items-center justify-content-between ptf-animated-block" data-aos="fade-up" style={{ marginBottom: '80px' }}>
