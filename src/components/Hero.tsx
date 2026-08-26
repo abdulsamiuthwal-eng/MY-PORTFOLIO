@@ -30,7 +30,7 @@ const Hero: React.FC = () => {
             <div className="ptf-hero-role-container text-center" style={{ marginTop: '15px' }}>
               <div 
                 className="ptf-hero-role ptf-animated-block serif-font"
-                data-text="AI/ML Engineer & Full-Stack Developer"
+                data-text="Software Engineer & AI/ML Developer"
                 data-aos="fade-up"
                 data-aos-delay="400"
                 style={{
@@ -38,7 +38,7 @@ const Hero: React.FC = () => {
                   lineHeight: '1.4'
                 }}
               >
-                AI/ML Engineer & Full-Stack Developer
+                Software Engineer & AI/ML Developer
               </div>
             </div>
 
