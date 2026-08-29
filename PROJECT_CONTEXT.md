@@ -6,7 +6,7 @@
 
 ## 👤 Developer Profile & Project Identity
 - **Owner / Developer**: Abdul Sami Uthwal
-- **Role**: Software Engineer | AI Developer | Full Stack Web & Mobile App Developer
+- **Role**: Software Engineer & AI/ML Developer | Full Stack Web & Mobile App Developer
 - **Personal AI Assistant**: **Kitty (AI Assistant)**
 - **Assistant Welcome Greeting**:
   `"👋 Welcome! Hi, I am Kitty! Ask me anything about ABDUL SAMI UTHWAL — his skills, projects, experience, or anything else. You can type or use the mic!"`
@@ -16,7 +16,7 @@
 ---
 
 ## 🛠️ Technology Stack & Architecture
-- **Framework**: React 18 + TypeScript + Vite
+- **Framework**: React 19 + TypeScript + Vite
 - **Styling**: Pure Modern CSS (`src/index.css`) + Scoped Inline Styles for dynamic animations (NO Tailwind CSS)
 - **Icons**: Lucide React + custom SVG icons
 - **Animations**: AOS (Animate on Scroll) + Custom 60 FPS GPU Compositor Keyframes (`translate3d`, `scale3d`)
@@ -32,15 +32,15 @@
 
 | File Path | Description / Responsibilities |
 |---|---|
-| `src/App.tsx` | Main root app, routing between Home view, `#contact-page`, `#project/:id`, AOS lifecycle management, and global event coordination. |
-| `src/index.css` | Global styles, typography (`Inter`, `Amiri`), CSS variables (`--ptf-accent-1: #fa4529`), custom cursor classes, native scrollbar hiding rules, and momentum scrolling (`html { overflow-x: clip; }`). |
+| `src/App.tsx` | Main root app, routing between Home view, `#contact-page`, `#project/:id`, AOS lifecycle management, and passing `isContactPage` state to `Footer`. |
+| `src/index.css` | Global styles, typography (`Inter`, `Amiri`), CSS variables (`--ptf-accent-1: #fa4529`), custom cursor classes, native scrollbar hiding rules, momentum scrolling (`html { overflow-x: clip; }`), and contact footer video background styling. |
 | `src/components/CustomScrollbar.tsx` | 9-section desktop custom dot sidebar widget (positioned on left-side). Features top/bottom orange capsule caps, gliding active ring, section dot highlighting (`#fa4529`), left hover zone, and auto-hide timer. Throttled with `requestAnimationFrame`. |
 | `src/components/ChatIcon.tsx` | Floating AI assistant trigger button at bottom-right. Manages chat opening/closing state, unread counter, and audio recording. |
 | `src/components/ChatPanel.tsx` | Full AI Chat panel for **Kitty**. Includes greeting intro video (`robot-transforms-from-energy-orb-compressed.mp4` — Concept 3 energy orb morph compressed to 1.5MB, NO `currentTime` seek to prevent mobile freeze), message video loop (`boticon.mp4`), streaming response cursor, voice mic input, glowing rotating glassy orange orb button, and smooth 60 FPS open/close GPU scale animations. |
 | `src/components/VoiceChat.tsx` | Full-screen Hands-Free Voice Mode for **Kitty**. 3-layer preloaded GPU crossfade stack (`Intro` -> `Listening` -> `Talking`), continuous hands-free VAD speech detection, instant Lily Rose filler triggers (`filler1-3.mp3`), dynamic real-time ElevenLabs TTS audio streaming (`api/tts.js` with Lily Rose voice `t4U671CQHG58R11znrVj`), and strict hardware microphone abort on close. |
 | `src/components/CustomCursor.tsx` | Hardware-accelerated custom cursor with `will-change: transform` and `requestAnimationFrame` interpolation. |
 | `src/components/Navbar.tsx` | Desktop & mobile responsive header, menu drawer with backdrop blur, and smooth section navigation links. |
-| `src/components/Hero.tsx` | Hero introduction section (`#home`) with avatar, social badges, and CTAs. |
+| `src/components/Hero.tsx` | Hero introduction section (`#home`) with avatar, social badges, CTAs, and title: `Software Engineer & AI/ML Developer`. |
 | `src/components/About.tsx` | Biography section (`#biography`). |
 | `src/components/Skills.tsx` | Tech stack showcase (`#skills`). |
 | `src/components/Timeline.tsx` | Experience & Education interactive timeline (`#timeline`). |
@@ -49,8 +49,9 @@
 | `src/components/Testimonials.tsx` | Client reviews (`#testimonials`) and certificate lightbox modals (`#certifications`). |
 | `src/components/InstagramGrid.tsx` | Instagram social feed cards (`#instagram`). |
 | `src/components/CircularCTA.tsx` | Circular interactive SVG contact CTA (`#circular-cta`). |
-| `src/components/ContactPage.tsx` | Full dedicated Contact page (`#contact-page`) with currency dropdown, dynamic budget inputs, and Web3Forms email integration. |
-| `src/components/Footer.tsx` | Copyright info, social links, and throttled back-to-top button. |
+| `src/components/ContactPage.tsx` | Full dedicated Contact page (`#contact-page`) with currency dropdown, dynamic budget inputs, Web3Forms email integration, and seamless bottom padding merge into the video footer. |
+| `src/components/Footer.tsx` | Copyright info, social links, throttled back-to-top button, and dynamic `#contact-page` full-width looping horse smoke video background (`/horse-smoke-footer.mp4`). |
+| `public/horse-smoke-footer.mp4` | High-impact cinematic black horse galloping with fluid trailing black smoke background video (~2.1 MB) for the Contact Page footer. |
 | `api/chat.js` | Serverless Gemini API integration with model rotation & fallback. |
 
 ---
@@ -112,3 +113,20 @@
   - **Strict Hardware Microphone Lifecycle**:
     - Microphone is ONLY activated when Voice Mode is open.
     - Modal close / backdrop click forcefully aborts Web Speech Recognition (`recognition.abort()`, `recognition.stop()`), destroys audio streams, and clears all timers instantly.
+
+---
+
+## 🎬 Contact Page Video Footer Architecture
+- **Asset**: `public/horse-smoke-footer.mp4` (~2.1 MB) — Cinematic black stallion running with dramatic billowing dark smoke trail.
+- **Trigger**: Active only when `isContactPage === true` (`#contact-page` route).
+- **Seamless Dissolve Blending**:
+  - Top edge utilizes a **Dual-Layer Gradient Mask** (`mask-image: linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.05) 4%, rgba(0,0,0,0.3) 14%, black 32%)`) and soft top white-to-transparent overlay.
+  - White contact page organically dissolves into the video's smoke and horizon with **zero hard horizontal borders**.
+- **Desktop Layout (`> 768px`)**:
+  - Container height: `min-height: clamp(520px, 52vw, 780px)` with `object-position: center 60%`, ensuring horse's head, flowing mane, and running hooves are 100% visible without clipping.
+  - Content container: Floating semi-transparent glassmorphic pill bar (`.ptf-footer-inner`) with `backdrop-filter: blur(16px)` and subtle shadow.
+- **Mobile Layout (`< 768px`)**:
+  - Video focus: `object-position: 12% center`, positioning the horse slightly to the left of center with trailing smoke filling the rest of the portrait screen.
+  - Pure Transparency: Box card, background, borders, and shadows are completely removed on mobile (`background: transparent !important`).
+  - Text & Icons: Copyright, email, and social icons styled in **Pure White (`#ffffff`)** with soft drop-shadow for maximum readability against the dark smoke.
+

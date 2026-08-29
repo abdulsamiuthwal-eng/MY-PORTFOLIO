@@ -513,20 +513,20 @@ body {
   margin: 30px auto 0 auto;
 }
 
-/* Hover transitions when cursor enters Hero Section */
-.ptf-hero-section:hover .ptf-hero-title::before {
+/* Hover transitions: trigger ONLY when cursor directly hovers over the specific element */
+.ptf-hero-title:hover::before {
   clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
 }
 
-.ptf-hero-section:hover .ptf-hero-role::before {
+.ptf-hero-role:hover::before {
   clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
 }
 
-.ptf-hero-section:hover .ptf-hero-location {
+.ptf-hero-location:hover {
   color: var(--ptf-black-color);
 }
 
-.ptf-hero-section:hover .ptf-hero-tagline {
+.ptf-hero-tagline:hover {
   color: var(--ptf-black-color);
 }
 
