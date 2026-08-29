@@ -1,4 +1,53 @@
-import React from 'react';
+import React, { useEffect, useRef, useState } from 'react';
+
+interface CountUpProps {
+  end: number;
+  suffix?: string;
+  decimals?: number;
+  duration?: number; // ms
+}
+
+const CountUp: React.FC<CountUpProps> = ({ end, suffix = '', decimals = 0, duration = 1800 }) => {
+  const [display, setDisplay] = useState('0');
+  const ref = useRef<HTMLSpanElement>(null);
+  const hasRun = useRef(false);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting && !hasRun.current) {
+          hasRun.current = true;
+          const startTime = performance.now();
+
+          const tick = (now: number) => {
+            const elapsed = now - startTime;
+            const progress = Math.min(elapsed / duration, 1);
+            // Ease-out cubic
+            const eased = 1 - Math.pow(1 - progress, 3);
+            const current = eased * end;
+            setDisplay(decimals > 0 ? current.toFixed(decimals) : Math.floor(current).toString());
+            if (progress < 1) requestAnimationFrame(tick);
+          };
+
+          requestAnimationFrame(tick);
+        }
+      },
+      { threshold: 0.4 }
+    );
+
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [end, duration, decimals]);
+
+  return (
+    <span ref={ref}>
+      {display}{suffix}
+    </span>
+  );
+};
 
 const About: React.FC = () => {
   return (
@@ -67,25 +116,25 @@ const About: React.FC = () => {
             </div>
           </div>
 
-          {/* Right Column: Stacked Stats (Label on top, Number below) */}
+          {/* Right Column: Stacked Stats with Count-Up Animation */}
           <div className="col-12 col-xl-3 order-xl-3 text-xl-right ptf-about-stats-col ptf-biography-right-col">
             {/* Stat 1: Experience */}
             <div className="ptf-animated-block ptf-stat-block" data-aos="fade-up" data-aos-delay="150">
               <h5 className="fz-14 text-uppercase has-3-color fw-normal tracking-widest" style={{ marginBottom: '8px' }}>Years of Experience</h5>
               <div className="serif-font has-black-color" style={{ fontSize: '75px', lineHeight: '1', fontWeight: 400 }}>
-                1.5+
+                <CountUp end={1.5} suffix="+" decimals={1} duration={1600} />
               </div>
             </div>
 
-            {/* Stat 2: Clients */}
+            {/* Stat 2: Client Satisfaction */}
             <div className="ptf-animated-block ptf-stat-block" data-aos="fade-up" data-aos-delay="250">
               <h5 className="fz-14 text-uppercase has-3-color fw-normal tracking-widest" style={{ marginBottom: '8px' }}>Client Satisfaction</h5>
               <div className="serif-font has-black-color" style={{ fontSize: '75px', lineHeight: '1', fontWeight: 400 }}>
-                100%
+                <CountUp end={100} suffix="%" duration={1800} />
               </div>
             </div>
 
-            {/* Stat 3: Global Clients */}
+            {/* Stat 3: Global Clients (empty placeholder kept) */}
             <div className="ptf-animated-block ptf-stat-block" data-aos="fade-up" data-aos-delay="350">
               <h5 className="fz-14 text-uppercase has-3-color fw-normal tracking-widest" style={{ marginBottom: '8px' }}>Clients on Worldwide</h5>
               <div style={{ height: '75px' }}></div>
@@ -95,7 +144,7 @@ const About: React.FC = () => {
             <div className="ptf-animated-block ptf-stat-block" data-aos="fade-up" data-aos-delay="450">
               <h5 className="fz-14 text-uppercase has-3-color fw-normal tracking-widest" style={{ marginBottom: '8px' }}>Projects Done</h5>
               <div className="serif-font has-black-color" style={{ fontSize: '75px', lineHeight: '1', fontWeight: 400 }}>
-                9+
+                <CountUp end={9} suffix="+" duration={1600} />
               </div>
             </div>
           </div>
