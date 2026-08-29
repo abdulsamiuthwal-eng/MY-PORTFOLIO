@@ -296,26 +296,29 @@ const Timeline: React.FC = () => {
               Experience & Internships
             </h3>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '40px' }}>
+              {/* 1st: DEVFORGE */}
               <TimelineItem
-                year="Jul 2026 - Present"
-                title="Python Developer Intern"
-                institution="DecodeLabs (Online Internship)"
-                institutionLink="https://www.decodelabs.tech/"
-                description="Designed & developed Python-based applications with a strong focus on clean code, object-oriented programming (OOP), and problem-solving. Built rule-based chatbot solutions, file handling tools, modular project structures, debugging workflows, and version control using Git."
-                delay="0"
-                documents={decodelabsDocs}
-                onOpenDoc={handleOpenDoc}
-              />
-              <TimelineItem
-                year="Jul 2026 - Present"
+                year="Jul 2026 - Sep 2026"
                 title="AI/ML Intern"
                 institution="DEVFORGE (Online Internship)"
                 institutionLink="https://devforgelabs.netlify.app/"
                 description="Developed an end-to-end Sentiment Analysis web application using Python, Scikit-learn, Pandas, NumPy, NLTK, TF-IDF, and FastAPI. Trained & evaluated ML models, built REST APIs, integrated frontend/backend, and deployed AI solutions following industry best practices."
-                delay="100"
+                delay="0"
                 documents={devforgeDocs}
                 onOpenDoc={handleOpenDoc}
               />
+              {/* 2nd: DecodeLabs */}
+              <TimelineItem
+                year="Jul 2026 - Aug 2026"
+                title="Internship — Artificial Intelligence (AI)"
+                institution="DecodeLabs (Online Internship)"
+                institutionLink="https://www.decodelabs.tech/"
+                description="Completed hands-on projects and collaborative tasks in Artificial Intelligence (AI) and Python application development, focusing on clean code, modular problem-solving, NLP, rule-based systems, and Git version control."
+                delay="100"
+                documents={decodelabsDocs}
+                onOpenDoc={handleOpenDoc}
+              />
+              {/* 3rd: Developer Hub */}
               <TimelineItem
                 year="Apr 2026 - Jun 2026"
                 title="AI/ML Intern"
