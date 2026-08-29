@@ -161,12 +161,18 @@ const Timeline: React.FC = () => {
   // Lock background portfolio scrolling when document modal is open
   useEffect(() => {
     if (activeDoc) {
+      document.documentElement.style.overflow = 'hidden';
       document.body.style.overflow = 'hidden';
+      document.body.style.touchAction = 'none';
     } else {
-      document.body.style.overflow = 'unset';
+      document.documentElement.style.overflow = '';
+      document.body.style.overflow = '';
+      document.body.style.touchAction = '';
     }
     return () => {
-      document.body.style.overflow = 'unset';
+      document.documentElement.style.overflow = '';
+      document.body.style.overflow = '';
+      document.body.style.touchAction = '';
     };
   }, [activeDoc]);
 
@@ -349,8 +355,12 @@ const Timeline: React.FC = () => {
             alignItems: 'center',
             justifyContent: 'center',
             padding: '16px',
+            touchAction: 'none',
+            overscrollBehavior: 'contain',
           }}
           onClick={() => setActiveDoc(null)}
+          onWheel={(e) => e.stopPropagation()}
+          onTouchMove={(e) => e.stopPropagation()}
         >
           <div
             style={{
@@ -365,6 +375,8 @@ const Timeline: React.FC = () => {
               boxShadow: '0 25px 60px rgba(0, 0, 0, 0.4)',
               position: 'relative',
               animation: 'geminiFadeIn 0.25s ease-out forwards',
+              touchAction: 'auto',
+              overscrollBehavior: 'contain',
             }}
             onClick={(e) => e.stopPropagation()}
           >

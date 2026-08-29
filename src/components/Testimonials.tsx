@@ -402,15 +402,22 @@ const Testimonials: React.FC = () => {
 
   // Lock background page scroll when Certificate Modal is active
   useEffect(() => {
-    if (selectedCert) {
+    const isModalOpen = Boolean(selectedCert || testimonialCertImage);
+    if (isModalOpen) {
+      document.documentElement.style.overflow = 'hidden';
       document.body.style.overflow = 'hidden';
+      document.body.style.touchAction = 'none';
     } else {
-      document.body.style.overflow = 'unset';
+      document.documentElement.style.overflow = '';
+      document.body.style.overflow = '';
+      document.body.style.touchAction = '';
     }
     return () => {
-      document.body.style.overflow = 'unset';
+      document.documentElement.style.overflow = '';
+      document.body.style.overflow = '';
+      document.body.style.touchAction = '';
     };
-  }, [selectedCert]);
+  }, [selectedCert, testimonialCertImage]);
 
   // Filtered certificates
   const filteredCertificates = activeCategory === 'all'
@@ -761,15 +768,19 @@ const Testimonials: React.FC = () => {
           style={{
             position: 'fixed',
             inset: 0,
-            zIndex: 99999,
+            zIndex: 999999,
             backgroundColor: 'rgba(0, 0, 0, 0.85)',
             backdropFilter: 'blur(8px)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            padding: '20px'
+            padding: '20px',
+            touchAction: 'none',
+            overscrollBehavior: 'contain'
           }}
           onClick={() => setTestimonialCertImage(null)}
+          onWheel={(e) => e.stopPropagation()}
+          onTouchMove={(e) => e.stopPropagation()}
         >
           <div
             style={{
@@ -782,7 +793,9 @@ const Testimonials: React.FC = () => {
               flexDirection: 'column',
               overflow: 'hidden',
               boxShadow: '0 25px 60px rgba(0, 0, 0, 0.3)',
-              position: 'relative'
+              position: 'relative',
+              touchAction: 'auto',
+              overscrollBehavior: 'contain'
             }}
             onClick={(e) => e.stopPropagation()}
           >
@@ -867,15 +880,19 @@ const Testimonials: React.FC = () => {
           style={{
             position: 'fixed',
             inset: 0,
-            zIndex: 99999,
+            zIndex: 999999,
             backgroundColor: 'rgba(0, 0, 0, 0.85)',
             backdropFilter: 'blur(8px)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            padding: '20px'
+            padding: '20px',
+            touchAction: 'none',
+            overscrollBehavior: 'contain'
           }}
           onClick={() => setSelectedCert(null)}
+          onWheel={(e) => e.stopPropagation()}
+          onTouchMove={(e) => e.stopPropagation()}
         >
           <div
             style={{
@@ -888,7 +905,9 @@ const Testimonials: React.FC = () => {
               flexDirection: 'column',
               overflow: 'hidden',
               boxShadow: '0 25px 60px rgba(0, 0, 0, 0.3)',
-              position: 'relative'
+              position: 'relative',
+              touchAction: 'auto',
+              overscrollBehavior: 'contain'
             }}
             onClick={(e) => e.stopPropagation()}
           >
