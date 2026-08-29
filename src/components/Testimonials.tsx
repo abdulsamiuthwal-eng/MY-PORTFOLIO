@@ -360,7 +360,10 @@ const Testimonials: React.FC = () => {
           ref={containerRef}
           className="ptf-testimonials-slider"
           onWheel={handleWheel}
-          onMouseDown={(e) => handleStart(e.clientX)}
+          onMouseDown={(e) => {
+            e.preventDefault();
+            handleStart(e.clientX);
+          }}
           onTouchStart={(e) => handleStart(e.touches[0].clientX, e.touches[0].clientY)}
           onTouchMove={handleTouchMove}
           onTouchEnd={handleEnd}
@@ -371,6 +374,8 @@ const Testimonials: React.FC = () => {
             userSelect: 'none',
             WebkitUserSelect: 'none',
             touchAction: 'pan-y',
+            overscrollBehavior: 'none',
+            overscrollBehaviorX: 'none',
           }}
         >
           <div
