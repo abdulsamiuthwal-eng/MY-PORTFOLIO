@@ -42,7 +42,7 @@
 | `src/components/CustomCursor.tsx` | Hardware-accelerated custom cursor with `will-change: transform` and `requestAnimationFrame` interpolation. Styled with `z-index: 2147483647` for uninterrupted visibility over all modal dialogs. |
 | `src/components/Navbar.tsx` | Desktop & mobile responsive header, menu drawer with backdrop blur, and smooth section navigation links. |
 | `src/components/Hero.tsx` | Hero introduction section (`#home`) with avatar, social badges, CTAs, and title: `Software Engineer & AI/ML Developer`. Desktop-only hover proximity padding (`@media (min-width: 992px)`) preventing mobile horizontal overflow. |
-| `src/components/About.tsx` | Biography section (`#biography`). |
+| `src/components/About.tsx` | Biography section (`#biography`). Features dynamic, repeatable count-up animations for stats on scroll up/down with IntersectionObserver and cubic easing. |
 | `src/components/Skills.tsx` | Tech stack showcase (`#skills`). |
 | `src/components/Timeline.tsx` | Education & Experience interactive timeline (`#timeline`). Features reordered experiences (DEVFORGE 1st, DecodeLabs 2nd, Developer Hub 3rd), interactive document badges, verification chips, direct portal verification links, and a full-screen PDF preview lightbox modal with dual-layer viewport scroll lock (`html` + `body`). |
 | `src/components/Projects.tsx` | Featured portfolio projects slider (`#project`) with seamless 3x clone buffer loop, responsive drag/touch swipe, and centered item highlighting. Order: 1. Vigilant Eye, 2. RAG Research Assistant, 3. Rashid Dental AI Assistant, 4. AuraSentiment, 5. AI Data Classifier, 6. CloudAssign, 7. Smart Queue, 8. Project Census, 9. Library System. |
