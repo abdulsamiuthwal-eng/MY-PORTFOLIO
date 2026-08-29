@@ -9,7 +9,9 @@ Live Production: [https://abdulsamiuthwal-portfolio.vercel.app](https://abdulsam
 ## 🌟 Highlights
 - **AI Assistant "Kitty"**: Voice-enabled intelligent AI portfolio assistant powered by Google Gemini API & ElevenLabs real-time TTS (Lily Rose persona).
 - **Modern React 19 & TypeScript**: High-performance, GPU-composited animations with zero frame drops.
-- **Projects & Testimonials Carousel**: Custom 1:1 gesture-locked slider with trackpad inertia absorption and seamless 3x buffer infinite loop.
+- **Experience & Verified Credentials**: Interactive timeline featuring official internship offer letters and verified completion certificates with direct verification portal links and PDF lightbox preview.
+- **Content & Intellectual Property Protection**: Built-in anti-copy, anti-selection, right-click lock, DevTools prevention, image drag protection, and anti-print security suite.
+- **Projects & Testimonials Carousel**: Custom 1:1 gesture-locked slider with trackpad inertia absorption, 0.65s calm glide, and seamless 3x buffer infinite loop.
 - **Dedicated Contact & Video Footer**: High-impact black stallion smoke video footer integration with Web3Forms backend.
 
 ---
