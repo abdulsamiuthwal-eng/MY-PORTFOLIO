@@ -93,6 +93,13 @@ const Projects: React.FC = () => {
       liveLink: null,
     },
     {
+      image: '/projects/rashid-dental.png',
+      title: 'Rashid Dental AI Assistant — Intelligent RAG-Powered Clinical Healthcare Bot & Appointment System',
+      category: 'Healthcare AI / Natural Language Processing / RAG Systems / Full-Stack Engineering',
+      link: '#project/rashid-dental-ai-assistant',
+      liveLink: 'https://rashid-dental-ai-assistant-3.onrender.com',
+    },
+    {
       image: '/projects/aurasentiment.png',
       title: 'AuraSentiment — End-to-End Sentiment Analysis Web Application',
       category: 'Machine Learning / Natural Language Processing (NLP) / Full-Stack',
@@ -105,13 +112,6 @@ const Projects: React.FC = () => {
       category: 'Machine Learning / Data Science / Full-Stack Web App',
       link: '#project/ai-data-classifier',
       liveLink: null,
-    },
-    {
-      image: '/projects/rashid-dental.png',
-      title: 'Rashid Dental AI Assistant — Intelligent RAG-Powered Clinical Healthcare Bot & Appointment System',
-      category: 'Healthcare AI / Natural Language Processing / RAG Systems / Full-Stack Engineering',
-      link: '#project/rashid-dental-ai-assistant',
-      liveLink: 'https://rashid-dental-ai-assistant-3.onrender.com',
     },
     {
       image: '/projects/cloud-assign.png',
