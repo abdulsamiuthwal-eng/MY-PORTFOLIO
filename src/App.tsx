@@ -294,11 +294,12 @@ const App: React.FC = () => {
   const [isChatOpen, setIsChatOpen] = useState(false);
   const isContactPage = currentHash === '#contact-page';
   const isProjectDetailPage = currentHash.startsWith('#project/');
+  const isHomePage = !isContactPage && !isProjectDetailPage;
 
   return (
     <>
       <CustomCursor />
-      <CustomScrollbar isContactPage={isContactPage} isChatOpen={isChatOpen} />
+      {isHomePage && <CustomScrollbar isContactPage={false} isChatOpen={isChatOpen} />}
       <ChatIcon isContactPage={isContactPage} isMobileMenuOpen={isMobileMenuOpen} onChatToggle={setIsChatOpen} />
       <Navbar onMenuToggle={setIsMobileMenuOpen} />
       <main>
