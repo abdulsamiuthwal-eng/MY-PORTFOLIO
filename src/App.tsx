@@ -17,6 +17,7 @@ import CustomCursor from './components/CustomCursor';
 import ChatIcon from './components/ChatIcon';
 import CustomScrollbar from './components/CustomScrollbar';
 import ProjectDetailPage from './components/ProjectDetailPage';
+import { useContentProtection } from './hooks/useContentProtection';
 
 // Run before the browser can restore a previous scroll position on refresh —
 // the app always opens the home view (except on the contact page), so any
@@ -49,6 +50,8 @@ const replayAOS = () => {
 };
 
 const App: React.FC = () => {
+  useContentProtection();
+
   const [currentHash, setCurrentHash] = useState(() =>
     window.location.hash === '#contact-page' ? '#contact-page' : '#home',
   );
