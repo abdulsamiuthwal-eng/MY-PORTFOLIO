@@ -204,11 +204,14 @@ const Testimonials: React.FC = () => {
   ];
 
   const N = testimonials.length;
+  // Clone original list for seamless infinite loop (3x buffer)
+  const clonedList = [...testimonials, ...testimonials, ...testimonials];
+  const totalClones = clonedList.length;
 
-  const [currentIndex, setCurrentIndex] = useState(0);
+  const [currentIndex, setCurrentIndex] = useState(N); // Start at index 3 (middle buffer)
   const [dragOffset, setDragOffset] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
-  const [isAnimating, setIsAnimating] = useState(false);
+  const [isTransitioning, setIsTransitioning] = useState(true);
 
   // Certificates Filter & Modal state
   const [activeCategory, setActiveCategory] = useState<'all' | 'core' | 'ai-data' | 'foundations'>('all');
@@ -218,22 +221,21 @@ const Testimonials: React.FC = () => {
   const [testimonialCertImage, setTestimonialCertImage] = useState<{ url: string; title: string } | null>(null);
 
   const containerRef = useRef<HTMLDivElement>(null);
+  const trackRef = useRef<HTMLDivElement>(null);
   const dragStartXRef = useRef(0);
   const dragStartYRef = useRef(0);
   const isHorizontalSwipeRef = useRef<boolean | null>(null);
-  const wheelSnapTimeoutRef = useRef<any>(null);
-  const wheelAccumulatorRef = useRef(0);
 
   // Handle Drag / Touch Start
   const handleStart = (clientX: number, clientY?: number) => {
     setIsDragging(true);
+    setIsTransitioning(false);
     dragStartXRef.current = clientX;
     if (clientY !== undefined) {
       dragStartYRef.current = clientY;
       isHorizontalSwipeRef.current = null;
     }
     setDragOffset(0);
-    setIsAnimating(false);
   };
 
   // Handle Touch Move
@@ -244,24 +246,27 @@ const Testimonials: React.FC = () => {
     const deltaX = clientX - dragStartXRef.current;
     const deltaY = clientY - dragStartYRef.current;
 
+    // Detect gesture direction on initial movement
     if (isHorizontalSwipeRef.current === null) {
       if (Math.abs(deltaX) > 8 || Math.abs(deltaY) > 8) {
         isHorizontalSwipeRef.current = Math.abs(deltaX) > Math.abs(deltaY);
       }
     }
 
+    // Vertical gesture: release drag immediately to allow natural vertical page scrolling
     if (isHorizontalSwipeRef.current === false) {
       setIsDragging(false);
       setDragOffset(0);
       return;
     }
 
+    // Horizontal gesture: follow user drag exactly 1:1
     if (isHorizontalSwipeRef.current === true) {
       setDragOffset(deltaX);
     }
   };
 
-  // Handle Mouse Move
+  // Handle Mouse Move (strictly follows user cursor)
   const handleMouseMove = (clientX: number) => {
     if (!isDragging) return;
     const deltaX = clientX - dragStartXRef.current;
@@ -272,14 +277,14 @@ const Testimonials: React.FC = () => {
   const handleEnd = () => {
     if (!isDragging) return;
     setIsDragging(false);
-    setIsAnimating(true);
+    setIsTransitioning(true);
 
     const containerWidth = containerRef.current?.offsetWidth || 1000;
     const threshold = containerWidth * 0.15; // 15% swipe threshold
 
-    if (dragOffset < -threshold && currentIndex < N - 1) {
+    if (dragOffset < -threshold) {
       setCurrentIndex((prev) => prev + 1);
-    } else if (dragOffset > threshold && currentIndex > 0) {
+    } else if (dragOffset > threshold) {
       setCurrentIndex((prev) => prev - 1);
     }
 
@@ -287,34 +292,29 @@ const Testimonials: React.FC = () => {
     isHorizontalSwipeRef.current = null;
   };
 
-  // Fluid 1:1 Pixel Scroll for Trackpad & Mouse Wheel
-  const handleWheel = (e: React.WheelEvent) => {
-    if (Math.abs(e.deltaX) <= Math.abs(e.deltaY)) return;
+  // Seamless jump on transition end
+  const handleTransitionEnd = (e?: React.TransitionEvent) => {
+    if (e && e.target !== trackRef.current) return;
 
-    wheelAccumulatorRef.current += e.deltaX;
-    const containerWidth = containerRef.current?.offsetWidth || 1000;
-
-    setIsAnimating(false);
-    setDragOffset(-wheelAccumulatorRef.current);
-
-    if (wheelSnapTimeoutRef.current) {
-      clearTimeout(wheelSnapTimeoutRef.current);
-    }
-
-    wheelSnapTimeoutRef.current = setTimeout(() => {
-      const accum = wheelAccumulatorRef.current;
-      wheelAccumulatorRef.current = 0;
-      setIsAnimating(true);
-
-      const threshold = containerWidth * 0.15;
-      if (accum > threshold && currentIndex < N - 1) {
-        setCurrentIndex((prev) => Math.min(N - 1, prev + Math.ceil(accum / containerWidth)));
-      } else if (accum < -threshold && currentIndex > 0) {
-        setCurrentIndex((prev) => Math.max(0, prev + Math.floor(accum / containerWidth)));
+    if (currentIndex >= 2 * N) {
+      if (trackRef.current) {
+        trackRef.current.style.transition = 'none';
+        const newIndex = currentIndex - N;
+        trackRef.current.style.transform = `translateX(-${(newIndex * 100) / totalClones}%)`;
+        void trackRef.current.offsetHeight;
       }
-
-      setDragOffset(0);
-    }, 120);
+      setIsTransitioning(false);
+      setCurrentIndex(currentIndex - N);
+    } else if (currentIndex < N) {
+      if (trackRef.current) {
+        trackRef.current.style.transition = 'none';
+        const newIndex = currentIndex + N;
+        trackRef.current.style.transform = `translateX(-${(newIndex * 100) / totalClones}%)`;
+        void trackRef.current.offsetHeight;
+      }
+      setIsTransitioning(false);
+      setCurrentIndex(currentIndex + N);
+    }
   };
 
   useEffect(() => {
@@ -349,6 +349,11 @@ const Testimonials: React.FC = () => {
     ? certificatesData
     : certificatesData.filter(c => c.category === activeCategory);
 
+  const activeDotIndex = ((currentIndex % N) + N) % N;
+  const transitionStyle = isTransitioning && !isDragging
+    ? 'transform 0.5s cubic-bezier(0.25, 1, 0.5, 1)'
+    : 'none';
+
   return (
     <section id="testimonials" className="ptf-testimonials-section" style={{ backgroundColor: 'var(--ptf-white-color)' }}>
       <div className="container-xxl">
@@ -359,7 +364,6 @@ const Testimonials: React.FC = () => {
         <div
           ref={containerRef}
           className="ptf-testimonials-slider"
-          onWheel={handleWheel}
           onMouseDown={(e) => {
             e.preventDefault();
             handleStart(e.clientX);
@@ -374,23 +378,23 @@ const Testimonials: React.FC = () => {
             userSelect: 'none',
             WebkitUserSelect: 'none',
             touchAction: 'pan-y',
-            overscrollBehavior: 'none',
-            overscrollBehaviorX: 'none',
           }}
         >
           <div
+            ref={trackRef}
             className="ptf-testimonials-track"
+            onTransitionEnd={handleTransitionEnd}
             style={{
               display: 'flex',
-              width: `${N * 100}%`,
-              transform: `translateX(calc(-${(currentIndex * 100) / N}% + ${dragOffset}px))`,
-              transition: isDragging || !isAnimating ? 'none' : 'transform 0.5s cubic-bezier(0.25, 1, 0.5, 1)',
+              width: `${totalClones * 100}%`,
+              transform: `translateX(calc(-${(currentIndex * 100) / totalClones}% + ${dragOffset}px))`,
+              transition: transitionStyle,
             }}
           >
-            {testimonials.map((t, idx) => (
+            {clonedList.map((t, idx) => (
               <div
                 key={idx}
-                style={{ width: `${100 / N}%`, padding: '0 15px', textAlign: 'center', flexShrink: 0 }}
+                style={{ width: `${100 / totalClones}%`, padding: '0 15px', textAlign: 'center', flexShrink: 0 }}
                 className="ptf-animated-block"
                 data-aos="fade-up"
               >
@@ -471,11 +475,11 @@ const Testimonials: React.FC = () => {
           {testimonials.map((_, i) => (
             <button
               key={i}
-              className={`ptf-pagination-dot ${currentIndex === i ? 'active' : ''}`}
+              className={`ptf-pagination-dot ${activeDotIndex === i ? 'active' : ''}`}
               onClick={() => {
-                setIsAnimating(true);
+                setIsTransitioning(true);
                 setDragOffset(0);
-                setCurrentIndex(i);
+                setCurrentIndex(N + i);
               }}
               aria-label={`Go to slide ${i + 1}`}
             />

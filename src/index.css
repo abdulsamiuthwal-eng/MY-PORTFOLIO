@@ -3679,9 +3679,7 @@ a, button, select, input, textarea, .filter-item {
 
 /* Testimonials Slider Gesture Isolation */
 .ptf-testimonials-slider {
-  overscroll-behavior: none !important;
-  overscroll-behavior-x: none !important;
-  touch-action: pan-y !important;
+  touch-action: pan-y;
   user-select: none;
 }
 
