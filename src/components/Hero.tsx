@@ -13,7 +13,7 @@ const Hero: React.FC = () => {
             <div className="ptf-hero-title-container text-center">
               <h1 
                 className="ptf-hero-title large-heading serif-font fw-normal ptf-animated-block"
-                data-text="Abdul Sami Uthwal"
+                data-text="ABDUL SAMI UTHWAL"
                 data-aos="fade-up"
                 data-aos-delay="300"
                 style={{ 
@@ -22,7 +22,7 @@ const Hero: React.FC = () => {
                   letterSpacing: '-0.01em'
                 }}
               >
-                Abdul Sami Uthwal
+                ABDUL SAMI UTHWAL
               </h1>
             </div>
             
