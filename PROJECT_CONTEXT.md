@@ -1,117 +1,210 @@
-# 🚀 ABDUL SAMI UTHWAL — PORTFOLIO PROJECT CONTEXT
+# 🚀 ABDUL SAMI UTHWAL — PORTFOLIO MASTER ARCHITECTURAL CONTEXT
 
-> **Purpose**: This document provides the complete, authoritative architectural, historical, and behavioral context of this repository for any AI assistant/agent starting a new session.
+> **Authority & Purpose**: This document serves as the single source of truth (SSOT) for the architecture, component hierarchy, credential records, security protocols, animation engines, and design systems of this portfolio. Any AI assistant or developer working on this codebase MUST strictly adhere to the patterns and behavioral rules documented here.
 
 ---
 
 ## 👤 Developer Profile & Project Identity
+
 - **Owner / Developer**: Abdul Sami Uthwal
 - **Role**: Software Engineer & AI/ML Developer | Full Stack Web & Mobile App Developer
+- **Location**: Operating globally from Pakistan (Jhang, Punjab, Pakistan)
+- **Contact Email**: `abdulsamiuthwal@gmail.com`
+- **Contact Phone**: `+92 307 365 1919`
 - **Personal AI Assistant**: **Kitty (AI Assistant)**
-- **Assistant Welcome Greeting**:
-  `"👋 Welcome! Hi, I am Kitty! Ask me anything about ABDUL SAMI UTHWAL — his skills, projects, experience, or anything else. You can type or use the mic!"`
+  - **Greeting**: `"👋 Welcome! Hi, I am Kitty! Ask me anything about ABDUL SAMI UTHWAL — his skills, projects, experience, or anything else. You can type or use the mic!"`
+  - **Voice Persona**: Lily Rose (`t4U671CQHG58R11znrVj` via ElevenLabs)
 - **Live Production URL**: [https://abdulsamiuthwal-portfolio.vercel.app](https://abdulsamiuthwal-portfolio.vercel.app)
 - **Local Dev Server**: `http://localhost:5173/` (Vite)
+- **Git Remote**: `https://github.com/abdulsamiuthwal-eng/MY-PORTFOLIO.git` (Branch: `main`)
 
 ---
 
-## 🛠️ Technology Stack & Architecture
-- **Framework**: React 19 + TypeScript + Vite
-- **Styling**: Pure Modern CSS (`src/index.css`) + Scoped Inline Styles for dynamic animations (NO Tailwind CSS)
-- **Icons**: Lucide React + custom SVG icons
-- **Animations**: AOS (Animate on Scroll) + Custom 60 FPS GPU Compositor Keyframes (`translate3d`, `scale3d`)
-- **Backend / Serverless**:
-  - `api/chat.js` (Vercel Serverless Function — Google Gemini API with resilient multi-key fallback)
-  - `api/tts.js` (Vercel Serverless Function — ElevenLabs real-time streaming Text-To-Speech with **Lily Rose** voice `t4U671CQHG58R11znrVj` on `eleven_flash_v2_5` / `multilingual_v2`)
-  - `api/web3forms.js` (Vercel Serverless Function — Web3Forms contact submission proxy)
-- **Deployment**: GitHub (`origin/main`) synced directly with Vercel Production CLI (`npx vercel --prod --yes`)
+## 🛠️ Complete Technology Stack & Specifications
+
+| Layer | Technologies / Tools | Description / Configuration |
+|---|---|---|
+| **Core Framework** | React 19, TypeScript, Vite | Modern React with strict type safety and sub-second HMR. |
+| **Styling & CSS** | Pure Vanilla CSS (`src/index.css`) | Design token system, CSS variables (`--ptf-*`), zero Tailwind CSS, GPU-composited animations. |
+| **Icons** | Lucide React + Inline SVG | High-performance vector icon set. |
+| **Motion & Scroll** | AOS (Animate on Scroll) + Custom GSAP / RAF | 60–120 FPS hardware-accelerated animations using `translate3d`, `scale3d`, and cubic bezier easings. |
+| **AI Intelligence** | Google Gemini API (`api/chat.js`) | Multi-model rotation (`gemini-2.0-flash`, `gemini-1.5-flash`) with dynamic resilient fallback. |
+| **Voice & Speech** | ElevenLabs Streaming TTS (`api/tts.js`) | Real-time audio streaming with **Lily Rose** voice on `eleven_flash_v2_5` / `multilingual_v2`. |
+| **Contact Proxy** | Web3Forms (`api/web3forms.js`) | Serverless secure form forwarding proxy. |
+| **Hosting / CI-CD** | Vercel Production + GitHub CI | Automated zero-downtime serverless edge deployments. |
 
 ---
 
-## 📁 Key File Structure & Responsibilities
+## 📁 Master File Map & Component Responsibilities
 
-| File Path | Description / Responsibilities |
-|---|---|
-| `src/App.tsx` | Main root app, routing between Home view, `#contact-page`, `#project/:id`, AOS lifecycle management, and invoking `useContentProtection` security hook. |
-| `src/index.css` | Global styles, typography (`Inter`, `Amiri`), CSS variables (`--ptf-accent-1: #fa4529`), supreme z-index cursor classes (`2147483647`), anti-copy & anti-selection rules, momentum scrolling (`html { overflow-x: clip; }`), and contact footer video styling. |
-| `src/hooks/useContentProtection.ts` | Enterprise-grade Content & Intellectual Property Security hook. Intercepts and blocks right-click, `Ctrl+C`, `Ctrl+X`, `Ctrl+A`, `Ctrl+U`, `Ctrl+S`, `Ctrl+P`, `F12`, `Ctrl+Shift+I/J/C`, mobile long-press, and image drag-and-drop while gracefully allowing natural typing in forms and chat inputs. |
-| `src/components/CustomScrollbar.tsx` | 9-section desktop custom dot sidebar widget (positioned on left-side). Features top/bottom orange capsule caps, gliding active ring, section dot highlighting (`#fa4529`), left hover zone, and auto-hide timer. Throttled with `requestAnimationFrame`. |
-| `src/components/ChatIcon.tsx` | Floating AI assistant trigger button at bottom-right. Manages chat opening/closing state, unread counter, and audio recording. |
-| `src/components/ChatPanel.tsx` | Full AI Chat panel for **Kitty**. Includes greeting intro video (`robot-transforms-from-energy-orb-compressed.mp4` — Concept 3 energy orb morph compressed to 1.5MB, NO `currentTime` seek to prevent mobile freeze), message video loop (`boticon.mp4`), streaming response cursor, voice mic input, glowing rotating glassy orange orb button, and smooth 60 FPS open/close GPU scale animations. |
-| `src/components/VoiceChat.tsx` | Full-screen Hands-Free Voice Mode for **Kitty**. 3-layer preloaded GPU crossfade stack (`Intro` -> `Listening` -> `Talking`), continuous hands-free VAD speech detection, instant Lily Rose filler triggers (`filler1-3.mp3`), dynamic real-time ElevenLabs TTS audio streaming (`api/tts.js` with Lily Rose voice `t4U671CQHG58R11znrVj`), and strict hardware microphone abort on close. |
-| `src/components/CustomCursor.tsx` | Hardware-accelerated custom cursor with `will-change: transform` and `requestAnimationFrame` interpolation. Styled with `z-index: 2147483647` for uninterrupted visibility over all modal dialogs. |
-| `src/components/Navbar.tsx` | Desktop & mobile responsive header, menu drawer with backdrop blur, and smooth section navigation links. |
-| `src/components/Hero.tsx` | Hero introduction section (`#home`) with avatar, social badges, CTAs, and title: `Software Engineer & AI/ML Developer`. Desktop-only hover proximity padding (`@media (min-width: 992px)`) preventing mobile horizontal overflow. |
-| `src/components/About.tsx` | Biography section (`#biography`). Features dynamic, repeatable count-up animations for stats on scroll up/down with IntersectionObserver and cubic easing. |
-| `src/components/Skills.tsx` | Tech stack showcase (`#skills`). |
-| `src/components/Timeline.tsx` | Education & Experience interactive timeline (`#timeline`). Features reordered experiences (DEVFORGE 1st, DecodeLabs 2nd, Developer Hub 3rd), interactive document badges, verification chips, direct portal verification links, and a full-screen PDF preview lightbox modal with dual-layer viewport scroll lock (`html` + `body`). |
-| `src/components/Projects.tsx` | Featured portfolio projects slider (`#project`) with seamless 3x clone buffer loop, responsive drag/touch swipe, and centered item highlighting. Order: 1. Vigilant Eye, 2. RAG Research Assistant, 3. Rashid Dental AI Assistant, 4. AuraSentiment, 5. AI Data Classifier, 6. CloudAssign, 7. Smart Queue, 8. Project Census, 9. Library System. |
-| `src/components/ProjectDetailPage.tsx` | Deep-dive project view (`#project/:id`). |
-| `src/components/Testimonials.tsx` | Client reviews slider (`#testimonials`) + Verified Credentials Showcase (`#certifications`). Features calibrated 0.65s slider glide, 280ms trackpad silence lock, 4 clean certification category tabs, and PDF preview modals with dual-layer scroll lock and direct verification portal links. |
-| `src/components/InstagramGrid.tsx` | Instagram social feed cards (`#instagram`). |
-| `src/components/CircularCTA.tsx` | Circular interactive SVG contact CTA (`#circular-cta`). |
-| `src/components/ContactPage.tsx` | Full dedicated Contact page (`#contact-page`) with currency dropdown, dynamic budget inputs, Web3Forms email integration, and seamless bottom padding merge into the video footer. |
-| `src/components/Footer.tsx` | Copyright info, social links, throttled back-to-top button, and dynamic `#contact-page` full-width looping horse smoke video background (`/horse-smoke-footer.mp4`). |
-| `public/internships/` | Dedicated directory containing official internship offer letters and verified completion certificates organized by organization (`decodelabs`, `devforge`, `developerhub`). |
-| `public/horse-smoke-footer.mp4` | High-impact cinematic black horse galloping with fluid trailing black smoke background video (~2.1 MB) for the Contact Page footer. |
+### 1. Root & Configuration
+- **`src/App.tsx`**: Central application orchestrator. Handles hash-based view routing (`#home`, `#contact-page`, `#project/:id`), manages AOS lifecycle, mounts the `useContentProtection` hook, and conditionally renders the desktop `<CustomScrollbar />` strictly on the main home view.
+- **`src/index.css`**: Global design token stylesheet (~3,750 lines). Contains typography (`Inter`, `Amiri`), CSS variables (`--ptf-accent-1: #fa4529`, `--ptf-white-color: #ffffff`), supreme z-index cursor definitions (`2147483647`), anti-copy & anti-selection rules, momentum scrolling fixes (`html { overflow-x: clip; }`), portrait frame styling, and video footer layout.
+- **`src/main.tsx`**: Application entry point mounting React root with StrictMode.
+
+### 2. Custom Hooks & Utilities
+- **`src/hooks/useContentProtection.ts`**: Comprehensive intellectual property and anti-scraping security hook. Intercepts and disables:
+  - Right-click context menu (`contextmenu`)
+  - Copy, cut, and select-all shortcuts (`Ctrl+C`, `Ctrl+X`, `Ctrl+A`)
+  - Source inspection and DevTools (`Ctrl+U`, `Ctrl+S`, `Ctrl+P`, `F12`, `Ctrl+Shift+I/J/C`)
+  - Mobile long-press callout menus (`-webkit-touch-callout: none`)
+  - Drag-and-drop on images and links
+  - Preserves standard typing and editing inside active `<input>` and `<textarea>` fields.
+- **`src/lib/chat.ts`**: Client-side chat state management, prompt engineering context for **Kitty**, message history caching, and Gemini API stream handler.
+- **`src/lib/scroll.ts`**: Smooth programmatic scrolling utility (`scrollToTop`).
+
+### 3. Core UI Components (`src/components/`)
+- **`Navbar.tsx`**: Responsive header navigation with glassmorphism backdrop blur, mobile drawer toggle, and smooth hash link routing.
+- **`Hero.tsx`**: Signature hero section (`#home`) featuring large typography, social links, CTAs, and scoped `@media (min-width: 992px)` proximity hover margins preventing mobile horizontal overflow.
+- **`About.tsx`**: Biography & services section (`#biography`). Contains:
+  - Left column: Bio text, contact details, services list.
+  - Center column: Double oval portrait frame (`.ptf-custom--5512`) rendering `/long_portfolioprofile__upscaled (1).jpeg` with an elegant wave skeleton shimmer loading animation (`.ptf-skeleton`).
+  - Right column: Dynamic stats (Years of Experience, Client Satisfaction, Projects) powered by an enhanced `CountUp` component that re-triggers on every scroll up/down via `IntersectionObserver`.
+- **`Skills.tsx`**: Tech stack grid (`#skills`) showcasing categorized proficiencies (Frontend, Backend, AI/ML, DevOps, Databases).
+- **`Timeline.tsx`**: Experience & Education interactive timeline (`#timeline`). Features official internship badges (`📄 Offer Letter`, `🏆 Completion Certificate`), issuer credential chips, direct portal verification links, and a full-screen PDF preview lightbox modal with dual-layer background scroll locking (`html` + `body`).
+- **`Projects.tsx`**: Featured portfolio project carousel (`#project`). Implements a 3x cloned loop buffer, 1:1 touch/drag gestures, trackpad inertia dampening, and centered active highlighting.
+- **`ProjectDetailPage.tsx`**: Deep-dive interactive case study page (`#project/:id`) with architecture diagrams, tech stacks, live demos, and terminal code walkthroughs.
+- **`Testimonials.tsx`**: Dual-purpose section containing:
+  - Client Reviews Slider (`#testimonials`): 0.65s cubic bezier glide, 280ms trackpad silence lock, and 1-slide-per-gesture protection.
+  - Verified Credentials Showcase (`#certifications`): 4 clean category filter tabs, high-res certificate lightbox preview with dual-layer scroll lock, and direct portal verification.
+- **`InstagramGrid.tsx`**: Dynamic social media showcase grid (`#instagram`).
+- **`CircularCTA.tsx`**: Interactive rotating circular SVG contact CTA (`#circular-cta`).
+- **`ContactPage.tsx`**: Full dedicated contact page (`#contact-page`) with currency dropdown, dynamic budget inputs, Web3Forms backend integration, and bottom padding seamlessly flowing into the video footer.
+- **`Footer.tsx`**: Global footer containing copyright info, social links, back-to-top button, and high-impact looping black stallion smoke video background (`/horse-smoke-footer.mp4`).
+- **`CustomScrollbar.tsx`**: 9-section desktop custom dot sidebar widget (positioned on left). Features top/bottom orange capsule caps, gliding active ring, section dot highlighting (`#fa4529`), left hover zone, and auto-hide timer. Restricted strictly to the main Home view.
+- **`CustomCursor.tsx`**: Hardware-accelerated custom cursor with RAF interpolation and supreme `z-index: 2147483647` for uninterrupted visibility over all modal dialogs.
+- **`ChatIcon.tsx`**: Floating AI assistant trigger button at bottom-right with glowing pulsating badge.
+- **`ChatPanel.tsx`**: Full AI Chat panel for **Kitty**. Features greeting intro video (`robot-transforms-from-energy-orb-compressed.mp4`), message loop video (`boticon.mp4`), streaming response cursor, and voice mic input.
+- **`VoiceChat.tsx`**: Hands-free full-screen Voice Mode for **Kitty**. 3-layer preloaded GPU crossfade stack (`Intro` -> `Listening` -> `Talking`), continuous hands-free VAD speech detection, instant Lily Rose filler triggers (`filler1-3.mp3`), and dynamic ElevenLabs TTS audio streaming.
+
+### 4. Serverless API Endpoints (`api/`)
+- **`api/chat.js`**: Vercel Serverless Function interfacing Google Gemini API with system prompt injection and resilient multi-model rotation.
+- **`api/tts.js`**: Vercel Serverless Function interfacing ElevenLabs API for real-time MP3 audio streaming.
+- **`api/web3forms.js`**: Vercel Serverless Function forwarding contact form submissions to Web3Forms.
 
 ---
 
-## 📜 Experience & Verified Documents Architecture
+## 📜 Experience Timeline & Verified Documents Catalog
 
-### 1. Experience Timeline Items (`src/components/Timeline.tsx`):
-1. 🥇 **DEVFORGE (AI Innovation Track)**:
-   - **Timeline**: `Jul 2026 - Sep 2026`
+All official internship documents are organized in `public/internships/`:
+
+```text
+public/internships/
+├── decodelabs/
+│   ├── Your Offer Letter _ Decode Labs.pdf    (Issued: Jul 25, 2026)
+│   └── DecodeLabs Internship Certificate.pdf  (Issued: Aug 26, 2026 | ID: AI086527)
+├── devforge/
+│   └── OfferLetter_ABDUL SAMI UTHWAL.pdf      (Issued: Jul 6, 2026)
+└── developerhub/
+    ├── DHC Interns Offer Letters 8-412.pdf    (Issued: May 10, 2026 | ID: DHC-3562)
+    └── Completion Certificates-267.pdf        (Issued: Jun 22, 2026 | ID: DHC-3562)
+```
+
+### Experience Items Order & Verification Portals:
+1. 🥇 **DEVFORGE (AI Innovation Track)**
+   - **Duration**: `Jul 2026 - Sep 2026`
    - **Role**: `AI/ML Intern`
-   - **Documents**: 📄 `Offer Letter` (`/internships/devforge/OfferLetter_ABDUL SAMI UTHWAL.pdf` | Portal: `https://devforgelabs.netlify.app/`)
-2. 🥈 **DecodeLabs (Virtual Program)**:
-   - **Timeline**: `Jul 2026 - Aug 2026`
+   - **Documents**: 📄 `Offer Letter`
+   - **Verification Portal**: `https://devforgelabs.netlify.app/`
+2. 🥈 **DecodeLabs (Virtual Program)**
+   - **Duration**: `Jul 2026 - Aug 2026`
    - **Role**: `Internship — Artificial Intelligence (AI)`
-   - **Documents**: 
-     - 📄 `Offer Letter` (`/internships/decodelabs/Your Offer Letter _ Decode Labs.pdf`)
-     - 🏆 `Completion Certificate` (`/internships/decodelabs/DecodeLabs Internship Certificate.pdf` | ID: `AI086527` | Portal: `https://www.decodelabs.tech/`)
-3. 🥉 **Developers Hub (Engineering Cohort)**:
-   - **Timeline**: `Apr 2026 - Jun 2026`
+   - **Documents**: 📄 `Offer Letter` + 🏆 `Completion Certificate` (Credential ID: `AI086527`)
+   - **Verification Portal**: `https://www.decodelabs.tech/`
+3. 🥉 **Developers Hub (Engineering Cohort)**
+   - **Duration**: `Apr 2026 - Jun 2026`
    - **Role**: `AI/ML Intern`
-   - **Documents**:
-     - 📄 `Offer Letter` (`/internships/developerhub/DHC Interns Offer Letters 8-412.pdf` | ID: `DHC-3562`)
-     - 🏆 `Completion Certificate` (`/internships/developerhub/Completion Certificates-267.pdf` | ID: `DHC-3562` | Portal: `https://developershubcorp.com/`)
-
-### 2. Dual-Layer Viewport Scroll Lock & Modal Engineering:
-- **Background Lock**: When any document or certificate modal opens, both `document.documentElement` and `document.body` receive `overflow: hidden; touch-action: none;`, preventing background scrolling across all desktop trackpads and mobile touch screens.
-- **Gesture Containment**: Modal overlay backdrop features `touchAction: 'none'`, `overscrollBehavior: 'contain'`, `onWheel={(e) => e.stopPropagation()}`, and `onTouchMove={(e) => e.stopPropagation()}`.
-- **Live Verification Links**: Modals contain a direct `🛡️ Verify Credential` button linked directly to the issuer's verification portal.
+   - **Documents**: 📄 `Offer Letter` + 🏆 `Completion Certificate` (Credential ID: `DHC-3562`)
+   - **Verification Portal**: `https://developershubcorp.com/`
 
 ---
 
-## 🛡️ Content & Intellectual Property Security Suite
-- **Text & UI Selection Block**: Global `user-select: none !important;` and `-webkit-touch-callout: none !important;` prevent all mouse cursor highlighting and mobile long-press callout menus (while preserving typing in inputs and textareas).
-- **Right-Click Lockdown**: `contextmenu` event is intercepted and blocked globally across the page.
-- **Keyboard Shortcut Interception**: Blocks `Ctrl+C`, `Ctrl+X`, `Ctrl+A`, `Ctrl+U`, `Ctrl+S`, `Ctrl+P`, `F12`, and `Ctrl+Shift+I/J/C`.
-- **Image Drag Prevention**: `user-drag: none` and `dragstart` event interception block dragging images onto the desktop.
-- **Anti-Print Protection**: `@media print { html, body { display: none !important; } }` blanks the page if a user triggers browser print dialogs.
+## 🚀 Featured Projects Order (Carousel & Case Studies)
+
+1. 🥇 **Vigilant Eye** — Real-Time AI Surveillance System (`#project/vigilant-eye` | Live: `https://vigilant-eye-gold.vercel.app`)
+2. 🥈 **RAG Research Assistant** — RAG Chatbot with Llama 3.1 & ChromaDB (`#project/rag-chatbot`)
+3. 🥉 **Rashid Dental AI Assistant** — Intelligent RAG-Powered Clinical Healthcare Bot & Appointment System (`#project/rashid-dental-ai-assistant` | Live: `https://rashid-dental-ai-assistant-3.onrender.com`)
+4. 4️⃣ **AuraSentiment** — End-to-End Sentiment Analysis Web Application (`#project/aurasentiment-web-app` | Live: `https://sentiment-analysis-web-app-gcgl.vercel.app/`)
+5. 5️⃣ **AI Data Classifier** — Iris Species Classification with Multi-Algorithm ML Pipeline (`#project/ai-data-classifier`)
+6. 6️⃣ **CloudAssign** — Cloud-Based Assignment Submission Platform (`#project/cloud-assign`)
+7. 7️⃣ **Smart Queue Management System** — Python & Firebase Backend (`#project/smart-queue`)
+8. 8️⃣ **Project Census** — Android Data Collection Application (`#project/project-census`)
+9. 9️⃣ **Library Management System** — C++ OOP Console Application (`#project/library-system`)
 
 ---
 
-## 🎠 Testimonials & Slider Engineering Specs
-- **3x Cloned Loop Buffer**: Original list is cloned 3x (`[...testimonials, ...testimonials, ...testimonials]`). Initial state starts at `currentIndex = N` (the middle set).
-- **Seamless Boundary Jump**: On `onTransitionEnd`, boundary wraps without flash via forced reflow.
-- **Inertia Silence Debounce (280ms)**: Trackpad inertia is absorbed cleanly so a single physical gesture triggers strictly 1 slide.
-- **Transition Dynamics**: `transform 0.65s cubic-bezier(0.22, 1, 0.36, 1)` for calm, elegant, premium gliding.
-- **Cursor**: `cursor: default` with supreme `z-index: 2147483647` for smooth visibility over all dialogs.
+## 🛡️ Security & Intellectual Property Protection Specs
+
+```css
+/* Global Anti-Selection & Anti-Callout */
+body, 
+body *:not(input):not(textarea):not([contenteditable="true"]) {
+  -webkit-user-select: none !important;
+  -moz-user-select: none !important;
+  -ms-user-select: none !important;
+  user-select: none !important;
+  -webkit-touch-callout: none !important;
+}
+
+/* Image Dragging Lockdown */
+img {
+  -webkit-user-drag: none;
+  -khtml-user-drag: none;
+  -moz-user-drag: none;
+  -o-user-drag: none;
+  user-drag: none;
+}
+
+/* Anti-Print / PDF Export Blocker */
+@media print {
+  html, body {
+    display: none !important;
+    visibility: hidden !important;
+  }
+}
+```
+
+### Event Interception Rules:
+- **`contextmenu`**: `preventDefault()` outside form fields.
+- **`keydown`**: Blocks `F12`, `Ctrl+Shift+I/J/C`, `Ctrl+U`, `Ctrl+S`, `Ctrl+P`, `Ctrl+C`, `Ctrl+X`, `Ctrl+A` (outside form inputs).
+- **`copy` / `cut`**: `preventDefault()` globally outside form inputs.
+- **`dragstart`**: `preventDefault()` on all images and links.
 
 ---
 
-## 🎨 Mobile Responsiveness & Layout Boundaries
-- **Zero Horizontal Overflow**:
-  - Desktop-only proximity hover padding (`@media (min-width: 992px)`) on Hero headings (`ABDUL SAMI UTHWAL`, `Software Engineer & AI/ML Developer`, location, tagline), with clean zero-margin resets on mobile (`< 992px`).
-  - Guarantees 100% symmetric container margins and edge-to-edge divider lines across all mobile devices.
+## 🔒 Dual-Layer Viewport Scroll Locking Engine
+
+Whenever an interactive document modal, certificate preview, or mobile navigation drawer opens:
+1. **`document.documentElement.style.overflow = 'hidden'`**
+2. **`document.body.style.overflow = 'hidden'`**
+3. **`document.body.style.touchAction = 'none'`**
+4. Modal backdrop uses `touchAction: 'none'`, `overscrollBehavior: 'contain'`, `onWheel={(e) => e.stopPropagation()}`, and `onTouchMove={(e) => e.stopPropagation()}`.
+5. Modal card inside uses `touchAction: 'auto'`, `overscrollBehavior: 'contain'`, and `onClick={(e) => e.stopPropagation()}`.
 
 ---
 
-## 📋 Strict User Collaboration Guidelines
-- **Communication Language**: Communicate with Sami in friendly **Roman Urdu**.
-- **Scope Discipline**: *"is issue ko resolve kr doo iska ilawa kese chz ko ni chernaa strictly"* — Never touch or modify unrelated files or components.
-- **Local Testing First**: Always test and verify changes on `localhost:5173` before pushing.
-- **Explicit Consent**: Ask for confirmation before pushing to GitHub / deploying to Vercel.
-- **Explaining First**: When Sami asks to diagnose or explain (*"srf dkh ka bataoo... krna kuch niiii"*), inspect and explain clearly before editing any files.
+## 🎨 Design Tokens & Visual Hierarchy
+
+```css
+:root {
+  --ptf-accent-1: #fa4529;              /* Electric Vibrant Orange/Red */
+  --ptf-accent-2: #e03d24;              /* Deep Accent Red */
+  --ptf-text-color: #666666;            /* Medium Gray Body Text */
+  --ptf-black-color: #000000;           /* True Black Heading Color */
+  --ptf-white-color: #ffffff;           /* Crisp Pure White Surface */
+  --ptf-border-color: #e2e8f0;          /* Subtle Slate Border */
+  --ptf-font-sans: 'Inter', sans-serif; /* Clean Modern Sans */
+  --ptf-font-serif: 'Amiri', serif;     /* Luxury Editorial Serif */
+  --ptf-transition-duration: 300ms;
+  --ptf-transition-easing: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+```
+
+---
+
+## 📋 Strict Collaboration Guidelines
+
+1. **Language**: Communicate with Sami in friendly **Roman Urdu**.
+2. **Discipline**: Never touch, reformat, or alter working components unless explicitly instructed (*"is issue ko resolve kr doo iska ilawa kese chz ko ni chernaa strictly"*).
+3. **Verification**: Always run `npm run build` locally before pushing to GitHub or deploying to Vercel.
+4. **Deployments**: Execute `npx vercel --prod --yes` for production updates and keep GitHub `origin/main` in 100% parity.
