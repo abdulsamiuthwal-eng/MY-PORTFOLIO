@@ -300,7 +300,7 @@ const Timeline: React.FC = () => {
               <TimelineItem
                 year="Jul 2026 - Sep 2026"
                 title="AI/ML Intern"
-                institution="DEVFORGE (Online Internship)"
+                institution="DEVFORGE (AI Innovation Track)"
                 institutionLink="https://devforgelabs.netlify.app/"
                 description="Developed an end-to-end Sentiment Analysis web application using Python, Scikit-learn, Pandas, NumPy, NLTK, TF-IDF, and FastAPI. Trained & evaluated ML models, built REST APIs, integrated frontend/backend, and deployed AI solutions following industry best practices."
                 delay="0"
@@ -311,7 +311,7 @@ const Timeline: React.FC = () => {
               <TimelineItem
                 year="Jul 2026 - Aug 2026"
                 title="Internship — Artificial Intelligence (AI)"
-                institution="DecodeLabs (Online Internship)"
+                institution="DecodeLabs (Virtual Program)"
                 institutionLink="https://www.decodelabs.tech/"
                 description="Completed hands-on projects and collaborative tasks in Artificial Intelligence (AI) and Python application development, focusing on clean code, modular problem-solving, NLP, rule-based systems, and Git version control."
                 delay="100"
@@ -322,7 +322,7 @@ const Timeline: React.FC = () => {
               <TimelineItem
                 year="Apr 2026 - Jun 2026"
                 title="AI/ML Intern"
-                institution="Developer Hub (Online Internship)"
+                institution="Developers Hub (Engineering Cohort)"
                 institutionLink="https://developershubcorp.com/"
                 description="Worked on machine learning model development and AI workflows using Python, Scikit-learn, Pandas & NumPy. Built LLM-powered applications with LangChain and RAG pipelines, applied NLP techniques, and explored TensorFlow to improve model performance."
                 delay="200"
