@@ -16,7 +16,7 @@ export interface CertificateItem {
   title: string;
   issuer: string;
   date: string;
-  category: 'all' | 'core' | 'ai-data' | 'foundations' | 'internships';
+  category: 'all' | 'core' | 'ai-data' | 'foundations';
   categoryLabel: string;
   skills: string[];
   pdfUrl: string;
@@ -26,71 +26,6 @@ export interface CertificateItem {
 }
 
 const certificatesData: CertificateItem[] = [
-  // 0 Priority - Verified Internships & Experience Letters
-  {
-    id: 'intern-1',
-    title: 'Virtual AI Internship — Completion Certificate',
-    issuer: 'DecodeLabs',
-    date: 'August 26, 2026',
-    category: 'internships',
-    categoryLabel: 'Internships & Experience',
-    skills: ['Artificial Intelligence', 'Python Development', 'Clean Code', 'ML Solutions'],
-    pdfUrl: '/internships/decodelabs/DecodeLabs Internship Certificate.pdf',
-    credentialCode: 'AI086527',
-    verifyUrl: 'https://www.decodelabs.tech/',
-    priority: 0
-  },
-  {
-    id: 'intern-2',
-    title: 'AI Internship Official Offer Letter',
-    issuer: 'Decode Labs Team',
-    date: 'July 25, 2026',
-    category: 'internships',
-    categoryLabel: 'Internships & Experience',
-    skills: ['AI Track', 'Hands-on Projects', 'Industry Mentorship'],
-    pdfUrl: '/internships/decodelabs/Your Offer Letter _ Decode Labs.pdf',
-    verifyUrl: 'https://www.decodelabs.tech/',
-    priority: 0
-  },
-  {
-    id: 'intern-3',
-    title: 'AI/ML Engineering Internship — Completion Certificate',
-    issuer: 'Developers Hub Corporation',
-    date: 'June 22, 2026',
-    category: 'internships',
-    categoryLabel: 'Internships & Experience',
-    skills: ['AI/ML Engineering', 'LangChain', 'RAG Pipelines', 'NLP Workflows'],
-    pdfUrl: '/internships/developerhub/Completion Certificates-267.pdf',
-    credentialCode: 'DHC-3562',
-    verifyUrl: 'https://developershubcorp.com/',
-    priority: 0
-  },
-  {
-    id: 'intern-4',
-    title: 'AI/ML Engineering Internship Offer Letter',
-    issuer: 'Developers Hub Corporation',
-    date: 'May 10, 2026',
-    category: 'internships',
-    categoryLabel: 'Internships & Experience',
-    skills: ['Machine Learning', 'Python', 'Scikit-learn', 'NLP'],
-    pdfUrl: '/internships/developerhub/DHC Interns Offer Letters 8-412.pdf',
-    credentialCode: 'DHC-3562',
-    verifyUrl: 'https://developershubcorp.com/',
-    priority: 0
-  },
-  {
-    id: 'intern-5',
-    title: 'AI Engineering Internship Offer Letter',
-    issuer: 'DEVFORGE Labs',
-    date: 'July 6, 2026',
-    category: 'internships',
-    categoryLabel: 'Internships & Experience',
-    skills: ['AI Engineering', 'FastAPI', 'ML APIs', 'Deployment'],
-    pdfUrl: '/internships/devforge/OfferLetter_ABDUL SAMI UTHWAL.pdf',
-    verifyUrl: 'https://devforgelabs.netlify.app/',
-    priority: 0
-  },
-
   // 1st Priority - Core Technical & Software Engineering
   {
     id: 'cert-1',
@@ -279,7 +214,7 @@ const Testimonials: React.FC = () => {
   const [isTransitioning, setIsTransitioning] = useState(true);
 
   // Certificates Filter & Modal state
-  const [activeCategory, setActiveCategory] = useState<'all' | 'internships' | 'core' | 'ai-data' | 'foundations'>('all');
+  const [activeCategory, setActiveCategory] = useState<'all' | 'core' | 'ai-data' | 'foundations'>('all');
   const [selectedCert, setSelectedCert] = useState<CertificateItem | null>(null);
 
   // Testimonial certificate image modal state
@@ -654,13 +589,7 @@ const Testimonials: React.FC = () => {
             className={`ptf-tab-btn ${activeCategory === 'all' ? 'active' : ''}`}
             onClick={() => setActiveCategory('all')}
           >
-            All Credentials ({certificatesData.length})
-          </button>
-          <button
-            className={`ptf-tab-btn ${activeCategory === 'internships' ? 'active' : ''}`}
-            onClick={() => setActiveCategory('internships')}
-          >
-            Internships & Experience (5)
+            All Certifications ({certificatesData.length})
           </button>
           <button
             className={`ptf-tab-btn ${activeCategory === 'core' ? 'active' : ''}`}
