@@ -7,10 +7,10 @@ interface CountUpProps {
   duration?: number; // ms
 }
 
-const CountUp: React.FC<CountUpProps> = ({ end, suffix = '', decimals = 0, duration = 1800 }) => {
+const CountUp: React.FC<CountUpProps> = ({ end, suffix = '', decimals = 0, duration = 1600 }) => {
   const [display, setDisplay] = useState('0');
   const ref = useRef<HTMLSpanElement>(null);
-  const hasRun = useRef(false);
+  const rafId = useRef<number | null>(null);
 
   useEffect(() => {
     const el = ref.current;
@@ -18,28 +18,44 @@ const CountUp: React.FC<CountUpProps> = ({ end, suffix = '', decimals = 0, durat
 
     const observer = new IntersectionObserver(
       ([entry]) => {
-        if (entry.isIntersecting && !hasRun.current) {
-          hasRun.current = true;
+        if (rafId.current) {
+          cancelAnimationFrame(rafId.current);
+          rafId.current = null;
+        }
+
+        if (entry.isIntersecting) {
           const startTime = performance.now();
 
           const tick = (now: number) => {
             const elapsed = now - startTime;
             const progress = Math.min(elapsed / duration, 1);
-            // Ease-out cubic
+            // Smooth ease-out cubic
             const eased = 1 - Math.pow(1 - progress, 3);
             const current = eased * end;
             setDisplay(decimals > 0 ? current.toFixed(decimals) : Math.floor(current).toString());
-            if (progress < 1) requestAnimationFrame(tick);
+            if (progress < 1) {
+              rafId.current = requestAnimationFrame(tick);
+            } else {
+              rafId.current = null;
+            }
           };
 
-          requestAnimationFrame(tick);
+          rafId.current = requestAnimationFrame(tick);
+        } else {
+          // Reset to 0 when scrolled out of view so it re-animates every time it comes back into viewport
+          setDisplay('0');
         }
       },
-      { threshold: 0.4 }
+      { threshold: 0.3 }
     );
 
     observer.observe(el);
-    return () => observer.disconnect();
+    return () => {
+      observer.disconnect();
+      if (rafId.current) {
+        cancelAnimationFrame(rafId.current);
+      }
+    };
   }, [end, duration, decimals]);
 
   return (
