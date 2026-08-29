@@ -115,7 +115,7 @@ body {
   position: fixed;
   transform: translate(-50%, -50%) scale(1);
   pointer-events: none;
-  z-index: 999999;
+  z-index: 2147483647;
   /* Only transition compositor-safe properties to avoid CPU paint */
   transition: transform 0.25s ease, opacity 0.15s ease;
   background-color: rgba(250, 69, 41, 0.05);
@@ -130,7 +130,7 @@ body {
   position: fixed;
   transform: translate(-50%, -50%);
   pointer-events: none;
-  z-index: 999999;
+  z-index: 2147483647;
   transition: transform 0.1s;
   will-change: transform;
 }
