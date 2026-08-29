@@ -66,6 +66,8 @@ const CountUp: React.FC<CountUpProps> = ({ end, suffix = '', decimals = 0, durat
 };
 
 const About: React.FC = () => {
+  const [imgLoaded, setImgLoaded] = useState(false);
+
   return (
     <section id="biography" className="ptf-biography-section" style={{ backgroundColor: 'var(--ptf-white-color)' }}>
       {/* Spacer */}
@@ -123,10 +125,30 @@ const About: React.FC = () => {
           {/* Center Column: Portrait in Double Oval Frame */}
           <div className="col-12 col-xl-6 order-xl-2 text-center ptf-biography-center-col">
             <div className="ptf-animated-block" data-aos="fade-up" data-aos-delay="50">
-              <div className="ptf-custom--5512">
+              <div className="ptf-custom--5512" style={{ position: 'relative' }}>
+                {/* Shimmer Loading Skeleton while Image Loads */}
+                {!imgLoaded && (
+                  <div
+                    className="ptf-skeleton"
+                    style={{
+                      position: 'absolute',
+                      top: '15px',
+                      left: '15px',
+                      right: '15px',
+                      bottom: '15px',
+                      borderRadius: '999px',
+                      zIndex: 1,
+                    }}
+                  />
+                )}
                 <img 
-                  src="/profile.jpg" 
+                  src="/long_portfolioprofile__upscaled (1).jpeg" 
                   alt="Abdul Sami Uthwal Portrait" 
+                  onLoad={() => setImgLoaded(true)}
+                  style={{
+                    opacity: imgLoaded ? 1 : 0,
+                    transition: 'opacity 0.4s ease-in-out',
+                  }}
                 />
               </div>
             </div>
