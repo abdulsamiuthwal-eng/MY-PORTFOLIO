@@ -45,7 +45,7 @@
 | `src/components/About.tsx` | Biography section (`#biography`). |
 | `src/components/Skills.tsx` | Tech stack showcase (`#skills`). |
 | `src/components/Timeline.tsx` | Education & Experience interactive timeline (`#timeline`). Features reordered experiences (DEVFORGE 1st, DecodeLabs 2nd, Developer Hub 3rd), interactive document badges, verification chips, direct portal verification links, and a full-screen PDF preview lightbox modal with dual-layer viewport scroll lock (`html` + `body`). |
-| `src/components/Projects.tsx` | Featured portfolio projects slider (`#project`) with seamless 3x clone buffer loop, responsive drag/touch swipe, and centered item highlighting. |
+| `src/components/Projects.tsx` | Featured portfolio projects slider (`#project`) with seamless 3x clone buffer loop, responsive drag/touch swipe, and centered item highlighting. Order: 1. Vigilant Eye, 2. RAG Research Assistant, 3. Rashid Dental AI Assistant, 4. AuraSentiment, 5. AI Data Classifier, 6. CloudAssign, 7. Smart Queue, 8. Project Census, 9. Library System. |
 | `src/components/ProjectDetailPage.tsx` | Deep-dive project view (`#project/:id`). |
 | `src/components/Testimonials.tsx` | Client reviews slider (`#testimonials`) + Verified Credentials Showcase (`#certifications`). Features calibrated 0.65s slider glide, 280ms trackpad silence lock, 4 clean certification category tabs, and PDF preview modals with dual-layer scroll lock and direct verification portal links. |
 | `src/components/InstagramGrid.tsx` | Instagram social feed cards (`#instagram`). |
