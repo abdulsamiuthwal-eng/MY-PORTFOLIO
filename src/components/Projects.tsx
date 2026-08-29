@@ -48,7 +48,7 @@ const ProjectItem: React.FC<ProjectItemProps> = ({ image, title, category, link,
                 userSelect: 'none',
                 pointerEvents: 'none',
                 opacity: imgLoaded ? 1 : 0,
-                transition: 'opacity 0.4s ease',
+                transition: 'opacity 0.4s ease, transform 0.9s ease-in-out, filter 0.3s ease-in-out',
               }}
               onLoad={() => setImgLoaded(true)}
             />
