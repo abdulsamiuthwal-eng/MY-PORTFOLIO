@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Award, ExternalLink, Eye, X, ShieldCheck, FileText, Download } from 'lucide-react';
+import { Award, ExternalLink, Eye, X, ShieldCheck, FileText, Download, CheckCircle2 } from 'lucide-react';
 
 interface TestimonialItem {
   quote: string;
@@ -16,7 +16,7 @@ export interface CertificateItem {
   title: string;
   issuer: string;
   date: string;
-  category: 'all' | 'core' | 'ai-data' | 'foundations';
+  category: 'all' | 'core' | 'ai-data' | 'foundations' | 'internships';
   categoryLabel: string;
   skills: string[];
   pdfUrl: string;
@@ -26,6 +26,71 @@ export interface CertificateItem {
 }
 
 const certificatesData: CertificateItem[] = [
+  // 0 Priority - Verified Internships & Experience Letters
+  {
+    id: 'intern-1',
+    title: 'Virtual AI Internship — Completion Certificate',
+    issuer: 'DecodeLabs',
+    date: 'August 26, 2026',
+    category: 'internships',
+    categoryLabel: 'Internships & Experience',
+    skills: ['Artificial Intelligence', 'Python Development', 'Clean Code', 'ML Solutions'],
+    pdfUrl: '/internships/decodelabs/DecodeLabs Internship Certificate.pdf',
+    credentialCode: 'AI086527',
+    verifyUrl: 'https://www.decodelabs.tech/',
+    priority: 0
+  },
+  {
+    id: 'intern-2',
+    title: 'AI Internship Official Offer Letter',
+    issuer: 'Decode Labs Team',
+    date: 'July 25, 2026',
+    category: 'internships',
+    categoryLabel: 'Internships & Experience',
+    skills: ['AI Track', 'Hands-on Projects', 'Industry Mentorship'],
+    pdfUrl: '/internships/decodelabs/Your Offer Letter _ Decode Labs.pdf',
+    verifyUrl: 'https://www.decodelabs.tech/',
+    priority: 0
+  },
+  {
+    id: 'intern-3',
+    title: 'AI/ML Engineering Internship — Completion Certificate',
+    issuer: 'Developers Hub Corporation',
+    date: 'June 22, 2026',
+    category: 'internships',
+    categoryLabel: 'Internships & Experience',
+    skills: ['AI/ML Engineering', 'LangChain', 'RAG Pipelines', 'NLP Workflows'],
+    pdfUrl: '/internships/developerhub/Completion Certificates-267.pdf',
+    credentialCode: 'DHC-3562',
+    verifyUrl: 'https://developershubcorp.com/',
+    priority: 0
+  },
+  {
+    id: 'intern-4',
+    title: 'AI/ML Engineering Internship Offer Letter',
+    issuer: 'Developers Hub Corporation',
+    date: 'May 10, 2026',
+    category: 'internships',
+    categoryLabel: 'Internships & Experience',
+    skills: ['Machine Learning', 'Python', 'Scikit-learn', 'NLP'],
+    pdfUrl: '/internships/developerhub/DHC Interns Offer Letters 8-412.pdf',
+    credentialCode: 'DHC-3562',
+    verifyUrl: 'https://developershubcorp.com/',
+    priority: 0
+  },
+  {
+    id: 'intern-5',
+    title: 'AI Engineering Internship Offer Letter',
+    issuer: 'DEVFORGE Labs',
+    date: 'July 6, 2026',
+    category: 'internships',
+    categoryLabel: 'Internships & Experience',
+    skills: ['AI Engineering', 'FastAPI', 'ML APIs', 'Deployment'],
+    pdfUrl: '/internships/devforge/OfferLetter_ABDUL SAMI UTHWAL.pdf',
+    verifyUrl: 'https://devforgelabs.netlify.app/',
+    priority: 0
+  },
+
   // 1st Priority - Core Technical & Software Engineering
   {
     id: 'cert-1',
@@ -209,12 +274,12 @@ const Testimonials: React.FC = () => {
   const totalClones = clonedList.length;
 
   const [currentIndex, setCurrentIndex] = useState(N); // Start at index 3 (middle buffer)
-  const [dragOffset, setDragOffset] = useState(0);
+  const [dragOffset, setDragOffsetState] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
   const [isTransitioning, setIsTransitioning] = useState(true);
 
   // Certificates Filter & Modal state
-  const [activeCategory, setActiveCategory] = useState<'all' | 'core' | 'ai-data' | 'foundations'>('all');
+  const [activeCategory, setActiveCategory] = useState<'all' | 'internships' | 'core' | 'ai-data' | 'foundations'>('all');
   const [selectedCert, setSelectedCert] = useState<CertificateItem | null>(null);
 
   // Testimonial certificate image modal state
@@ -222,15 +287,25 @@ const Testimonials: React.FC = () => {
 
   const containerRef = useRef<HTMLDivElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
-  const dragStartXRef = useRef(0);
+  const isDraggingRef = useRef(false);
+  const dragStartRef = useRef(0);
   const dragStartYRef = useRef(0);
   const isHorizontalSwipeRef = useRef<boolean | null>(null);
+  const dragOffsetRef = useRef(0);
+  const wheelActiveRef = useRef(false);
+  const wheelEndTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const setDragOffset = (val: number) => {
+    dragOffsetRef.current = val;
+    setDragOffsetState(val);
+  };
 
   // Handle Drag / Touch Start
   const handleStart = (clientX: number, clientY?: number) => {
+    isDraggingRef.current = true;
     setIsDragging(true);
     setIsTransitioning(false);
-    dragStartXRef.current = clientX;
+    dragStartRef.current = clientX;
     if (clientY !== undefined) {
       dragStartYRef.current = clientY;
       isHorizontalSwipeRef.current = null;
@@ -240,10 +315,10 @@ const Testimonials: React.FC = () => {
 
   // Handle Touch Move
   const handleTouchMove = (e: React.TouchEvent) => {
-    if (!isDragging) return;
+    if (!isDraggingRef.current) return;
     const clientX = e.touches[0].clientX;
     const clientY = e.touches[0].clientY;
-    const deltaX = clientX - dragStartXRef.current;
+    const deltaX = clientX - dragStartRef.current;
     const deltaY = clientY - dragStartYRef.current;
 
     // Detect gesture direction on initial movement
@@ -255,6 +330,7 @@ const Testimonials: React.FC = () => {
 
     // Vertical gesture: release drag immediately to allow natural vertical page scrolling
     if (isHorizontalSwipeRef.current === false) {
+      isDraggingRef.current = false;
       setIsDragging(false);
       setDragOffset(0);
       return;
@@ -266,31 +342,76 @@ const Testimonials: React.FC = () => {
     }
   };
 
-  // Handle Mouse Move (strictly follows user cursor)
-  const handleMouseMove = (clientX: number) => {
-    if (!isDragging) return;
-    const deltaX = clientX - dragStartXRef.current;
-    setDragOffset(deltaX);
-  };
-
   // Handle End (Touch / Mouse Up)
-  const handleEnd = () => {
-    if (!isDragging) return;
+  const handleDragEnd = () => {
+    if (!isDraggingRef.current) return;
+    isDraggingRef.current = false;
     setIsDragging(false);
-    setIsTransitioning(true);
 
-    const containerWidth = containerRef.current?.offsetWidth || 1000;
-    const threshold = containerWidth * 0.15; // 15% swipe threshold
+    const offset = dragOffsetRef.current;
+    const containerWidth = containerRef.current?.offsetWidth || 800;
+    const threshold = Math.max(containerWidth * 0.12, 50); // 12% or 50px drag threshold
 
-    if (dragOffset < -threshold) {
+    if (offset < -threshold) {
+      setIsTransitioning(true);
       setCurrentIndex((prev) => prev + 1);
-    } else if (dragOffset > threshold) {
+    } else if (offset > threshold) {
+      setIsTransitioning(true);
       setCurrentIndex((prev) => prev - 1);
+    } else {
+      setIsTransitioning(true);
     }
 
     setDragOffset(0);
     isHorizontalSwipeRef.current = null;
   };
+
+  // Attach non-passive wheel listener: gesture-locked (1 swipe = strictly 1 slide, inertia absorbed)
+  useEffect(() => {
+    const el = containerRef.current;
+    if (!el) return;
+
+    const onWheel = (e: WheelEvent) => {
+      const absX = Math.abs(e.deltaX);
+      const absY = Math.abs(e.deltaY);
+
+      // If vertical is dominant or no horizontal movement, let page scroll naturally
+      if (absX <= absY || absX < 25) return;
+
+      // Horizontal trackpad gesture -> prevent browser back/forward history navigation
+      e.preventDefault();
+
+      // Reset the silence detector timer on every event in the current swipe stream
+      if (wheelEndTimerRef.current) {
+        clearTimeout(wheelEndTimerRef.current);
+      }
+
+      // Unlock only when trackpad inertia completely dies down (280ms silence)
+      wheelEndTimerRef.current = setTimeout(() => {
+        wheelActiveRef.current = false;
+      }, 280);
+
+      // If this swipe gesture already triggered a slide, absorb remaining inertia ticks!
+      if (wheelActiveRef.current) return;
+
+      // FIRST event of the gesture -> trigger exactly ONE slide transition with calm pacing!
+      wheelActiveRef.current = true;
+      setIsTransitioning(true);
+      if (e.deltaX > 0) {
+        setCurrentIndex((prev) => prev + 1);
+      } else {
+        setCurrentIndex((prev) => prev - 1);
+      }
+    };
+
+    el.addEventListener('wheel', onWheel, { passive: false });
+    return () => {
+      el.removeEventListener('wheel', onWheel);
+      if (wheelEndTimerRef.current) {
+        clearTimeout(wheelEndTimerRef.current);
+      }
+    };
+  }, []);
 
   // Seamless jump on transition end
   const handleTransitionEnd = (e?: React.TransitionEvent) => {
@@ -318,10 +439,22 @@ const Testimonials: React.FC = () => {
   };
 
   useEffect(() => {
+    if (!isTransitioning) {
+      if (trackRef.current) {
+        trackRef.current.offsetHeight;
+      }
+      setIsTransitioning(true);
+    }
+  }, [isTransitioning]);
+
+  useEffect(() => {
     if (!isDragging) return;
 
-    const onMouseMove = (e: MouseEvent) => handleMouseMove(e.clientX);
-    const onMouseUp = () => handleEnd();
+    const onMouseMove = (e: MouseEvent) => {
+      const deltaX = e.clientX - dragStartRef.current;
+      setDragOffset(deltaX);
+    };
+    const onMouseUp = () => handleDragEnd();
 
     document.addEventListener('mousemove', onMouseMove);
     document.addEventListener('mouseup', onMouseUp);
@@ -330,7 +463,7 @@ const Testimonials: React.FC = () => {
       document.removeEventListener('mousemove', onMouseMove);
       document.removeEventListener('mouseup', onMouseUp);
     };
-  }, [isDragging, currentIndex, dragOffset]);
+  }, [isDragging]);
 
   // Lock background page scroll when Certificate Modal is active
   useEffect(() => {
@@ -351,7 +484,7 @@ const Testimonials: React.FC = () => {
 
   const activeDotIndex = ((currentIndex % N) + N) % N;
   const transitionStyle = isTransitioning && !isDragging
-    ? 'transform 0.5s cubic-bezier(0.25, 1, 0.5, 1)'
+    ? 'transform 0.65s cubic-bezier(0.22, 1, 0.36, 1)'
     : 'none';
 
   return (
@@ -365,16 +498,24 @@ const Testimonials: React.FC = () => {
           ref={containerRef}
           className="ptf-testimonials-slider"
           onMouseDown={(e) => {
+            if ((e.target as HTMLElement).closest('button, a, .ptf-view-cert-btn')) return;
             e.preventDefault();
             handleStart(e.clientX);
           }}
-          onTouchStart={(e) => handleStart(e.touches[0].clientX, e.touches[0].clientY)}
+          onTouchStart={(e) => {
+            if (e.touches.length !== 1) return;
+            if ((e.target as HTMLElement).closest('button, a, .ptf-view-cert-btn')) return;
+            handleStart(e.touches[0].clientX, e.touches[0].clientY);
+          }}
           onTouchMove={handleTouchMove}
-          onTouchEnd={handleEnd}
+          onTouchEnd={() => {
+            isHorizontalSwipeRef.current = null;
+            handleDragEnd();
+          }}
           style={{
             overflow: 'hidden',
             width: '100%',
-            cursor: isDragging ? 'grabbing' : 'grab',
+            cursor: 'default',
             userSelect: 'none',
             WebkitUserSelect: 'none',
             touchAction: 'pan-y',
@@ -513,7 +654,13 @@ const Testimonials: React.FC = () => {
             className={`ptf-tab-btn ${activeCategory === 'all' ? 'active' : ''}`}
             onClick={() => setActiveCategory('all')}
           >
-            All Certifications ({certificatesData.length})
+            All Credentials ({certificatesData.length})
+          </button>
+          <button
+            className={`ptf-tab-btn ${activeCategory === 'internships' ? 'active' : ''}`}
+            onClick={() => setActiveCategory('internships')}
+          >
+            Internships & Experience (5)
           </button>
           <button
             className={`ptf-tab-btn ${activeCategory === 'core' ? 'active' : ''}`}
@@ -826,15 +973,58 @@ const Testimonials: React.FC = () => {
               backgroundColor: '#fafafa'
             }}>
               <div>
-                <span style={{ fontSize: '11px', textTransform: 'uppercase', letterSpacing: '1px', color: 'var(--ptf-accent-1)', fontWeight: 700, display: 'block' }}>
-                  {selectedCert.issuer} — {selectedCert.date}
-                </span>
-                <h4 style={{ fontSize: '17px', fontWeight: 600, color: 'var(--ptf-black-color)', margin: '2px 0 0 0' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
+                  <span style={{ fontSize: '11px', textTransform: 'uppercase', letterSpacing: '1px', color: 'var(--ptf-accent-1)', fontWeight: 700, display: 'block' }}>
+                    {selectedCert.issuer} — {selectedCert.date}
+                  </span>
+                  {selectedCert.credentialCode && (
+                    <span
+                      style={{
+                        fontSize: '11px',
+                        backgroundColor: '#e2e8f0',
+                        color: 'var(--ptf-black-color)',
+                        padding: '1px 7px',
+                        borderRadius: '4px',
+                        fontWeight: 700,
+                        letterSpacing: '0.5px'
+                      }}
+                    >
+                      ID: {selectedCert.credentialCode}
+                    </span>
+                  )}
+                </div>
+                <h4 style={{ fontSize: '17px', fontWeight: 600, color: 'var(--ptf-black-color)', margin: '4px 0 0 0' }}>
                   {selectedCert.title}
                 </h4>
               </div>
 
-              <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
+                {selectedCert.verifyUrl && (
+                  <a
+                    href={selectedCert.verifyUrl}
+                    target="_blank"
+                    rel="noreferrer"
+                    style={{
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: '6px',
+                      fontSize: '13px',
+                      fontWeight: 600,
+                      color: '#ffffff',
+                      backgroundColor: 'var(--ptf-accent-1)',
+                      padding: '8px 14px',
+                      borderRadius: '6px',
+                      textDecoration: 'none',
+                      transition: 'opacity 0.2s'
+                    }}
+                    onMouseEnter={(e) => (e.currentTarget.style.opacity = '0.90')}
+                    onMouseLeave={(e) => (e.currentTarget.style.opacity = '1')}
+                  >
+                    <CheckCircle2 size={14} />
+                    <span>Verify</span>
+                    <ExternalLink size={12} />
+                  </a>
+                )}
                 <a
                   href={selectedCert.pdfUrl}
                   target="_blank"
@@ -870,6 +1060,7 @@ const Testimonials: React.FC = () => {
                     cursor: 'pointer',
                     color: '#333'
                   }}
+                  aria-label="Close modal"
                 >
                   <X size={18} />
                 </button>

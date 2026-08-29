@@ -538,8 +538,6 @@ body {
   display: inline-block;
   color: var(--ptf-black-color);
   cursor: default;
-  padding: 40px 90px;
-  margin: -40px -90px;
 }
 
 .ptf-hero-section .ptf-hero-title::before {
@@ -549,7 +547,6 @@ body {
   left: 0;
   width: 100%;
   height: 100%;
-  padding: 40px 90px;
   box-sizing: border-box;
   color: var(--ptf-accent-1);
   clip-path: polygon(0 0, 0 0, 0 100%, 0% 100%);
@@ -563,8 +560,6 @@ body {
   display: inline-block;
   color: var(--ptf-black-color);
   cursor: default;
-  padding: 32px 75px;
-  margin: -32px -75px;
 }
 
 .ptf-hero-section .ptf-hero-role::before {
@@ -574,7 +569,6 @@ body {
   left: 0;
   width: 100%;
   height: 100%;
-  padding: 32px 75px;
   box-sizing: border-box;
   color: var(--ptf-accent-1);
   clip-path: polygon(0 0, 0 0, 0 100%, 0% 100%);
@@ -586,8 +580,6 @@ body {
 .ptf-hero-section .ptf-hero-location {
   color: var(--ptf-color-3);
   transition: color 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-  padding: 24px 55px;
-  margin: -24px -55px;
 }
 
 .ptf-hero-section .ptf-hero-tagline {
@@ -596,7 +588,34 @@ body {
   text-align: center;
   max-width: 800px;
   margin: 30px auto 0 auto;
-  padding: 24px 45px;
+}
+
+/* Desktop Only: Generous Proximity Hover Padding & Hit Area */
+@media (min-width: 992px) {
+  .ptf-hero-section .ptf-hero-title {
+    padding: 40px 90px;
+    margin: -40px -90px;
+  }
+  .ptf-hero-section .ptf-hero-title::before {
+    padding: 40px 90px;
+  }
+
+  .ptf-hero-section .ptf-hero-role {
+    padding: 32px 75px;
+    margin: -32px -75px;
+  }
+  .ptf-hero-section .ptf-hero-role::before {
+    padding: 32px 75px;
+  }
+
+  .ptf-hero-section .ptf-hero-location {
+    padding: 24px 55px;
+    margin: -24px -55px;
+  }
+
+  .ptf-hero-section .ptf-hero-tagline {
+    padding: 24px 45px;
+  }
 }
 
 /* Hover transitions: trigger when cursor is on or near the specific element */
@@ -3681,9 +3700,5 @@ a, button, select, input, textarea, .filter-item {
 .ptf-testimonials-slider {
   touch-action: pan-y;
   user-select: none;
+  cursor: default;
 }
-
-
-
-
-

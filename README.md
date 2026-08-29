@@ -1,32 +1,42 @@
-# React + TypeScript + Vite
+# 🚀 Abdul Sami Uthwal — Official Developer Portfolio
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+> **Software Engineer & AI/ML Developer | Full Stack Web & Mobile App Developer**
 
-Currently, two official plugins are available:
+Live Production: [https://abdulsamiuthwal-portfolio.vercel.app](https://abdulsamiuthwal-portfolio.vercel.app)
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+---
 
-## React Compiler
+## 🌟 Highlights
+- **AI Assistant "Kitty"**: Voice-enabled intelligent AI portfolio assistant powered by Google Gemini API & ElevenLabs real-time TTS (Lily Rose persona).
+- **Modern React 19 & TypeScript**: High-performance, GPU-composited animations with zero frame drops.
+- **Projects & Testimonials Carousel**: Custom 1:1 gesture-locked slider with trackpad inertia absorption and seamless 3x buffer infinite loop.
+- **Dedicated Contact & Video Footer**: High-impact black stallion smoke video footer integration with Web3Forms backend.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+---
 
-## Expanding the Oxlint configuration
+## 🛠️ Tech Stack
+- **Frontend**: React 19, TypeScript, Vite
+- **Styling**: Pure Modern CSS (`index.css`), Vanilla CSS Design Tokens, AOS
+- **Icons**: Lucide React, Custom SVGs
+- **Backend / APIs**: Vercel Serverless Functions (`api/chat.js`, `api/tts.js`, `api/web3forms.js`)
+- **Hosting & Deployment**: Vercel
 
-If you are developing a production application, we recommend enabling type-aware lint rules by installing `oxlint-tsgolint` and editing `.oxlintrc.json`:
+---
 
-```json
-{
-  "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": ["react", "typescript", "oxc"],
-  "options": {
-    "typeAware": true
-  },
-  "rules": {
-    "react/rules-of-hooks": "error",
-    "react/only-export-components": ["warn", { "allowConstantExport": true }]
-  }
-}
+## 💻 Local Development
+
+```bash
+# Install dependencies
+npm install
+
+# Start local development server
+npm run dev
+
+# Build for production
+npm run build
 ```
 
-See the [Oxlint rules documentation](https://oxc.rs/docs/guide/usage/linter/rules) for the full list of rules and categories.
+---
+
+## 📖 Documentation
+For complete architectural details, file maps, and engineering specs, see [`PROJECT_CONTEXT.md`](./PROJECT_CONTEXT.md).

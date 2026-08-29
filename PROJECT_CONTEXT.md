@@ -22,7 +22,7 @@
 - **Animations**: AOS (Animate on Scroll) + Custom 60 FPS GPU Compositor Keyframes (`translate3d`, `scale3d`)
 - **Backend / Serverless**:
   - `api/chat.js` (Vercel Serverless Function — Google Gemini API with resilient multi-key fallback)
-  - `api/tts.js` (Vercel Serverless Function — ElevenLabs real-time streaming Text-To-Speech with **Bella** voice `EXAVITQu4vr4xnSDxMaL` on `eleven_flash_v2_5`)
+  - `api/tts.js` (Vercel Serverless Function — ElevenLabs real-time streaming Text-To-Speech with **Lily Rose** voice `t4U671CQHG58R11znrVj` on `eleven_flash_v2_5` / `multilingual_v2`)
   - `api/web3forms.js` (Vercel Serverless Function — Web3Forms contact submission proxy)
 - **Deployment**: GitHub (`origin/main`) synced directly with Vercel Production CLI (`npx vercel --prod --yes`)
 
@@ -44,15 +44,33 @@
 | `src/components/About.tsx` | Biography section (`#biography`). |
 | `src/components/Skills.tsx` | Tech stack showcase (`#skills`). |
 | `src/components/Timeline.tsx` | Experience & Education interactive timeline (`#timeline`). |
-| `src/components/Projects.tsx` | Featured portfolio projects grid (`#project`). |
+| `src/components/Projects.tsx` | Featured portfolio projects slider (`#project`) with seamless 3x clone buffer loop, responsive drag/touch swipe, and centered item highlighting. |
 | `src/components/ProjectDetailPage.tsx` | Deep-dive project view (`#project/:id`). |
-| `src/components/Testimonials.tsx` | Client reviews (`#testimonials`) and certificate lightbox modals (`#certifications`). |
+| `src/components/Testimonials.tsx` | Client reviews slider (`#testimonials`) + Verified Credentials Showcase (`#certifications`). Includes 1:1 gesture-locked slider physics, seamless infinite loop, and certificate lightbox modals. |
 | `src/components/InstagramGrid.tsx` | Instagram social feed cards (`#instagram`). |
 | `src/components/CircularCTA.tsx` | Circular interactive SVG contact CTA (`#circular-cta`). |
 | `src/components/ContactPage.tsx` | Full dedicated Contact page (`#contact-page`) with currency dropdown, dynamic budget inputs, Web3Forms email integration, and seamless bottom padding merge into the video footer. |
 | `src/components/Footer.tsx` | Copyright info, social links, throttled back-to-top button, and dynamic `#contact-page` full-width looping horse smoke video background (`/horse-smoke-footer.mp4`). |
 | `public/horse-smoke-footer.mp4` | High-impact cinematic black horse galloping with fluid trailing black smoke background video (~2.1 MB) for the Contact Page footer. |
 | `api/chat.js` | Serverless Gemini API integration with model rotation & fallback. |
+| `api/tts.js` | Serverless ElevenLabs TTS integration with Lily Rose voice. |
+
+---
+
+## 🎠 Testimonials & Slider Engineering Specs
+
+### 1. Testimonials Slider (`#testimonials`) Architecture:
+- **3x Cloned Loop Buffer**: Original list is cloned 3x (`[...testimonials, ...testimonials, ...testimonials]`). Initial state starts at `currentIndex = N` (the middle set).
+- **Seamless Boundary Jump**: On `onTransitionEnd`, if `currentIndex >= 2 * N`, instantly warps without CSS transition to `currentIndex - N`; if `currentIndex < N`, instantly warps to `currentIndex + N`. An active `useEffect` triggers forced reflow to guarantee zero visual flash.
+- **Trackpad / Wheel Event Silence Engine**:
+  - Non-passive event listener attached directly to `containerRef.current`.
+  - Direction Discrimination: If `abs(deltaX) <= abs(deltaY) || abs(deltaX) < 15`, returns immediately without `preventDefault`, allowing 120 FPS native page vertical scroll.
+  - If horizontal gesture is detected (`abs(deltaX) > abs(deltaY)`): calls `preventDefault` (blocking browser Back/Forward history swipe navigation).
+  - **Inertia Absorption**: Uses a 150ms silence debounce timer (`wheelEndTimerRef`). The first event of a physical swipe immediately triggers `setCurrentIndex(prev => prev + 1)` (or `-1`), while subsequent inertial ticks from the same physical swipe are cleanly absorbed without triggering a 2nd slide.
+  - **Strictly 1 Slide per Gesture**: Guarantees zero multi-slide skipping.
+- **Transition Dynamics**: `transform 0.45s cubic-bezier(0.25, 1, 0.5, 1)` for smooth, elegant pacing.
+- **Mouse & Touch Dragging**: 1:1 cursor drag with threshold detection (12% container width).
+- **Cursor**: `cursor: default` (standard arrow cursor across the section, pointer for interactive buttons and dots).
 
 ---
 
@@ -87,46 +105,47 @@
 - **Local Testing First**: Always test and verify changes on `localhost:5173` before pushing.
 - **Explicit Consent**: Ask for confirmation before pushing to GitHub / deploying to Vercel.
 - **Explaining First**: When Sami asks to diagnose or explain (*"srf dkh ka bataoo... krna kuch niiii"*), inspect and explain clearly before editing any files.
-- **Future Roadmap & Kitty Upgrades**:
-  - **Upcoming Female Robot Greeting Video Options (Google Flow / Veo 10s Prompts)**:
-    - **Concept 1 (Sci-Fi Hologram Activation)**: Dormant charging pose on clean white studio -> chest reactor pulses orange (`#fa4529`) & eyes blink open (0-3s) -> steps forward with holographic neural data rings (3-6s) -> dismisses holographic window (6-8s) -> waves & greets *"Hi! I'm Kitty! Welcome to Sami's portfolio!"* (8-10s).
-    - **Concept 2 (AI Developer at Holographic Desk)**: Typing fast on floating orange code/ML screens (0-3s) -> alerts to visitor (3-5s) -> collapses code screens into tiny orange orb & stands up (5-7s) -> pauses 1s (7-8s) -> waves & speaks *"Hello Sir! How can I help you explore Sami's work today?"* (8-10s).
-    - **Concept 3 (Glowing Orb Morph - SELECTED)**: Electric orange glass orb floats & spins (0-3s) -> morphs fluidly into full female humanoid robot landing on white floor (3-6s) -> stretches & powers up to 100% (6-8s) -> polite wave & mouths/speaks: *"Hello Sir! How can I help you today?"* (8-10s). Exact timestamp for natural voice sync.
-    - **Concept 4 (VIP Luxury AI Concierge)**: Standing poised with transparent glass tablet (0-3s) -> senses visitor & lowers tablet (3-5s) -> graceful VIP welcome bow with hand on chest (5-7s) -> straightens up with radiant smile (7-8s) -> waves & speaks *"Welcome Sir! Ready to explore Abdul Sami's portfolio?"* (8-10s).
-- **Kitty Official Voice Persona**: **Lily Rose** (Soft, soothing, conversational, calm pacing). All intro cues (`cue1.mp3`, `cue2.mp3`, `cue3.mp3`), instant human fillers (`filler1.mp3`, `filler2.mp3`, `filler3.mp3`), and live dynamic Gemini AI responses (`api/tts.js`) use the exact same Lily Rose voice profile (`t4U671CQHG58R11znrVj`).
-- **Kitty Full-Screen Voice Mode Architecture**:
-  - **Asset Manifest**:
-    - `Robot_waving_and_greeting_camera_compressed.mp4` (1.5MB intro greeting avatar video)
-    - `kitty-listening-loop.mp4` (1.4MB silent active listening loop with ear tilt & nod)
-    - `talking.mp4` (2.48MB speaking animation loop with fluid lip movements)
-    - `cue1.mp3`, `cue2.mp3`, `cue3.mp3` (Intro speech audio cues synchronized at 1.8s, 3.5s, 6.6s)
-    - `filler1.mp3`, `filler2.mp3`, `filler3.mp3` (0.1s instant conversational filler audios)
-  - **3-Layer Preloaded GPU Video Crossfade Stack**:
-    - Teeno video layers (`Intro`, `Listening Loop`, `Talking Loop`) DOM me preloaded rehte hain with `opacity` crossfades (`translateZ(0)`, `will-change: opacity`).
-    - Eliminates video decoder buffer flush, guaranteeing **ZERO black screen flash and 60 FPS silky smooth mobile performance**.
-  - **Hands-Free Continuous Voice Engine**:
-    - Zero mic button clicking required. Voice Activity Detection (VAD) automatically starts listening when intro finishes and restarts immediately after each answer is spoken.
-  - **Real-Time Streaming Text-to-Speech (`api/tts.js`)**:
-    - Calls ElevenLabs Multilingual v2 model with voice `t4U671CQHG58R11znrVj`.
-    - Automatically cleans markdown syntax tokens before speech synthesis.
-    - Streams MP3 binary buffer to frontend with browser `SpeechSynthesis` resilient fallback.
-  - **Strict Hardware Microphone Lifecycle**:
-    - Microphone is ONLY activated when Voice Mode is open.
-    - Modal close / backdrop click forcefully aborts Web Speech Recognition (`recognition.abort()`, `recognition.stop()`), destroys audio streams, and clears all timers instantly.
 
 ---
 
-## 🎬 Contact Page Video Footer Architecture
-- **Asset**: `public/horse-smoke-footer.mp4` (~2.1 MB) — Cinematic black stallion running with dramatic billowing dark smoke trail.
-- **Trigger**: Active only when `isContactPage === true` (`#contact-page` route).
-- **Seamless Dissolve Blending**:
-  - Top edge utilizes a **Dual-Layer Gradient Mask** (`mask-image: linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.05) 4%, rgba(0,0,0,0.3) 14%, black 32%)`) and soft top white-to-transparent overlay.
-  - White contact page organically dissolves into the video's smoke and horizon with **zero hard horizontal borders**.
-- **Desktop Layout (`> 768px`)**:
-  - Container height: `min-height: clamp(520px, 52vw, 780px)` with `object-position: center 60%`, ensuring horse's head, flowing mane, and running hooves are 100% visible without clipping.
-  - Content container: Floating semi-transparent glassmorphic pill bar (`.ptf-footer-inner`) with `backdrop-filter: blur(16px)` and subtle shadow.
-- **Mobile Layout (`< 768px`)**:
-  - Video focus: `object-position: 12% center`, positioning the horse slightly to the left of center with trailing smoke filling the rest of the portrait screen.
-  - Pure Transparency: Box card, background, borders, and shadows are completely removed on mobile (`background: transparent !important`).
-  - Text & Icons: Copyright, email, and social icons styled in **Pure White (`#ffffff`)** with soft drop-shadow for maximum readability against the dark smoke.
+## 📜 Verified Credentials & Internship Documents Architecture
 
+### 1. Internship Documents (`public/internships/` & `src/components/Timeline.tsx`):
+- **Structured Storage**:
+  - `public/internships/decodelabs/`:
+    - `Your Offer Letter _ Decode Labs.pdf` (Issued July 25, 2026)
+    - `DecodeLabs Internship Certificate.pdf` (Issued August 26, 2026 | ID: `AI086527` | Portal: `https://www.decodelabs.tech/`)
+  - `public/internships/devforge/`:
+    - `OfferLetter_ABDUL SAMI UTHWAL.pdf` (Issued July 6, 2026 | Portal: `https://devforgelabs.netlify.app/`)
+  - `public/internships/developerhub/`:
+    - `DHC Interns Offer Letters 8-412.pdf` (Issued May 10, 2026 | ID: `DHC-3562`)
+    - `Completion Certificates-267.pdf` (Issued June 22, 2026 | ID: `DHC-3562` | Portal: `https://developershubcorp.com/`)
+
+- **Interactive Experience Badges & Modal**:
+  - In `Timeline.tsx`, each internship card features interactive buttons: `📄 Offer Letter` and `🏆 Completion Certificate` with credential ID chips.
+  - Clicking any document opens a high-resolution lightbox modal with PDF preview, download button, and a live `🛡️ Verify Credential` link that navigates directly to the issuing organization's portal.
+  - **Background Scroll Lock**: Whenever the document modal or certificate modal is open, `document.body.style.overflow = 'hidden'` is applied, preventing background portfolio scrolling until closed.
+
+### 2. Verified Credentials Showcase (`#certifications` in `src/components/Testimonials.tsx`):
+- Features **5 filter category tabs**:
+  - `All Credentials (18)`
+  - `Internships & Experience (5)`
+  - `Core Tech & Software Eng (4)`
+  - `AI, ML & Data Science (5)`
+  - `Foundations & Education (3)`
+- Each credential includes live verification IDs, links to verification portals (Coursera, Simplilearn, Forage, DecodeLabs, DevelopersHub, DEVFORGE), and high-resolution PDF preview modal with background scroll lock.
+
+---
+
+## 🎨 Mobile Responsiveness & Layout Boundaries
+- **Zero Horizontal Overflow**:
+  - Desktop-only proximity hover padding (`@media (min-width: 992px)`) on Hero headings (`ABDUL SAMI UTHWAL`, `Software Engineer & AI/ML Developer`, location, tagline), with clean zero-margin resets on mobile (`< 992px`).
+  - Guarantees 100% symmetric container margins and edge-to-edge divider lines across all mobile devices.
+
+---
+
+## 🚀 Upcoming Roadmap / Backlog
+1. **Performance & Dynamic Imports**: Consider code-splitting large chunks (`build.rolldownOptions.output.codeSplitting`) if bundle grows beyond 500 kB.
+2. **SEO & OpenGraph Updates**: Continuously keep sitemap and meta tags updated for new portfolio sections.
+3. **AI Assistant Video & Voice Refinements**:
+   - Maintain the selected Concept 3 energy orb morph animation and Lily Rose voice persona.
