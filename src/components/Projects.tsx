@@ -12,6 +12,8 @@ interface ProjectItemProps {
 }
 
 const ProjectItem: React.FC<ProjectItemProps> = ({ image, title, category, link, onClick, isActive }) => {
+  const [imgLoaded, setImgLoaded] = useState(false);
+
   return (
     <div className="ptf-portfolio-slider-item">
       <div className={`ptf-work ${isActive ? 'is-active' : ''}`}>
@@ -22,9 +24,34 @@ const ProjectItem: React.FC<ProjectItemProps> = ({ image, title, category, link,
             onClick={onClick} 
             draggable="false" 
             onDragStart={(e) => e.preventDefault()} 
-            style={{ display: 'block', width: '100%', height: '100%' }}
+            style={{ display: 'block', width: '100%', height: '100%', position: 'relative' }}
           >
-            <img src={image} alt={title} draggable={false} style={{ userSelect: 'none', pointerEvents: 'none' }} />
+            {/* Skeleton shimmer — shown until image loads */}
+            {!imgLoaded && (
+              <div
+                className="ptf-skeleton"
+                style={{
+                  position: 'absolute',
+                  inset: 0,
+                  width: '100%',
+                  height: '100%',
+                  borderRadius: '8px',
+                  zIndex: 1,
+                }}
+              />
+            )}
+            <img
+              src={image}
+              alt={title}
+              draggable={false}
+              style={{
+                userSelect: 'none',
+                pointerEvents: 'none',
+                opacity: imgLoaded ? 1 : 0,
+                transition: 'opacity 0.4s ease',
+              }}
+              onLoad={() => setImgLoaded(true)}
+            />
           </a>
         </div>
         

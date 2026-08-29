@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 interface AdvantageItemProps {
   logo: string;
@@ -8,6 +8,8 @@ interface AdvantageItemProps {
 }
 
 const AdvantageItem: React.FC<AdvantageItemProps> = ({ logo, value, title, delay }) => {
+  const [iconLoaded, setIconLoaded] = useState(false);
+
   return (
     <div className="col-6 col-md-4 col-lg-2">
       <div 
@@ -15,9 +17,24 @@ const AdvantageItem: React.FC<AdvantageItemProps> = ({ logo, value, title, delay
         data-aos="fade-up" 
         data-aos-delay={delay}
       >
-        <div className="ptf-advantage-box__content">
+        {!iconLoaded ? (
+          /* Skeleton shimmer — shown until icon loads */
+          <div className="ptf-skeleton-skill">
+            <div className="ptf-skeleton ptf-skeleton-skill__icon" />
+            <div className="ptf-skeleton ptf-skeleton-skill__value" />
+            <div className="ptf-skeleton ptf-skeleton-skill__title" />
+          </div>
+        ) : null}
+        <div
+          className="ptf-advantage-box__content"
+          style={{ opacity: iconLoaded ? 1 : 0, transition: 'opacity 0.4s ease' }}
+        >
           <div className="ptf-advantage-box__image">
-            <img src={logo} alt={title} />
+            <img
+              src={logo}
+              alt={title}
+              onLoad={() => setIconLoaded(true)}
+            />
           </div>
           <div className="ptf-advantage-box__value">
             {value.endsWith('%') ? (
