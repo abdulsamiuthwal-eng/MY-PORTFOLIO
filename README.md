@@ -30,6 +30,9 @@
 - **Anti-Print Protection**: `@media print { html, body { display: none !important; } }` blanks browser print dialogs.
 
 ### 🎨 4. Design, Motion & Visual Systems
+- **Morphing 2-Lines to Cross (X) Toggle**: Precision-crafted mobile toggle button morphing two sleek horizontal bars into a crisp Cross (X) with state-isolated wrapper preventing AOS library re-render wipe.
+- **60 FPS Mobile Navigation Drawer**: Hardware-accelerated drawer sliding (`translate3d`) featuring active section moving electric orange gradient shine (`@keyframes ptfElectricShine`) and directional arrow aura.
+- **Glassmorphic Symmetry & Video Looping**: Harmonized ultra-transparent frosted glass (`rgba(255, 255, 255, 0.16)` with `blur(16px) saturate(150%)`) bridging the floating header pill and contact footer, with continuous 0s–7s stallion smoke video looping.
 - **Profile Portrait & Shimmer Loading**: High-resolution upscaled portrait in double oval frame (`.ptf-custom--5512`) with smooth skeleton wave loading animation.
 - **Dynamic Repeatable Count-Up**: Statistics animate smoothly from 0 on every scroll up/down using `IntersectionObserver` and cubic easing.
 - **Supreme Custom Cursor**: Hardware-accelerated cursor with maximum stacking `z-index: 2147483647` for uninterrupted visibility over all dialogs.

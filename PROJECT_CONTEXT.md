@@ -54,7 +54,7 @@
 - **`src/lib/scroll.ts`**: Smooth programmatic scrolling utility (`scrollToTop`).
 
 ### 3. Core UI Components (`src/components/`)
-- **`Navbar.tsx`**: Responsive header navigation with dynamic dual-state architecture: resting full-width at top and morphing on scroll (`scrollY > 20`) into an ultra-slim, floating translucent frosted-glass capsule pill (`rgba(255, 255, 255, 0.45)` with `blur(24px)`) framed by a 1.5px continuously animated moving electric orange border beam (`@keyframes ptfMovingBorder`). Features the new high-resolution transparent "AS" serif monogram logo, direct CV access button with hover glow, and bidirectional zero-jerk mobile drawer slide transitions.
+- **`Navbar.tsx`**: Responsive header navigation with dynamic dual-state architecture: resting full-width at top and morphing on scroll (`scrollY > 20`) into an ultra-slim, floating translucent frosted-glass capsule pill (`rgba(255, 255, 255, 0.16)` with `blur(16px) saturate(150%)`) framed by a 1.5px continuously animated moving electric orange border beam (`@keyframes ptfMovingBorder`). Features the high-resolution transparent "AS" monogram logo, direct CV access button with hover glow, interactive morphing **2-Lines to Cross (X)** toggle icon with persistent AOS-isolated wrapper, and hardware-accelerated 60FPS mobile drawer with active section moving electric gradient shine (`ptfElectricShine`).
 - **`Hero.tsx`**: Signature hero section (`#home`) featuring large typography, social links, CTAs, and scoped `@media (min-width: 992px)` proximity hover margins preventing mobile horizontal overflow.
 - **`About.tsx`**: Biography & services section (`#biography`). Contains:
   - Left column: Bio text, contact details, services list.
@@ -70,7 +70,7 @@
 - **`InstagramGrid.tsx`**: Dynamic social media showcase grid (`#instagram`).
 - **`CircularCTA.tsx`**: Interactive rotating circular SVG contact CTA (`#circular-cta`).
 - **`ContactPage.tsx`**: Full dedicated contact page (`#contact-page`) with currency dropdown, dynamic budget inputs, Web3Forms backend integration, and bottom padding seamlessly flowing into the video footer.
-- **`Footer.tsx`**: Global footer containing copyright info, social links, back-to-top button, and high-impact looping black stallion smoke video background (`/horse-smoke-footer.mp4`).
+- **`Footer.tsx`**: Global footer containing copyright info, social links, back-to-top button, and high-impact looping black stallion smoke video background (`/horse-smoke-footer.mp4`) looping accurately between 0.0s and 7.0s. The contact footer pill container features matching ultra-transparent white frosted glass (`rgba(255, 255, 255, 0.16)` with `blur(16px)` and specular reflection).
 - **`CustomScrollbar.tsx`**: 9-section desktop custom dot sidebar widget (positioned on left). Features top/bottom orange capsule caps, gliding active ring, section dot highlighting (`#fa4529`), left hover zone, and auto-hide timer. Restricted strictly to the main Home view.
 - **`CustomCursor.tsx`**: Hardware-accelerated custom cursor with RAF interpolation and supreme `z-index: 2147483647` for uninterrupted visibility over all modal dialogs.
 - **`ChatIcon.tsx`**: Floating AI assistant trigger button at bottom-right with glowing pulsating badge.
@@ -195,6 +195,36 @@ Whenever an interactive document modal, certificate preview, or mobile navigatio
 3. **`document.body.style.touchAction = 'none'`**
 4. Modal backdrop uses `touchAction: 'none'`, `overscrollBehavior: 'contain'`, `onWheel={(e) => e.stopPropagation()}`, and `onTouchMove={(e) => e.stopPropagation()}`.
 5. Modal card inside uses `touchAction: 'auto'`, `overscrollBehavior: 'contain'`, and `onClick={(e) => e.stopPropagation()}`.
+
+---
+
+## 📱 Mobile Navigation Drawer & Morphing 2-Lines Toggle
+
+The mobile navigation system features custom-engineered interaction mechanics and GPU-accelerated compositing:
+
+### 1. Two-Lines to Cross (X) Morphing Button
+- **Resting State**: Exactly two parallel horizontal bars (`22px` width, `2.5px` height, `4px` radius) positioned at `top: 2px` and `top: 10px` with `0deg` rotation.
+- **Open State (`.is-open`)**: Both bars smoothly translate to `top: 6px` and rotate `45deg` (top bar) and `-45deg` (bottom bar) using a `0.32s cubic-bezier(0.25, 1, 0.5, 1)` easing, forming a symmetrical, sharp Cross (X).
+- **AOS State Isolation**:
+  - The toggle button `<button className="ptf-navbar-toggle">` is wrapped inside `<div className="ptf-navbar-toggle-wrapper">`.
+  - `data-aos="fade-up"` is mounted strictly on the wrapper, ensuring that re-rendering during React state changes (`isOpen: true <-> false`) never allows the AOS scroll library to wipe button opacity (`opacity: 0`) or push it off-screen (`translateY(100px)`).
+  - Button styles enforce permanent visibility: `opacity: 1 !important; transform: translate3d(0, 0, 0) !important; visibility: visible !important;`.
+
+### 2. High-Performance Mobile Drawer (`.ptf-mobile-drawer`)
+- **60 FPS Composite Pipeline**: Slide animations utilize hardware-promoted `transform: translate3d(100%, 0, 0)` -> `translate3d(0, 0, 0)`, combined with `will-change: transform`, `contain: paint`, and `backface-visibility: hidden`.
+- **Active Section Electric Glow**: Active route text features dynamic gradient animation (`@keyframes ptfElectricShine`) sweeping between `#fa4529` and deep black with an electric orange chevron icon and focused `drop-shadow(0 0 5px rgba(250, 69, 41, 0.45))`.
+- **Vertical Spacing**: Includes a top breathing-room spacer (`height: 55px; marginBottom: 15px`) separating the first navigation link ("Home") from the Cross toggle button.
+
+---
+
+## 🧊 Glassmorphic Visual Symmetry & Media Looping
+
+- **Unified Frosted Glass Aesthetic**: Both the floating navbar capsule pill and the contact page footer container share identical optical characteristics:
+  - Surface: `rgba(255, 255, 255, 0.16)`
+  - Frosted Backdrop: `blur(16px) saturate(150%)`
+  - Subtle Specular Edge: `border: 1px solid rgba(255, 255, 255, 0.35)`
+  - Ambient Shadow: `0 8px 28px rgba(0, 0, 0, 0.08), inset 0 1px 1px rgba(255, 255, 255, 0.35)`
+- **Contact Video Loop Controller**: Looping background video (`/horse-smoke-footer.mp4`) enforces high-impact continuous smoke playback by resetting `currentTime = 0` whenever playback exceeds 7.0 seconds, preventing stutter or black-frame tailing.
 
 ---
 
