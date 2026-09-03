@@ -89,6 +89,7 @@ const TimelineItem: React.FC<TimelineItemProps> = ({
                     style={{
                       display: 'inline-flex',
                       alignItems: 'center',
+                      justifyContent: 'center',
                       gap: '7px',
                       fontSize: '12px',
                       fontWeight: 600,
@@ -100,6 +101,7 @@ const TimelineItem: React.FC<TimelineItemProps> = ({
                       cursor: 'pointer',
                       transition: 'all 0.2s ease',
                       fontFamily: 'var(--ptf-font-sans)',
+                      whiteSpace: 'nowrap',
                     }}
                     onMouseEnter={(e) => {
                       e.currentTarget.style.transform = 'translateY(-1px)';
@@ -128,20 +130,6 @@ const TimelineItem: React.FC<TimelineItemProps> = ({
                       <FileText size={14} color={isOffer ? undefined : '#fa4529'} />
                     )}
                     <span>{doc.label}</span>
-                    {doc.credentialId && (
-                      <span
-                        style={{
-                          fontSize: '10px',
-                          backgroundColor: isOffer ? '#e2e8f0' : 'rgba(255,255,255,0.2)',
-                          padding: '1px 5px',
-                          borderRadius: '4px',
-                          fontWeight: 700,
-                          letterSpacing: '0.5px',
-                        }}
-                      >
-                        ID: {doc.credentialId}
-                      </span>
-                    )}
                   </button>
                 );
               })}
