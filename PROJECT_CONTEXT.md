@@ -119,6 +119,12 @@ public/internships/
    - **Documents**: 📄 `Offer Letter` + 🏆 `Completion Certificate` (Credential ID: `DHC-3562`)
    - **Verification Portal**: `https://developershubcorp.com/`
 
+### 📦 Scalable Experience Growth Architecture:
+- `experiencesData: ExperienceItemData[]` data model in `Timeline.tsx`.
+- `INITIAL_VISIBLE_COUNT = 2`: Keeps Education & Experience visually balanced.
+- Zero-jerk accordion scroll open/hide drawer (`.timeline-experience-drawer` with CSS Grid `0fr ➔ 1fr` transition).
+- Uiverse liquid wave hover fill button with continuous water wave animation, bubble splash, and scroll reveal entrance (`data-aos="fade-up"`).
+
 ---
 
 ## 🚀 Featured Projects Order (Carousel & Case Studies)
