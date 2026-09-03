@@ -15,7 +15,6 @@ import ContactPage from './components/ContactPage';
 import Footer from './components/Footer';
 import CustomCursor from './components/CustomCursor';
 import ChatIcon from './components/ChatIcon';
-import CustomScrollbar from './components/CustomScrollbar';
 import ProjectDetailPage from './components/ProjectDetailPage';
 import { useContentProtection } from './hooks/useContentProtection';
 
@@ -291,16 +290,13 @@ const App: React.FC = () => {
     };
   }, [currentHash]);
 
-  const [isChatOpen, setIsChatOpen] = useState(false);
   const isContactPage = currentHash === '#contact-page';
   const isProjectDetailPage = currentHash.startsWith('#project/');
-  const isHomePage = !isContactPage && !isProjectDetailPage;
 
   return (
     <>
       <CustomCursor />
-      {isHomePage && <CustomScrollbar isContactPage={false} isChatOpen={isChatOpen} />}
-      <ChatIcon isContactPage={isContactPage} isMobileMenuOpen={isMobileMenuOpen} onChatToggle={setIsChatOpen} />
+      <ChatIcon isContactPage={isContactPage} isMobileMenuOpen={isMobileMenuOpen} />
       <Navbar onMenuToggle={setIsMobileMenuOpen} />
       <main>
         {/* Contact Page View */}
