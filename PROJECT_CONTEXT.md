@@ -107,7 +107,7 @@ public/internships/
    - **Duration**: `Jul 2026 - Sep 2026`
    - **Role**: `AI/ML Intern`
    - **Documents**: 📄 `Offer Letter` + 📋 `Completion Letter` + 🏆 `Completion Certificate` (Credential ID: `DFL-INT-2026-1360`)
-   - **Verification Portal**: `https://devforgelabs.netlify.app/`
+   - **Verification Portal**: `https://devforge-internship-portal.vercel.app/verify`
 2. 🥈 **DecodeLabs (Virtual Program)**
    - **Duration**: `Jul 2026 - Aug 2026`
    - **Role**: `Internship — Artificial Intelligence (AI)`

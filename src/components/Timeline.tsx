@@ -206,7 +206,7 @@ const Timeline: React.FC = () => {
       label: 'Offer Letter',
       pdfUrl: '/internships/devforge/OfferLetter_ABDUL SAMI UTHWAL.pdf',
       issueDate: 'July 6, 2026',
-      verifyUrl: 'https://devforgelabs.netlify.app/',
+      verifyUrl: 'https://devforge-internship-portal.vercel.app/verify',
     },
     {
       type: 'certificate',
@@ -214,7 +214,7 @@ const Timeline: React.FC = () => {
       pdfUrl: '/internships/devforge/abdul-sami-uthwal-DFL-INT-2026-1360.pdf',
       credentialId: 'DFL-INT-2026-1360',
       issueDate: 'August 31, 2026',
-      verifyUrl: 'https://devforgelabs.netlify.app/',
+      verifyUrl: 'https://devforge-internship-portal.vercel.app/verify',
     },
     {
       type: 'certificate',
@@ -222,7 +222,7 @@ const Timeline: React.FC = () => {
       pdfUrl: '/internships/devforge/abdul-sami-uthwal-DFL-INT-2026-1360-certificate.pdf',
       credentialId: 'DFL-INT-2026-1360',
       issueDate: 'August 31, 2026',
-      verifyUrl: 'https://devforgelabs.netlify.app/',
+      verifyUrl: 'https://devforge-internship-portal.vercel.app/verify',
     },
   ];
 
