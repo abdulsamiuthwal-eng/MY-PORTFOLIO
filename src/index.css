@@ -449,7 +449,8 @@ img {
 
 @media (max-width: 767px) {
   .ptf-navbar-inner {
-    height: 75px;
+    height: 50px !important;
+    padding: 0 16px;
   }
   .ptf-navbar.is-scrolled {
     top: 8px;
@@ -458,13 +459,13 @@ img {
     height: 50px !important;
     padding: 0 16px;
   }
-  .ptf-navbar.is-scrolled .ptf-navbar-toggle {
+  .ptf-navbar-toggle {
     display: flex;
     align-items: center;
     justify-content: center;
     padding: 0;
   }
-  .ptf-navbar.is-scrolled .ptf-navbar-toggle svg {
+  .ptf-navbar-toggle svg {
     width: 22px !important;
     height: 22px !important;
   }
@@ -2518,11 +2519,11 @@ a, button, select, input, textarea, .filter-item {
 
 /* Custom Responsive Enhancements */
 @media (max-width: 767.98px) {
-  .ptf-navbar:not(.is-scrolled) .ptf-navbar-inner {
-    height: 75px !important;
+  .ptf-navbar-inner {
+    height: 50px !important;
   }
-  .ptf-navbar:not(.is-scrolled) .ptf-navbar-logo img {
-    height: 40px !important;
+  .ptf-navbar-logo img {
+    height: 32px !important;
   }
   
   /* Cap all section spacer heights to 30px on mobile to reduce distance */
