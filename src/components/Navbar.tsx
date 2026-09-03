@@ -411,22 +411,26 @@ const Navbar: React.FC<NavbarProps> = ({ onMenuToggle }) => {
           </div>
 
 
-          {/* 2-Lines to Cross Morphing Mobile Toggle */}
-          <button 
-            className={`ptf-navbar-toggle ${isOpen ? 'is-open' : ''}`} 
-            onClick={() => toggleMenu(!isOpen)} 
-            aria-label={isOpen ? "Close Menu" : "Open Menu"}
-            aria-expanded={isOpen}
+          {/* 2-Lines to Cross Morphing Mobile Toggle with safe AOS wrapper */}
+          <div 
+            className="ptf-navbar-toggle-wrapper"
             data-aos="fade-up"
             data-aos-once="true"
             data-aos-delay="100"
             data-aos-duration="1000"
           >
-            <div className="ptf-burger-2lines">
-              <span className="ptf-burger-line ptf-burger-line-1" />
-              <span className="ptf-burger-line ptf-burger-line-2" />
-            </div>
-          </button>
+            <button 
+              className={`ptf-navbar-toggle ${isOpen ? 'is-open' : ''}`} 
+              onClick={() => toggleMenu(!isOpen)} 
+              aria-label={isOpen ? "Close Menu" : "Open Menu"}
+              aria-expanded={isOpen}
+            >
+              <div className="ptf-burger-2lines">
+                <span className="ptf-burger-line ptf-burger-line-1" />
+                <span className="ptf-burger-line ptf-burger-line-2" />
+              </div>
+            </button>
+          </div>
         </div>
       </div>
 
