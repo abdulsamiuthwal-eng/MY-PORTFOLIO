@@ -325,7 +325,7 @@ const Timeline: React.FC = () => {
               {/* 1st: DEVFORGE */}
               <TimelineItem
                 year="Jul 2026 - Sep 2026"
-                title="AI/ML Intern"
+                title="AI Engineering Internship"
                 institution="DEVFORGE (AI Innovation Track)"
                 institutionLink="https://devforgelabs.netlify.app/"
                 description="Worked on autonomous AI agents, RAG pipelines, and machine learning workflows using Python, Scikit-learn, and FastAPI. Architected production-ready stateful agents and semantic search systems using LangGraph, FAISS, and Gemini LLMs, integrating tool automation and cloud deployments."

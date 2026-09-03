@@ -59,17 +59,17 @@ EDUCATION:
    Institution: Ghazali Public High School, Jhang
 
 WORK EXPERIENCE:
-1. Python Developer Intern — Jul 2026 to Present
-   Company: DecodeLabs (Online Internship) — decodelabs.tech
-   Work: Designed and developed Python-based applications with a strong focus on clean code, object-oriented programming, and problem-solving. Built rule-based chatbot solutions, worked with file handling, modular project structures, debugging, and version control using Git.
+1. Internship — Artificial Intelligence (AI) — Jul 2026 to Aug 2026
+   Company: DecodeLabs (Online Internship) — decodelabs.tech/verification
+   Work: Designed and developed Python-based AI applications with a strong focus on clean code, modular problem-solving, NLP, rule-based systems, and Git version control. Verified Credential ID: AI086527.
 
-2. AI/ML Intern — Jul 2026 to Present
-   Company: DEVFORGE (Online Internship) — devforgelabs.netlify.app
-   Work: Developed an end-to-end Sentiment Analysis web application using Python, Scikit-learn, Pandas, NumPy, NLTK, TF-IDF, and FastAPI. Trained & evaluated machine learning models, built REST APIs, integrated frontend/backend, and deployed AI solutions following industry best practices.
+2. AI Engineering Internship — Jul 2026 to Sep 2026
+   Company: DEVFORGE (Online Internship) — devforge-internship-portal.vercel.app/verify
+   Work: Worked on autonomous AI agents, RAG pipelines, and machine learning workflows using Python, Scikit-learn, and FastAPI. Architected production-ready stateful agents and semantic search systems using LangGraph, FAISS, and Gemini LLMs, integrating tool automation and cloud deployments. Verified Credential ID: DFL-INT-2026-1360.
 
 3. AI/ML Intern — Apr 2026 to Jun 2026
    Company: Developer Hub (Online Internship) — developershubcorp.com
-   Work: Worked on machine learning model development and AI workflows using Python, Scikit-learn, Pandas & NumPy. Built LLM-powered applications with LangChain and RAG pipelines, applied NLP techniques, and explored TensorFlow to improve model performance.
+   Work: Worked on machine learning model development and AI workflows using Python, Scikit-learn, Pandas & NumPy. Built LLM-powered applications with LangChain and RAG pipelines, applied NLP techniques, and explored TensorFlow to improve model performance. Verified Credential ID: DHC-3562.
 
 PROJECTS (9 total):
 1. Vigilant Eye — Real-Time AI Surveillance System

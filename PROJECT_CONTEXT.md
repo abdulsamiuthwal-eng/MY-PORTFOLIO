@@ -105,7 +105,7 @@ public/internships/
 ### Experience Items Order & Verification Portals:
 1. 🥇 **DEVFORGE (AI Innovation Track)**
    - **Duration**: `Jul 2026 - Sep 2026`
-   - **Role**: `AI/ML Intern`
+   - **Role**: `AI Engineering Internship`
    - **Documents**: 📄 `Offer Letter` + 📋 `Completion Letter` + 🏆 `Completion Certificate` (Credential ID: `DFL-INT-2026-1360`)
    - **Verification Portal**: `https://devforge-internship-portal.vercel.app/verify`
 2. 🥈 **DecodeLabs (Virtual Program)**
