@@ -382,13 +382,13 @@ img {
 
 @media (max-width: 767px) {
   .ptf-navbar-inner {
-    height: 70px;
+    height: 75px;
   }
   .ptf-navbar.is-scrolled {
     top: 8px;
   }
   .ptf-navbar.is-scrolled .ptf-navbar-inner {
-    height: 46px !important;
+    height: 50px !important;
     padding: 0 16px;
   }
   .ptf-navbar.is-scrolled .ptf-navbar-toggle {
@@ -398,29 +398,29 @@ img {
     padding: 0;
   }
   .ptf-navbar.is-scrolled .ptf-navbar-toggle svg {
-    width: 20px !important;
-    height: 20px !important;
+    width: 22px !important;
+    height: 22px !important;
   }
 }
 
 /* Responsive Navbar Logo Sizing */
 .ptf-navbar-logo-img {
-  height: 36px;
+  height: 42px;
   width: auto;
   object-fit: contain;
   transition: height 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .ptf-navbar.is-scrolled .ptf-navbar-logo-img {
-  height: 28px;
+  height: 32px;
 }
 
 @media (max-width: 767px) {
   .ptf-navbar-logo-img {
-    height: 20px !important;
+    height: 40px !important;
   }
   .ptf-navbar.is-scrolled .ptf-navbar-logo-img {
-    height: 18px !important;
+    height: 30px !important;
   }
 }
 
@@ -2196,10 +2196,10 @@ a, button, select, input, textarea, .filter-item {
 /* Custom Responsive Enhancements */
 @media (max-width: 767.98px) {
   .ptf-navbar:not(.is-scrolled) .ptf-navbar-inner {
-    height: 70px !important;
+    height: 75px !important;
   }
   .ptf-navbar:not(.is-scrolled) .ptf-navbar-logo img {
-    height: 20px !important;
+    height: 40px !important;
   }
   
   /* Cap all section spacer heights to 30px on mobile to reduce distance */
