@@ -27,10 +27,10 @@ const ChatIcon: React.FC<ChatIconProps> = ({ isContactPage, isMobileMenuOpen, on
   const [lastFailedMessage, setLastFailedMessage] = useState<string | null>(null);
   const [pendingSection, setPendingSection] = useState<string | null>(null);
 
-  // Hide Chatbot on mobile view when on Contact Page.
+  // Hide Chatbot on Contact Page (desktop + mobile) or when mobile menu is open.
   // NOTE: This must stay AFTER all hooks — an early return before a hook would
-  // change the hook count between renders and crash the whole app on mobile.
-  const isHiddenOnMobile = isMobile && (isContactPage || isMobileMenuOpen);
+  // change the hook count between renders and crash the whole app.
+  const isHidden = isContactPage || (isMobile && isMobileMenuOpen);
 
   useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth <= 480);
@@ -71,10 +71,11 @@ const ChatIcon: React.FC<ChatIconProps> = ({ isContactPage, isMobileMenuOpen, on
 
   const buttonSize = isMobile ? '46px' : '50px';
 
-  // Render nothing on mobile + contact page (all hooks already called above)
-  if (isHiddenOnMobile) {
+  // Render nothing on contact page or mobile menu open (all hooks already called above)
+  if (isHidden) {
     return null;
   }
+
 
   return (
     <>

@@ -132,15 +132,18 @@ const Footer: React.FC<FooterProps> = ({ isContactPage = false }) => {
         </div>
       </div>
 
-      {/* Floating Back to Top Button */}
-      <a
-        href="#home"
-        className={`ptf-floating-back-to-top ${showScrollTop ? 'show' : ''}`}
-        aria-label="Back to Top"
-      >
-        <ChevronUp size={20} strokeWidth={3} />
-      </a>
+      {/* Floating Back to Top Button — Hidden on Contact Page */}
+      {!isContactPage && (
+        <a
+          href="#home"
+          className={`ptf-floating-back-to-top ${showScrollTop ? 'show' : ''}`}
+          aria-label="Back to Top"
+        >
+          <ChevronUp size={20} strokeWidth={3} />
+        </a>
+      )}
     </footer>
+
   );
 };
 
