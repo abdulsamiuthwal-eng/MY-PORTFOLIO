@@ -1,7 +1,50 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { MessageCircle, X } from 'lucide-react';
+import { X } from 'lucide-react';
 import type { ChatMessage } from '../lib/chat';
 import ChatPanel from './ChatPanel';
+
+const RobotIcon: React.FC<{ size?: number; className?: string }> = ({ size = 22, className = '' }) => (
+  <svg
+    width={size}
+    height={size}
+    viewBox="0 0 24 24"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    className={className}
+    style={{ display: 'block', flexShrink: 0 }}
+  >
+    {/* Central Antenna & Signal Pulse */}
+    <path d="M12 2v3" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+    <circle cx="12" cy="2" r="1.5" fill="currentColor" />
+
+    {/* Modern Robot Head Contour */}
+    <rect
+      x="3.5"
+      y="5"
+      width="17"
+      height="14"
+      rx="4.5"
+      stroke="currentColor"
+      strokeWidth="2"
+    />
+
+    {/* Side Audio / Communication Modules */}
+    <path d="M1.5 10v4a1 1 0 0 0 1 1h1v-6h-1a1 1 0 0 0-1 1z" fill="currentColor" />
+    <path d="M22.5 10v4a1 1 0 0 1-1 1h-1v-6h1a1 1 0 0 1 1 1z" fill="currentColor" />
+
+    {/* Futuristic Glowing Eyes / Optics */}
+    <rect x="7" y="9.5" width="3.2" height="3" rx="1.2" fill="currentColor" />
+    <rect x="13.8" y="9.5" width="3.2" height="3" rx="1.2" fill="currentColor" />
+
+    {/* Cyber Wave / Voice Plate Interface */}
+    <path
+      d="M8.5 15.2c1 .8 2.2 1.1 3.5 1.1s2.5-.3 3.5-1.1"
+      stroke="currentColor"
+      strokeWidth="1.8"
+      strokeLinecap="round"
+    />
+  </svg>
+);
 
 interface ChatIconProps {
   isContactPage?: boolean;
@@ -127,7 +170,7 @@ const ChatIcon: React.FC<ChatIconProps> = ({ isContactPage, isMobileMenuOpen, on
           onMouseLeave={() => setIsHovered(false)}
           onClick={() => setIsOpen(!isOpen)}
         >
-          {isOpen ? <X size={20} /> : <MessageCircle size={20} />}
+          {isOpen ? <X size={20} /> : <RobotIcon size={isMobile ? 21 : 23} />}
         </button>
 
         {/* Tooltip — only on desktop */}
