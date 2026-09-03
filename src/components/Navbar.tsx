@@ -484,7 +484,6 @@ const Navbar: React.FC<NavbarProps> = ({ onMenuToggle }) => {
                     fontSize: 'clamp(28px, 6.5vw, 36px)', 
                     fontWeight: '700', 
                     textTransform: 'none', 
-                    color: isActive ? 'var(--ptf-accent-1)' : 'var(--ptf-black-color)', 
                     padding: '7px 0',
                     textDecoration: 'none'
                   }}
@@ -494,8 +493,18 @@ const Navbar: React.FC<NavbarProps> = ({ onMenuToggle }) => {
                     handleLinkClick(e, item.href);
                   }}
                 >
-                  <span>{item.label}</span>
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" style={{ width: '20px', height: '20px', color: isActive ? 'var(--ptf-accent-1)' : 'var(--ptf-black-color)' }}>
+                  <span className="ptf-mobile-nav-link-text">{item.label}</span>
+                  <svg 
+                    xmlns="http://www.w3.org/2000/svg" 
+                    viewBox="0 0 24 24" 
+                    fill="none" 
+                    stroke="currentColor" 
+                    strokeWidth="1.5" 
+                    strokeLinecap="round" 
+                    strokeLinejoin="round" 
+                    className="ptf-mobile-nav-link-arrow" 
+                    style={{ width: '20px', height: '20px' }}
+                  >
                     <polyline points="9 18 15 12 9 6"></polyline>
                   </svg>
                 </a>

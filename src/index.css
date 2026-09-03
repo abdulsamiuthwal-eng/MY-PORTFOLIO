@@ -679,6 +679,34 @@ img {
   color: var(--ptf-accent-1);
 }
 
+/* Electric Moving Orange & Black Active Tab in Mobile Drawer */
+.ptf-mobile-nav-link.is-active {
+  color: var(--ptf-accent-1);
+}
+
+.ptf-mobile-nav-link.is-active .ptf-mobile-nav-link-text {
+  background: linear-gradient(
+    90deg,
+    #fa4529 0%,
+    #111111 25%,
+    #fa4529 50%,
+    #111111 75%,
+    #fa4529 100%
+  );
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: ptfElectricShine 2.5s linear infinite;
+  filter: drop-shadow(0 0 10px rgba(250, 69, 41, 0.65)) drop-shadow(0 0 22px rgba(250, 69, 41, 0.35));
+}
+
+.ptf-mobile-nav-link.is-active .ptf-mobile-nav-link-arrow {
+  color: #fa4529 !important;
+  filter: drop-shadow(0 0 8px rgba(250, 69, 41, 0.7));
+  transform: translateX(4px);
+  transition: transform 0.3s ease, filter 0.3s ease;
+}
+
 .ptf-mobile-drawer-socials {
   display: flex;
   gap: 20px;
