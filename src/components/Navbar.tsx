@@ -128,10 +128,10 @@ const Navbar: React.FC<NavbarProps> = ({ onMenuToggle }) => {
             dropBorder.style.opacity = '1';
           }
           if (innerEl) {
-            innerEl.style.background = 'rgba(255, 255, 255, 0.86)';
-            innerEl.style.backdropFilter = 'blur(20px) saturate(180%)';
-            (innerEl.style as any).webkitBackdropFilter = 'blur(20px) saturate(180%)';
-            innerEl.style.boxShadow = '0 12px 35px -8px rgba(0, 0, 0, 0.08), 0 4px 12px -2px rgba(0, 0, 0, 0.03)';
+            innerEl.style.background = 'rgba(255, 255, 255, 0.16)';
+            innerEl.style.backdropFilter = 'blur(16px) saturate(150%)';
+            (innerEl.style as any).webkitBackdropFilter = 'blur(16px) saturate(150%)';
+            innerEl.style.boxShadow = '0 8px 28px rgba(0, 0, 0, 0.08), inset 0 1px 1px rgba(255, 255, 255, 0.35)';
           }
 
         } else if (phase2 < 0.05) {
@@ -200,13 +200,12 @@ const Navbar: React.FC<NavbarProps> = ({ onMenuToggle }) => {
 
           // Frosted glass background smoothly forms underneath the stationary elements
           if (innerEl) {
-            const bgAlpha = t * 0.86;
-            const blurVal = t * 20;
-            const shadowAlpha = t * 0.08;
+            const bgAlpha = t * 0.16;
+            const blurVal = t * 16;
             innerEl.style.background = `rgba(255, 255, 255, ${bgAlpha})`;
-            innerEl.style.backdropFilter = `blur(${blurVal}px) saturate(180%)`;
-            (innerEl.style as any).webkitBackdropFilter = `blur(${blurVal}px) saturate(180%)`;
-            innerEl.style.boxShadow = `0 12px 35px -8px rgba(0, 0, 0, ${shadowAlpha}), 0 4px 12px -2px rgba(0, 0, 0, ${shadowAlpha * 0.4})`;
+            innerEl.style.backdropFilter = `blur(${blurVal}px) saturate(150%)`;
+            (innerEl.style as any).webkitBackdropFilter = `blur(${blurVal}px) saturate(150%)`;
+            innerEl.style.boxShadow = `0 8px 28px rgba(0, 0, 0, ${t * 0.08}), inset 0 1px 1px rgba(255, 255, 255, ${t * 0.35})`;
           }
         }
       }
