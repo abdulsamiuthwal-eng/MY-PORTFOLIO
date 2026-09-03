@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { ChevronUp } from 'lucide-react';
 
 const TwitterIcon = (props: React.SVGProps<SVGSVGElement>) => (
@@ -49,6 +49,36 @@ interface FooterProps {
 const Footer: React.FC<FooterProps> = ({ isContactPage = false }) => {
   const currentYear = new Date().getFullYear();
   const [showScrollTop, setShowScrollTop] = useState(false);
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  // Strictly loop contact page background video between 0s and 7s
+  useEffect(() => {
+    if (!isContactPage) return;
+    const video = videoRef.current;
+    if (!video) return;
+
+    let animId: number;
+
+    const checkLoop = () => {
+      if (video && video.currentTime >= 7) {
+        video.currentTime = 0;
+      }
+      animId = requestAnimationFrame(checkLoop);
+    };
+    animId = requestAnimationFrame(checkLoop);
+
+    const handleTimeUpdate = () => {
+      if (video && video.currentTime >= 7) {
+        video.currentTime = 0;
+      }
+    };
+    video.addEventListener('timeupdate', handleTimeUpdate);
+
+    return () => {
+      cancelAnimationFrame(animId);
+      video.removeEventListener('timeupdate', handleTimeUpdate);
+    };
+  }, [isContactPage]);
 
   useEffect(() => {
     let isTicking = false;
@@ -82,6 +112,7 @@ const Footer: React.FC<FooterProps> = ({ isContactPage = false }) => {
       {isContactPage && (
         <div className="ptf-footer-video-bg" aria-hidden="true">
           <video
+            ref={videoRef}
             className="ptf-footer-video-element"
             src="/horse-smoke-footer.mp4"
             autoPlay
