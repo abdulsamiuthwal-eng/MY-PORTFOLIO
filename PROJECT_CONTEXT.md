@@ -54,7 +54,7 @@
 - **`src/lib/scroll.ts`**: Smooth programmatic scrolling utility (`scrollToTop`).
 
 ### 3. Core UI Components (`src/components/`)
-- **`Navbar.tsx`**: Responsive header navigation with glassmorphism backdrop blur, mobile drawer toggle, smooth hash link routing, and direct CV access buttons on desktop (luxury capsule with hover glow), mobile header (direct quick-access chip), and inside mobile off-canvas drawer.
+- **`Navbar.tsx`**: Responsive header navigation with dynamic dual-state architecture: resting full-width at top and morphing on scroll (`scrollY > 20`) into an ultra-slim, floating translucent frosted-glass capsule pill (`rgba(255, 255, 255, 0.45)` with `blur(24px)`) framed by a 1.5px continuously animated moving electric orange border beam (`@keyframes ptfMovingBorder`). Features the new high-resolution transparent "AS" serif monogram logo, direct CV access button with hover glow, and bidirectional zero-jerk mobile drawer slide transitions.
 - **`Hero.tsx`**: Signature hero section (`#home`) featuring large typography, social links, CTAs, and scoped `@media (min-width: 992px)` proximity hover margins preventing mobile horizontal overflow.
 - **`About.tsx`**: Biography & services section (`#biography`). Contains:
   - Left column: Bio text, contact details, services list.

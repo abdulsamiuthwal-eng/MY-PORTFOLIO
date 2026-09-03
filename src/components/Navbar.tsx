@@ -49,6 +49,7 @@ interface NavbarProps {
 
 const Navbar: React.FC<NavbarProps> = ({ onMenuToggle }) => {
   const [isOpen, setIsOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
 
   const toggleMenu = (value: boolean) => {
     setIsOpen(value);
@@ -65,6 +66,20 @@ const Navbar: React.FC<NavbarProps> = ({ onMenuToggle }) => {
       document.body.style.overflow = '';
     };
   }, [isOpen]);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      // Trigger pill as soon as user scrolls even slightly down (e.g. 20px) on any page/section
+      setIsScrolled(window.scrollY > 20);
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    handleScroll();
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, []);
 
   const navItems = [
     { label: 'Home', href: '#home' },
@@ -89,7 +104,7 @@ const Navbar: React.FC<NavbarProps> = ({ onMenuToggle }) => {
   };
 
   return (
-    <nav className="ptf-navbar">
+    <nav className={`ptf-navbar ${isScrolled ? 'is-scrolled' : ''}`}>
       <div className="container-xxl">
         <div className="ptf-navbar-inner">
           {/* Left Links */}
@@ -112,10 +127,10 @@ const Navbar: React.FC<NavbarProps> = ({ onMenuToggle }) => {
               src="/logo.png" 
               alt="ABDUL SAMI." 
               style={{ 
-                height: '85px', 
+                height: isScrolled ? '46px' : '65px', 
                 width: 'auto', 
                 objectFit: 'contain',
-                mixBlendMode: 'multiply'
+                transition: 'height 0.4s cubic-bezier(0.16, 1, 0.3, 1)'
               }} 
             />
           </a>
