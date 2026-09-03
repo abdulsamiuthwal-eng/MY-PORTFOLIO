@@ -80,7 +80,7 @@ const Navbar: React.FC<NavbarProps> = ({ onMenuToggle }) => {
       const sy = window.scrollY;
       const isMobile = window.innerWidth <= 767;
       const phase1End = isMobile ? 110 : DROP_PHASE1_END;
-      const phase2End = isMobile ? 340 : DROP_PHASE2_END;
+      const phase2End = isMobile ? 380 : DROP_PHASE2_END;
 
       // ── Determine if pill should be active (starts at phase 2) ───────────
       const isPillActive = sy > phase1End;
