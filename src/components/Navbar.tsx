@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { X, FileText } from 'lucide-react';
+import { FileText } from 'lucide-react';
 import { scrollToTop } from '../lib/scroll';
 
 const TwitterIcon = (props: React.SVGProps<SVGSVGElement>) => (
@@ -276,7 +276,7 @@ const Navbar: React.FC<NavbarProps> = ({ onMenuToggle }) => {
   };
 
   return (
-    <nav ref={navRef} className={`ptf-navbar ${isScrolled ? 'is-scrolled' : ''}`}>
+    <nav ref={navRef} className={`ptf-navbar ${isScrolled ? 'is-scrolled' : ''} ${isOpen ? 'has-menu-open' : ''}`}>
       {/* Living Single-Entity Drop & Pill Border */}
       <div className="ptf-liquid-drop" aria-hidden="true">
         <div className="ptf-liquid-drop-body" />
@@ -411,31 +411,21 @@ const Navbar: React.FC<NavbarProps> = ({ onMenuToggle }) => {
           </div>
 
 
-          {/* Mobile Toggle */}
+          {/* 2-Lines to Cross Morphing Mobile Toggle */}
           <button 
-            className="ptf-navbar-toggle" 
+            className={`ptf-navbar-toggle ${isOpen ? 'is-open' : ''}`} 
             onClick={() => toggleMenu(!isOpen)} 
-            aria-label="Toggle Menu"
-            data-aos="fade-up" 
-            data-aos-delay="100" 
+            aria-label={isOpen ? "Close Menu" : "Open Menu"}
+            aria-expanded={isOpen}
+            data-aos="fade-up"
+            data-aos-once="true"
+            data-aos-delay="100"
             data-aos-duration="1000"
           >
-            {isOpen ? (
-              <X size={24} />
-            ) : (
-              <svg 
-                xmlns="http://www.w3.org/2000/svg" 
-                viewBox="0 0 24 24" 
-                fill="none" 
-                stroke="currentColor" 
-                strokeWidth="2.5" 
-                strokeLinecap="round" 
-                style={{ width: '24px', height: '24px' }}
-              >
-                <line x1="4" y1="8" x2="20" y2="8"></line>
-                <line x1="4" y1="16" x2="20" y2="16"></line>
-              </svg>
-            )}
+            <div className="ptf-burger-2lines">
+              <span className="ptf-burger-line ptf-burger-line-1" />
+              <span className="ptf-burger-line ptf-burger-line-2" />
+            </div>
           </button>
         </div>
       </div>
@@ -452,19 +442,8 @@ const Navbar: React.FC<NavbarProps> = ({ onMenuToggle }) => {
         className={`ptf-mobile-drawer ${isOpen ? 'is-open' : ''}`}
         aria-hidden={!isOpen}
       >
-        {/* Header inside drawer with elegant thin Close button */}
-        <div className="ptf-mobile-drawer-header" style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '5px' }}>
-          <button 
-            onClick={() => toggleMenu(false)} 
-            style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--ptf-black-color)', padding: '5px' }}
-            aria-label="Close Menu"
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" style={{ width: '36px', height: '36px' }}>
-              <line x1="18" y1="6" x2="6" y2="18"></line>
-              <line x1="6" y1="6" x2="18" y2="18"></line>
-            </svg>
-          </button>
-        </div>
+        {/* Spacer for top header so links are perfectly positioned with luxury breathing room */}
+        <div className="ptf-mobile-drawer-header" style={{ height: '55px', marginBottom: '15px' }} />
 
         {/* Navigation links vertically centered in the remaining space */}
         <div className="ptf-mobile-drawer-links-container" style={{ margin: '0 0 auto 0' }}>
