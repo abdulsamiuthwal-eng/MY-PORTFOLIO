@@ -14,13 +14,14 @@
 
 ### 🤖 1. Voice & Text AI Portfolio Assistant ("Kitty")
 - **Dual-Mode AI Assistant**: Text Chat Panel and full-screen hands-free Voice Mode.
+- **Bespoke AI Robot Vector Trigger**: Custom-engineered futuristic AI robot mascot logo (`ChatIcon.tsx`) with antenna pulse transmitter, glowing cyber optics, side communication modules, and reactive electric orange hover aura with smooth morphing to Close (X).
 - **Intelligence Core**: Google Gemini API integration with resilient multi-model rotation (`gemini-2.0-flash`, `gemini-1.5-flash`).
 - **Real-Time Voice Streaming**: Ultra-low-latency voice synthesis powered by ElevenLabs streaming TTS with **Lily Rose** voice persona (`t4U671CQHG58R11znrVj`).
 - **Hardware-Accelerated Visuals**: 3-layer crossfade video engine (`Intro` -> `Listening` -> `Talking`) with natural speech detection (VAD).
 
 ### 📜 2. Verified Internship Documents & Experience Timeline
 - **Interactive Experience Badges**: Official offer letters (`📄 Offer Letter`) and verified completion certificates (`🏆 Completion Certificate`) with credential ID chips.
-- **Direct Portal Verification**: Live links to official organization verification portals (DecodeLabs, DEVFORGE, Developers Hub).
+- **Direct Portal Verification**: Live links to official organization verification portals (FlyRank, DecodeLabs, DEVFORGE, Developers Hub).
 - **Dual-Layer Scroll Lock Lightbox**: Full-screen PDF preview modal with `html` + `body` viewport locking and gesture containment.
 
 ### 🛡️ 3. Enterprise Content & Intellectual Property Security
@@ -30,6 +31,12 @@
 - **Anti-Print Protection**: `@media print { html, body { display: none !important; } }` blanks browser print dialogs.
 
 ### 🎨 4. Design, Motion & Visual Systems
+- **Liquid Drop to Pill Morpher & Zero-Jerk Mobile Architecture**:
+  - Precision dual-screen phase calibrated scroll engine (Desktop: `80px ➔ 160px` | Mobile: `110px ➔ 500px`).
+  - Extended 390px mobile expansion span for buttery smooth boundary formulation completing gracefully right before the biography portrait photo (`~588px`).
+  - Unified 50px mobile navbar height and 32px logo height locking, eliminating all layout snapping, shrink jumps, and vertical jerks.
+  - rAF (`requestAnimationFrame`) throttled 60–120 FPS render pipeline eliminating layout thrashing (`offsetWidth` reads) and heavy GPU blur re-rasterization.
+  - Open-drawer interaction shield: Automatically prevents logo clicks (`pointer-events: none`) while the mobile navigation drawer is active.
 - **Morphing 2-Lines to Cross (X) Toggle**: Precision-crafted mobile toggle button morphing two sleek horizontal bars into a crisp Cross (X) with state-isolated wrapper preventing AOS library re-render wipe.
 - **60 FPS Mobile Navigation Drawer**: Hardware-accelerated drawer sliding (`translate3d`) featuring active section moving electric orange gradient shine (`@keyframes ptfElectricShine`) and directional arrow aura.
 - **Glassmorphic Symmetry & Video Looping**: Harmonized ultra-transparent frosted glass (`rgba(255, 255, 255, 0.16)` with `blur(16px) saturate(150%)`) bridging the floating header pill and contact footer, with continuous 0s–7s stallion smoke video looping.

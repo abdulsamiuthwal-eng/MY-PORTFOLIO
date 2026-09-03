@@ -54,7 +54,7 @@
 - **`src/lib/scroll.ts`**: Smooth programmatic scrolling utility (`scrollToTop`).
 
 ### 3. Core UI Components (`src/components/`)
-- **`Navbar.tsx`**: Responsive header navigation with dynamic dual-state architecture: resting full-width at top and morphing on scroll (`scrollY > 20`) into an ultra-slim, floating translucent frosted-glass capsule pill (`rgba(255, 255, 255, 0.16)` with `blur(16px) saturate(150%)`) framed by a 1.5px continuously animated moving electric orange border beam (`@keyframes ptfMovingBorder`). Features the high-resolution transparent "AS" monogram logo, direct CV access button with hover glow, interactive morphing **2-Lines to Cross (X)** toggle icon with persistent AOS-isolated wrapper, and hardware-accelerated 60FPS mobile drawer with active section moving electric gradient shine (`ptfElectricShine`).
+- **`Navbar.tsx`**: Responsive header navigation with dynamic dual-state architecture: resting full-width at top and morphing on scroll into an ultra-slim, floating translucent frosted-glass capsule pill (`rgba(255, 255, 255, 0.16)` with `blur(16px) saturate(150%)`) framed by a 1.5px continuously animated moving electric orange border beam (`@keyframes ptfMovingBorder`). Calibrated liquid drop scroll phases: Desktop (`80px ➔ 160px`) and Mobile (`110px ➔ 500px` for ultra-smooth 390px boundary formulation completing right before biography portrait photo at ~588px). Features zero-jerk mobile height stabilization (`50px !important`), logo height lock (`32px !important`), open-drawer logo interaction shield (`pointer-events: none`), rAF (`requestAnimationFrame`) 60–120 FPS render pipeline, and zero layout thrashing. Features the high-resolution transparent "AS" monogram logo, direct CV access button with hover glow, interactive morphing **2-Lines to Cross (X)** toggle icon with persistent AOS-isolated wrapper, and hardware-accelerated 60FPS mobile drawer with active section moving electric gradient shine (`ptfElectricShine`).
 - **`Hero.tsx`**: Signature hero section (`#home`) featuring large typography, social links, CTAs, and scoped `@media (min-width: 992px)` proximity hover margins preventing mobile horizontal overflow.
 - **`About.tsx`**: Biography & services section (`#biography`). Contains:
   - Left column: Bio text, contact details, services list.
@@ -73,7 +73,7 @@
 - **`Footer.tsx`**: Global footer containing copyright info, social links, back-to-top button, and high-impact looping black stallion smoke video background (`/horse-smoke-footer.mp4`) looping accurately between 0.0s and 7.0s. The contact footer pill container features matching ultra-transparent white frosted glass (`rgba(255, 255, 255, 0.16)` with `blur(16px)` and specular reflection).
 - **`CustomScrollbar.tsx`**: 9-section desktop custom dot sidebar widget (positioned on left). Features top/bottom orange capsule caps, gliding active ring, section dot highlighting (`#fa4529`), left hover zone, and auto-hide timer. Restricted strictly to the main Home view.
 - **`CustomCursor.tsx`**: Hardware-accelerated custom cursor with RAF interpolation and supreme `z-index: 2147483647` for uninterrupted visibility over all modal dialogs.
-- **`ChatIcon.tsx`**: Floating AI assistant trigger button at bottom-right with glowing pulsating badge.
+- **`ChatIcon.tsx`**: Floating AI assistant trigger button at bottom-right featuring a bespoke, ultra-professional vector AI Robot Mascot Logo (`RobotIcon`) with antenna signal pulse, glowing cyber optics, side audio communication nodes, and reactive electric orange aura. Smoothly morphs to Close (X) button when active.
 - **`ChatPanel.tsx`**: Full AI Chat panel for **Kitty**. Features greeting intro video (`robot-transforms-from-energy-orb-compressed.mp4`), message loop video (`boticon.mp4`), streaming response cursor, and voice mic input.
 - **`VoiceChat.tsx`**: Hands-free full-screen Voice Mode for **Kitty**. 3-layer preloaded GPU crossfade stack (`Intro` -> `Listening` -> `Talking`), continuous hands-free VAD speech detection, instant Lily Rose filler triggers (`filler1-3.mp3`), and dynamic ElevenLabs TTS audio streaming.
 
@@ -214,6 +214,43 @@ The mobile navigation system features custom-engineered interaction mechanics an
 - **60 FPS Composite Pipeline**: Slide animations utilize hardware-promoted `transform: translate3d(100%, 0, 0)` -> `translate3d(0, 0, 0)`, combined with `will-change: transform`, `contain: paint`, and `backface-visibility: hidden`.
 - **Active Section Electric Glow**: Active route text features dynamic gradient animation (`@keyframes ptfElectricShine`) sweeping between `#fa4529` and deep black with an electric orange chevron icon and focused `drop-shadow(0 0 5px rgba(250, 69, 41, 0.45))`.
 - **Vertical Spacing**: Includes a top breathing-room spacer (`height: 55px; marginBottom: 15px`) separating the first navigation link ("Home") from the Cross toggle button.
+
+---
+
+## 💧 Liquid Drop to Floating Pill Morphing & Scroll Performance Architecture
+
+The signature liquid drop to floating capsule pill transition is driven by a scroll interpolation engine designed for 60–120 FPS buttery smoothness:
+
+### 1. Dual-Screen Scroll Calibration
+- **Desktop View (`> 767px`)**:
+  - Phase 1 (`0px ➔ 80px`): Teardrop falls into the header center (`translate3d(-50%, ${-110 + phase1 * 110}px, 0)`).
+  - Phase 2 (`80px ➔ 160px`): Boundary expands into full-width capsule pill with living border beam.
+- **Mobile View (`<= 767px`)**:
+  - Phase 1 (`0px ➔ 110px`): Teardrop falls into the header center.
+  - Phase 2 (`110px ➔ 500px`): Extended **390px scroll span** for ultra-smooth fluid expansion with micro-interpolation granularity.
+  - **Visual Hierarchy Alignment**: The boundary formulation completes at **`500px`**, exactly **85px–100px before** the Biography double oval portrait photo (`.ptf-custom--5512` at `~588px–600px`), ensuring pristine separation.
+
+### 2. Zero-Jerk Mobile Layout Stabilization
+- **Unified Mobile Height**: `.ptf-navbar-inner` enforces `height: 50px !important; padding: 0 16px;` consistently across resting and scrolled states, eliminating the 75px-to-50px vertical jump.
+- **Unified Logo Dimensions**: `.ptf-navbar-logo img` is locked to `32px !important` across all scroll phases, eliminating sudden snap shrinks.
+- **Interaction Shield**: `.ptf-navbar.has-menu-open .ptf-navbar-logo` sets `pointer-events: none !important; cursor: default !important;` to block accidental clicks while the mobile drawer is open.
+
+### 3. High-Frame-Rate (60–120 FPS) Performance Optimizations
+- **`requestAnimationFrame` (rAF) Throttle**: Scroll events are bound to screen v-sync via `requestAnimationFrame`, preventing duplicate execution spikes on 90Hz/120Hz mobile touchscreens.
+- **Zero Layout Thrashing**: Synchronous `innerEl.offsetWidth` DOM measurement inside active scroll loops is bypassed on mobile with direct mathematical viewport calculation (`window.innerWidth - 24`).
+- **Static Blur Retention**: The heavy `backdrop-filter: blur(16px)` is maintained statically rather than dynamically modifying pixel radius per frame, with fade-in driven purely by GPU-composited hardware background opacity (`t * 0.16`).
+- **Composited Hardware Transforms**: All spatial positioning utilizes `translate3d(-50%, 0, 0)` with `-webkit-backface-visibility: hidden` for dedicated GPU layer compositing.
+
+---
+
+## 🤖 Bespoke AI Robot Vector Mascot (Chatbot Trigger)
+
+- **Vector Architecture**: High-craft custom inline SVG (`RobotIcon`) replacing generic chat bubbles.
+- **Visual Features**: Central pulse antenna (`y: 2-5`, node circle `r: 1.5`), curved cyber cranium (`rx: 4.5`), side communication modules, expressive futuristic cyber optic eyes (`3.2px x 3px`), and curved voice wave interface plate.
+- **Interaction States**:
+  - Resting: Crisp white robot logo inside true black circular pill (`#000000`).
+  - Hover: Dynamic transition to electric orange aura (`#fa4529` with `drop-shadow` / `box-shadow`).
+  - Active: Seamless morphing to Close (X) icon when chat drawer is open.
 
 ---
 
