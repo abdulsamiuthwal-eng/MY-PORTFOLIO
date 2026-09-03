@@ -112,7 +112,7 @@ public/internships/
    - **Duration**: `Jul 2026 - Aug 2026`
    - **Role**: `Internship — Artificial Intelligence (AI)`
    - **Documents**: 📄 `Offer Letter` + 🏆 `Completion Certificate` (Credential ID: `AI086527`)
-   - **Verification Portal**: `https://www.decodelabs.tech/`
+   - **Verification Portal**: `https://www.decodelabs.tech/verification`
 3. 🥉 **Developers Hub (Engineering Cohort)**
    - **Duration**: `Apr 2026 - Jun 2026`
    - **Role**: `AI/ML Intern`

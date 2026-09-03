@@ -187,7 +187,7 @@ const Timeline: React.FC = () => {
       label: 'Offer Letter',
       pdfUrl: '/internships/decodelabs/Your Offer Letter _ Decode Labs.pdf',
       issueDate: 'July 25, 2026',
-      verifyUrl: 'https://www.decodelabs.tech/',
+      verifyUrl: 'https://www.decodelabs.tech/verification',
     },
     {
       type: 'certificate',
@@ -195,7 +195,7 @@ const Timeline: React.FC = () => {
       pdfUrl: '/internships/decodelabs/DecodeLabs Internship Certificate.pdf',
       credentialId: 'AI086527',
       issueDate: 'August 26, 2026',
-      verifyUrl: 'https://www.decodelabs.tech/',
+      verifyUrl: 'https://www.decodelabs.tech/verification',
     },
   ];
 
