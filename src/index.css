@@ -2181,6 +2181,110 @@ img {
   border-color: var(--ptf-accent-1);
 }
 
+/* Animated Social Action Buttons (WhatsApp, LinkedIn, GitHub) */
+.ptf-social-btn {
+  background-color: #ffffff;
+  position: relative;
+  width: 8.2em;
+  height: 2.35em;
+  transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  font-size: 14.5px;
+  border-radius: 0.5em;
+  display: inline-flex;
+  align-items: center;
+  text-decoration: none;
+  overflow: hidden;
+  cursor: pointer;
+  box-sizing: border-box;
+}
+
+.ptf-social-btn p {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  margin: 0;
+  padding: 0;
+  transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  font-weight: 500;
+  font-size: 14.5px;
+  font-family: var(--ptf-font-sans);
+  white-space: nowrap;
+  line-height: 1;
+}
+
+.ptf-social-btn svg {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  right: 0.85em;
+  margin: 0;
+  padding: 0;
+  opacity: 0;
+  transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  width: 17px;
+  height: 17px;
+}
+
+.ptf-social-btn:hover p {
+  left: 0.85em;
+  transform: translateY(-50%);
+  color: #ffffff;
+}
+
+.ptf-social-btn:hover svg {
+  opacity: 1;
+}
+
+
+/* WhatsApp Theme */
+.ptf-social-btn--whatsapp,
+.ptf-whatsapp-btn {
+  border: 1px solid #25D366;
+}
+.ptf-social-btn--whatsapp p,
+.ptf-whatsapp-btn p {
+  color: #25D366;
+}
+.ptf-social-btn--whatsapp svg {
+  fill: #ffffff;
+}
+.ptf-social-btn--whatsapp:hover,
+.ptf-whatsapp-btn:hover {
+  background-color: #25D366;
+  box-shadow: 0 4px 15px rgba(37, 211, 102, 0.3);
+}
+
+/* LinkedIn Theme */
+.ptf-social-btn--linkedin {
+  border: 1px solid #0A66C2;
+}
+.ptf-social-btn--linkedin p {
+  color: #0A66C2;
+}
+.ptf-social-btn--linkedin:hover {
+  background-color: #0A66C2;
+  box-shadow: 0 4px 15px rgba(10, 102, 194, 0.3);
+}
+
+/* GitHub Theme */
+.ptf-social-btn--github {
+  border: 1px solid #24292e;
+}
+.ptf-social-btn--github p {
+  color: #24292e;
+}
+.ptf-social-btn--github svg {
+  fill: #ffffff;
+}
+.ptf-social-btn--github:hover {
+  background-color: #24292e;
+  box-shadow: 0 4px 15px rgba(36, 41, 46, 0.3);
+}
+
+
+
+
 /* Call Button filled-link style */
 .ptf-filled-link {
   position: relative;
