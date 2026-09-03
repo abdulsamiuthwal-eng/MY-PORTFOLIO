@@ -3742,3 +3742,200 @@ a, button, select, input, textarea, .filter-item {
   user-select: none;
   cursor: default;
 }
+
+/* ===================================================
+   TIMELINE EXPAND TOGGLE - UIVERSE LIQUID WATER BUTTON
+   (Adapted from Uiverse.io by BigDylane for Portfolio)
+   =================================================== */
+.ptf-liquid-btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 28px;
+  border-radius: 40px;
+  border: 1.5px solid var(--ptf-border-color);
+  background-color: #ffffff;
+  color: var(--ptf-black-color);
+  font-size: 13px;
+  font-weight: 600;
+  font-family: var(--ptf-font-sans);
+  cursor: pointer;
+  overflow: hidden;
+  isolation: isolate;
+  outline: none;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.04);
+  transition:
+    box-shadow 0.4s ease,
+    background-color 0.4s ease,
+    border-color 0.4s ease,
+    color 0.4s ease,
+    transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  white-space: nowrap;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+/* Water Splash Bubble (from Uiverse) */
+.ptf-liquid-btn:hover::after {
+  content: "";
+  position: absolute;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.65);
+  bottom: 8px;
+  left: 50%;
+  transform: translate(-50%, 0);
+  animation: ptf-uiverse-splash 1s forwards infinite;
+  z-index: 3;
+  pointer-events: none;
+}
+
+/* Base button hover & glowing orange shadow */
+.ptf-liquid-btn:hover {
+  background-color: var(--ptf-accent-1);
+  border-color: var(--ptf-accent-1);
+  transform: translateY(-2px);
+  box-shadow:
+    0 0 3px 0 rgba(250, 69, 41, 0.2),
+    0 0 6px 0 rgba(250, 69, 41, 0.3),
+    0 0 10px 0 rgba(250, 69, 41, 0.35),
+    0 0 16px 0 rgba(250, 69, 41, 0.45),
+    0 4px 22px rgba(250, 69, 41, 0.4);
+}
+
+.ptf-liquid-btn:active {
+  transform: scale(0.97);
+}
+
+/* Water Wave Body (from Uiverse i element) */
+.ptf-liquid-btn i.ptf-liquid-wave {
+  position: absolute;
+  z-index: 1;
+  left: 0;
+  top: 100%;
+  width: 100%;
+  height: 100%;
+  background-color: var(--ptf-accent-1);
+  box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.3);
+  transition: top 0.7s cubic-bezier(0.25, 1, 0.35, 1);
+  overflow: hidden;
+  pointer-events: none;
+}
+
+/* Rotating Water Wave Crests (from Uiverse i:after) */
+.ptf-liquid-btn i.ptf-liquid-wave::before,
+.ptf-liquid-btn i.ptf-liquid-wave::after {
+  content: "";
+  position: absolute;
+  width: 240%;
+  height: 240%;
+  top: 35%;
+  left: 50%;
+  transform: translate(-50%, -75%);
+  border-radius: 40%;
+  background-color: rgba(255, 255, 255, 0.22);
+  transition: 10s;
+  pointer-events: none;
+}
+
+.ptf-liquid-btn i.ptf-liquid-wave::after {
+  border-radius: 43%;
+  background-color: rgba(0, 0, 0, 0.15);
+}
+
+/* When Hovered - Water rises and sloshes continuously */
+.ptf-liquid-btn:hover i.ptf-liquid-wave {
+  top: 0%;
+}
+
+.ptf-liquid-btn:hover i.ptf-liquid-wave::before {
+  top: -45%;
+  animation: ptf-uiverse-animate 6s linear infinite;
+}
+
+.ptf-liquid-btn:hover i.ptf-liquid-wave::after {
+  top: -50%;
+  animation: ptf-uiverse-animate 9s linear infinite reverse;
+}
+
+/* Text and Icon on top */
+.ptf-liquid-btn .ptf-liquid-btn__content {
+  position: relative;
+  z-index: 4;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: inherit;
+  transition: color 0.35s ease;
+}
+
+.ptf-liquid-btn:hover .ptf-liquid-btn__content {
+  color: #ffffff !important;
+}
+
+.ptf-liquid-btn .ptf-liquid-btn__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.3s ease;
+}
+
+.ptf-liquid-btn:hover .ptf-liquid-btn__icon {
+  transform: translateY(1px);
+}
+
+/* Uiverse Continuous Wave Rotation Keyframes */
+@keyframes ptf-uiverse-animate {
+  0% {
+    transform: translate(-50%, -75%) rotate(0deg);
+  }
+  100% {
+    transform: translate(-50%, -75%) rotate(360deg);
+  }
+}
+
+/* Uiverse Splash Bubble Keyframes */
+@keyframes ptf-uiverse-splash {
+  0% {
+    transform: translate(-50%, 0) scale(1);
+    opacity: 0.9;
+  }
+  100% {
+    transform: translate(-50%, -26px) scale(0.2);
+    opacity: 0;
+  }
+}
+
+/* ===================================================
+   TIMELINE EXPERIENCE ACCORDION SCROLL OPEN/HIDE DRAWER
+   Smooth height expansion & collapse (Zero Jerk/Jhatka)
+   =================================================== */
+.timeline-experience-drawer {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.55s cubic-bezier(0.25, 1, 0.35, 1);
+  overflow: hidden;
+  will-change: grid-template-rows;
+  margin: 0;
+  padding: 0;
+}
+
+.timeline-experience-drawer.is-open {
+  grid-template-rows: 1fr;
+}
+
+.timeline-experience-drawer__inner {
+  overflow: hidden;
+  min-height: 0;
+  transition: opacity 0.4s ease, transform 0.5s cubic-bezier(0.25, 1, 0.35, 1);
+  opacity: 0;
+  transform: translateY(-16px);
+}
+
+.timeline-experience-drawer.is-open .timeline-experience-drawer__inner {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 0.45s ease 0.1s, transform 0.55s cubic-bezier(0.25, 1, 0.35, 1) 0.05s;
+}

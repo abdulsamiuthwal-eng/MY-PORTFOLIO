@@ -286,7 +286,8 @@ const Timeline: React.FC = () => {
   // Configurable threshold: number of experiences displayed before collapse
   const INITIAL_VISIBLE_COUNT = 2;
   const [isExpanded, setIsExpanded] = useState(false);
-  const visibleExperiences = isExpanded ? experiencesData : experiencesData.slice(0, INITIAL_VISIBLE_COUNT);
+  const initialExperiences = experiencesData.slice(0, INITIAL_VISIBLE_COUNT);
+  const extraExperiences = experiencesData.slice(INITIAL_VISIBLE_COUNT);
   const hasMore = experiencesData.length > INITIAL_VISIBLE_COUNT;
   const hiddenCount = experiencesData.length - INITIAL_VISIBLE_COUNT;
 
@@ -361,78 +362,83 @@ const Timeline: React.FC = () => {
             >
               Experience & Internships
             </h3>
-            <div id="timeline-experience-list" style={{ display: 'flex', flexDirection: 'column', gap: '40px' }}>
-              {visibleExperiences.map((exp, expIdx) => (
-                <div
-                  key={exp.id}
-                  style={
-                    expIdx >= INITIAL_VISIBLE_COUNT
-                      ? {
-                          animation: 'geminiFadeIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards',
-                        }
-                      : undefined
-                  }
-                >
-                  <TimelineItem
-                    year={exp.year}
-                    title={exp.title}
-                    institution={exp.institution}
-                    institutionLink={exp.institutionLink}
-                    description={exp.description}
-                    delay={exp.delay}
-                    documents={exp.documents}
-                    onOpenDoc={handleOpenDoc}
-                  />
-                </div>
-              ))}
+            <div id="timeline-experience-list" style={{ display: 'flex', flexDirection: 'column' }}>
+              {/* Top/Latest Experiences (Always Visible) */}
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '40px' }}>
+                {initialExperiences.map((exp) => (
+                  <div key={exp.id}>
+                    <TimelineItem
+                      year={exp.year}
+                      title={exp.title}
+                      institution={exp.institution}
+                      institutionLink={exp.institutionLink}
+                      description={exp.description}
+                      delay={exp.delay}
+                      documents={exp.documents}
+                      onOpenDoc={handleOpenDoc}
+                    />
+                  </div>
+                ))}
+              </div>
 
-              {/* View More / Show Less Toggle Button */}
+              {/* Accordion Scroll Open / Hide Drawer for Older Experiences (Zero Jerk) */}
               {hasMore && (
-                <div style={{ textAlign: 'center', marginTop: '10px' }}>
+                <div
+                  id="timeline-experience-drawer"
+                  className={`timeline-experience-drawer ${isExpanded ? 'is-open' : ''}`}
+                  aria-hidden={!isExpanded}
+                >
+                  <div className="timeline-experience-drawer__inner">
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '40px', paddingTop: '40px' }}>
+                      {extraExperiences.map((exp) => (
+                        <div key={exp.id}>
+                          <TimelineItem
+                            year={exp.year}
+                            title={exp.title}
+                            institution={exp.institution}
+                            institutionLink={exp.institutionLink}
+                            description={exp.description}
+                            delay="0"
+                            documents={exp.documents}
+                            onOpenDoc={handleOpenDoc}
+                          />
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* View More / Show Less Toggle Button with Liquid Water Fill Effect */}
+              {hasMore && (
+                <div
+                  className="ptf-animated-block"
+                  data-aos="fade-up"
+                  data-aos-delay="200"
+                  style={{ textAlign: 'center', marginTop: '40px' }}
+                >
                   <button
                     type="button"
                     onClick={() => setIsExpanded(!isExpanded)}
                     aria-expanded={isExpanded}
-                    aria-controls="timeline-experience-list"
-                    style={{
-                      display: 'inline-flex',
-                      alignItems: 'center',
-                      gap: '8px',
-                      padding: '10px 24px',
-                      borderRadius: '30px',
-                      border: '1px solid var(--ptf-border-color)',
-                      backgroundColor: '#ffffff',
-                      color: 'var(--ptf-black-color)',
-                      fontSize: '13px',
-                      fontWeight: 600,
-                      cursor: 'pointer',
-                      transition: 'all 0.25s cubic-bezier(0.25, 0.46, 0.45, 0.94)',
-                      boxShadow: '0 2px 8px rgba(0, 0, 0, 0.04)',
-                      fontFamily: 'var(--ptf-font-sans)',
-                    }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.borderColor = 'var(--ptf-accent-1)';
-                      e.currentTarget.style.color = 'var(--ptf-accent-1)';
-                      e.currentTarget.style.transform = 'translateY(-2px)';
-                      e.currentTarget.style.boxShadow = '0 6px 20px rgba(250, 69, 41, 0.12)';
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.borderColor = 'var(--ptf-border-color)';
-                      e.currentTarget.style.color = 'var(--ptf-black-color)';
-                      e.currentTarget.style.transform = 'translateY(0)';
-                      e.currentTarget.style.boxShadow = '0 2px 8px rgba(0, 0, 0, 0.04)';
-                    }}
+                    aria-controls="timeline-experience-drawer"
+                    className="ptf-liquid-btn"
                   >
-                    <span>
-                      {isExpanded
-                        ? 'Show Less'
-                        : `View More Experience (${hiddenCount} ${hiddenCount === 1 ? 'more' : 'more'})`}
+                    <i className="ptf-liquid-wave" aria-hidden="true" />
+                    <span className="ptf-liquid-btn__content">
+                      <span>
+                        {isExpanded
+                          ? 'Show Less'
+                          : `View More Experience (${hiddenCount} ${hiddenCount === 1 ? 'more' : 'more'})`}
+                      </span>
+                      <span className="ptf-liquid-btn__icon">
+                        {isExpanded ? (
+                          <ChevronUp size={15} />
+                        ) : (
+                          <ChevronDown size={15} />
+                        )}
+                      </span>
                     </span>
-                    {isExpanded ? (
-                      <ChevronUp size={15} style={{ transition: 'transform 0.2s ease' }} />
-                    ) : (
-                      <ChevronDown size={15} style={{ transition: 'transform 0.2s ease' }} />
-                    )}
                   </button>
                 </div>
               )}
