@@ -317,38 +317,67 @@ img {
   --drop-phase2: 0;
 }
 
-/* ── Liquid Drop: shape/size/position fully driven by JS ───────────────────── */
+/* ── The Single Continuous Living Border Drop ───────────────────── */
 .ptf-liquid-drop {
   position: fixed;
-  top: 0;
+  top: 16px;
   left: 50%;
-
-  /* Initial size — JS overrides width/height/transform/border-radius each frame */
+  transform: translateX(-50%);
   width: 28px;
   height: 42px;
-  opacity: 0;
-
-  /* Pulsing breathing glow while falling */
-  animation: ptfDropPulse 1.4s ease-in-out infinite;
-
-  will-change: transform, width, height, border-radius, clip-path, opacity, box-shadow;
+  will-change: transform, width, height, border-radius, opacity;
   pointer-events: none;
-  z-index: 1050;
-  display: block;
+  z-index: 1005;
+  display: none;
 }
 
-/* Breathing glow pulse on the drop */
+@media (max-width: 767px) {
+  .ptf-liquid-drop {
+    top: 8px;
+  }
+}
+
+/* Phase 1 Drop Body: Molten Teardrop with pulsing glow */
+.ptf-liquid-drop-body {
+  position: absolute;
+  inset: 0;
+  border-radius: 999px;
+  will-change: clip-path, opacity, transform, filter;
+  pointer-events: none;
+  animation: ptfDropPulse 1.4s ease-in-out infinite;
+}
+
+/* Breathing glow pulse on the drop body */
 @keyframes ptfDropPulse {
   0%, 100% { filter: brightness(1) saturate(1.1); }
   50%       { filter: brightness(1.25) saturate(1.4); }
 }
 
-/* Hide drop once pill is fully active */
-.ptf-navbar.is-scrolled .ptf-liquid-drop {
-  display: none;
+/* Phase 2 & 3 Living Moving Electric Border: Expands from drop & stays as pill boundary */
+.ptf-liquid-drop-border {
+  position: absolute;
+  inset: 0;
+  border-radius: 999px;
+  padding: 1.5px; /* Slim glowing boundary */
+  background: linear-gradient(
+    90deg,
+    rgba(250, 69, 41, 0.15) 0%,
+    rgba(250, 69, 41, 0.95) 25%,
+    rgba(255, 120, 90, 1) 50%,
+    rgba(250, 69, 41, 0.95) 75%,
+    rgba(250, 69, 41, 0.15) 100%
+  );
+  background-size: 200% 100%;
+  animation: ptfMovingBorder 4s linear infinite;
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+  pointer-events: none;
+  filter: drop-shadow(0 0 6px rgba(250, 69, 41, 0.5)) drop-shadow(0 0 14px rgba(250, 69, 41, 0.25));
+  opacity: 0;
+  will-change: opacity, border-radius;
 }
-
-
 
 /* Scrolled Floating Pill Header — nav positioning */
 .ptf-navbar.is-scrolled {
@@ -377,32 +406,6 @@ img {
 .ptf-navbar.is-scrolled .ptf-navbar-inner > * {
   position: relative;
   z-index: 3;
-}
-
-/* Slim Moving Orange Animated Border */
-.ptf-navbar.is-scrolled .ptf-navbar-inner::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border-radius: 999px;
-  padding: 1.5px; /* Slim boundary line */
-  background: linear-gradient(
-    90deg,
-    rgba(250, 69, 41, 0.15) 0%,
-    rgba(250, 69, 41, 0.95) 25%,
-    rgba(255, 120, 90, 1) 50%,
-    rgba(250, 69, 41, 0.95) 75%,
-    rgba(250, 69, 41, 0.15) 100%
-  );
-  background-size: 200% 100%;
-  animation: ptfMovingBorder 4s linear infinite;
-  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-  -webkit-mask-composite: xor;
-  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-  mask-composite: exclude;
-  pointer-events: none;
-  z-index: 2;
-  filter: drop-shadow(0 0 6px rgba(250, 69, 41, 0.3));
 }
 
 @keyframes ptfMovingBorder {
