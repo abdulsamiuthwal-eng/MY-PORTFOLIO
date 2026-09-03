@@ -185,7 +185,13 @@ const Navbar: React.FC<NavbarProps> = ({ onMenuToggle }) => {
           </div>
 
           {/* Mobile Right Container (Direct CV Button + Hamburger Menu) */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }} className="d-md-none">
+          <div 
+            style={{ display: 'flex', alignItems: 'center', gap: '10px' }} 
+            className="d-md-none"
+            data-aos="fade-up" 
+            data-aos-delay="100" 
+            data-aos-duration="1000"
+          >
             <a
               href="/AbdulSami_CV.pdf"
               target="_blank"
