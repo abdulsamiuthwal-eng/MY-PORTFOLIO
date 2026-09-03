@@ -390,6 +390,27 @@ img {
   }
 }
 
+/* Responsive Navbar Logo Sizing */
+.ptf-navbar-logo-img {
+  height: 42px;
+  width: auto;
+  object-fit: contain;
+  transition: height 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.ptf-navbar.is-scrolled .ptf-navbar-logo-img {
+  height: 32px;
+}
+
+@media (max-width: 767px) {
+  .ptf-navbar-logo-img {
+    height: 30px !important;
+  }
+  .ptf-navbar.is-scrolled .ptf-navbar-logo-img {
+    height: 24px !important;
+  }
+}
+
 @media (min-width: 768px) {
   .ptf-navbar-inner {
     display: grid;

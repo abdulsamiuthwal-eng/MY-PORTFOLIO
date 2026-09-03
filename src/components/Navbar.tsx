@@ -126,12 +126,7 @@ const Navbar: React.FC<NavbarProps> = ({ onMenuToggle }) => {
             <img 
               src="/logo.png" 
               alt="ABDUL SAMI." 
-              style={{ 
-                height: isScrolled ? '34px' : '44px', 
-                width: 'auto', 
-                objectFit: 'contain',
-                transition: 'height 0.4s cubic-bezier(0.16, 1, 0.3, 1)'
-              }} 
+              className="ptf-navbar-logo-img"
             />
           </a>
 
