@@ -477,11 +477,38 @@ img {
   letter-spacing: 0.12em;
   text-decoration: none;
   color: var(--ptf-black-color);
-  transition: color var(--ptf-transition-duration) var(--ptf-transition-easing);
+  position: relative;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .ptf-nav-link:hover {
   color: var(--ptf-accent-1);
+}
+
+/* Electric Moving Orange Active Tab */
+.ptf-nav-link.is-active {
+  background: linear-gradient(
+    90deg,
+    #fa4529 0%,
+    #ff7e60 25%,
+    #ffffff 50%,
+    #ff7e60 75%,
+    #fa4529 100%
+  );
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: ptfElectricShine 2.5s linear infinite;
+  filter: drop-shadow(0 0 8px rgba(250, 69, 41, 0.65)) drop-shadow(0 0 2px rgba(255, 120, 90, 0.9));
+}
+
+@keyframes ptfElectricShine {
+  0% {
+    background-position: 0% 50%;
+  }
+  100% {
+    background-position: 200% 50%;
+  }
 }
 
 .ptf-navbar-actions {

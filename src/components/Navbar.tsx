@@ -50,6 +50,7 @@ interface NavbarProps {
 const Navbar: React.FC<NavbarProps> = ({ onMenuToggle }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const [activeSection, setActiveSection] = useState<string>('#home');
 
   const toggleMenu = (value: boolean) => {
     setIsOpen(value);
@@ -71,13 +72,49 @@ const Navbar: React.FC<NavbarProps> = ({ onMenuToggle }) => {
     const handleScroll = () => {
       // Trigger pill as soon as user scrolls even slightly down (e.g. 20px) on any page/section
       setIsScrolled(window.scrollY > 20);
+
+      const hash = window.location.hash;
+      if (hash === '#contact-page') {
+        setActiveSection('#contact-page');
+        return;
+      }
+
+      const sections = [
+        { id: 'project', href: '#project' },
+        { id: 'timeline', href: '#timeline' },
+        { id: 'skills', href: '#skills' },
+        { id: 'biography', href: '#biography' },
+        { id: 'home', href: '#home' },
+      ];
+
+      // Check if user reached near bottom of page
+      if (window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 150) {
+        setActiveSection('#project');
+        return;
+      }
+
+      const scrollPosition = window.scrollY + 200;
+
+      for (const sec of sections) {
+        const el = document.getElementById(sec.id);
+        if (el) {
+          const top = el.offsetTop;
+          if (scrollPosition >= top) {
+            setActiveSection(sec.href);
+            return;
+          }
+        }
+      }
+      setActiveSection('#home');
     };
 
     window.addEventListener('scroll', handleScroll, { passive: true });
+    window.addEventListener('hashchange', handleScroll);
     handleScroll();
 
     return () => {
       window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener('hashchange', handleScroll);
     };
   }, []);
 
@@ -109,16 +146,22 @@ const Navbar: React.FC<NavbarProps> = ({ onMenuToggle }) => {
         <div className="ptf-navbar-inner">
           {/* Left Links */}
           <div className="ptf-navbar-links" style={{ justifyContent: 'flex-start' }} data-aos="fade-up" data-aos-delay="100" data-aos-duration="1000">
-            {navItems.map((item) => (
-              <a 
-                key={item.label} 
-                href={item.href} 
-                className="ptf-nav-link"
-                onClick={(e) => handleLinkClick(e, item.href)}
-              >
-                {item.label}
-              </a>
-            ))}
+            {navItems.map((item) => {
+              const isActive = activeSection === item.href;
+              return (
+                <a 
+                  key={item.label} 
+                  href={item.href} 
+                  className={`ptf-nav-link ${isActive ? 'is-active' : ''}`}
+                  onClick={(e) => {
+                    setActiveSection(item.href);
+                    handleLinkClick(e, item.href);
+                  }}
+                >
+                  {item.label}
+                </a>
+              );
+            })}
           </div>
 
           {/* Centered Logo */}
@@ -252,34 +295,38 @@ const Navbar: React.FC<NavbarProps> = ({ onMenuToggle }) => {
         {/* Navigation links vertically centered in the remaining space */}
         <div className="ptf-mobile-drawer-links-container" style={{ margin: '0 0 auto 0' }}>
           <div className="ptf-mobile-drawer-links" style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-            {navItems.map((item) => (
-              <a
-                key={item.label}
-                href={item.href}
-                className="ptf-mobile-nav-link"
-                style={{ 
-                  display: 'flex', 
-                  justifyContent: 'space-between', 
-                  alignItems: 'center', 
-                  width: '100%', 
-                  fontSize: 'clamp(28px, 6.5vw, 36px)', 
-                  fontWeight: '700', 
-                  textTransform: 'none', 
-                  color: 'var(--ptf-black-color)', 
-                  padding: '7px 0',
-                  textDecoration: 'none'
-                }}
-                onClick={(e) => {
-                  toggleMenu(false);
-                  handleLinkClick(e, item.href);
-                }}
-              >
-                <span>{item.label}</span>
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" style={{ width: '20px', height: '20px', color: 'var(--ptf-black-color)' }}>
-                  <polyline points="9 18 15 12 9 6"></polyline>
-                </svg>
-              </a>
-            ))}
+            {navItems.map((item) => {
+              const isActive = activeSection === item.href;
+              return (
+                <a
+                  key={item.label}
+                  href={item.href}
+                  className={`ptf-mobile-nav-link ${isActive ? 'is-active' : ''}`}
+                  style={{ 
+                    display: 'flex', 
+                    justifyContent: 'space-between', 
+                    alignItems: 'center', 
+                    width: '100%', 
+                    fontSize: 'clamp(28px, 6.5vw, 36px)', 
+                    fontWeight: '700', 
+                    textTransform: 'none', 
+                    color: isActive ? 'var(--ptf-accent-1)' : 'var(--ptf-black-color)', 
+                    padding: '7px 0',
+                    textDecoration: 'none'
+                  }}
+                  onClick={(e) => {
+                    setActiveSection(item.href);
+                    toggleMenu(false);
+                    handleLinkClick(e, item.href);
+                  }}
+                >
+                  <span>{item.label}</span>
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" style={{ width: '20px', height: '20px', color: isActive ? 'var(--ptf-accent-1)' : 'var(--ptf-black-color)' }}>
+                    <polyline points="9 18 15 12 9 6"></polyline>
+                  </svg>
+                </a>
+              );
+            })}
           </div>
 
           {/* Mobile Drawer CV Button */}
