@@ -77,108 +77,138 @@ const Navbar: React.FC<NavbarProps> = ({ onMenuToggle }) => {
 
   useEffect(() => {
     const handleScroll = () => {
-      const sy = window.scrollY;
-
-      // ── Pill state (activate when drop reaches pill size) ───────────────────
-      const isPillActive = sy >= DROP_PHASE2_END;
+      const sy = window.scrollY;      // ── Determine if pill should be active (starts at phase 2) ───────────
+      const isPillActive = sy > DROP_PHASE1_END;
       setIsScrolled(isPillActive);
 
       // ── Liquid drop: compute phases ────────────────────────────────────────
       const phase1 = clamp(sy / DROP_PHASE1_END, 0, 1);
       const phase2 = clamp((sy - DROP_PHASE1_END) / (DROP_PHASE2_END - DROP_PHASE1_END), 0, 1);
 
-      // ── Directly drive drop element styles ────────────────────────────────
+      // ── Directly drive drop element and expanding pill inner styles ───────
       const drop = navRef.current?.querySelector('.ptf-liquid-drop') as HTMLElement | null;
       const dropBody = drop?.querySelector('.ptf-liquid-drop-body') as HTMLElement | null;
       const dropBorder = drop?.querySelector('.ptf-liquid-drop-border') as HTMLElement | null;
+      const innerEl = navRef.current?.querySelector('.ptf-navbar-inner') as HTMLElement | null;
 
-      if (drop) {
-        if (sy <= 2) {
-          drop.style.display = 'none';
-        } else {
-          const isMobile = window.innerWidth <= 767;
-          const topOffset = isMobile ? 8 : 16;
-          const targetHeight = isMobile ? 50 : 72;
-          const innerEl = navRef.current?.querySelector('.ptf-navbar-inner') as HTMLElement | null;
-          const targetWidth = innerEl ? innerEl.offsetWidth : (isMobile ? window.innerWidth - 32 : clamp(window.innerWidth - 64, 280, 1240));
+      if (sy <= 2) {
+        if (drop) drop.style.display = 'none';
+        if (innerEl) {
+          innerEl.style.background = 'transparent';
+          innerEl.style.backdropFilter = 'none';
+          (innerEl.style as any).webkitBackdropFilter = 'none';
+          innerEl.style.boxShadow = 'none';
+        }
+      } else {
+        const isMobile = window.innerWidth <= 767;
+        const topOffset = isMobile ? 8 : 16;
+        const targetHeight = isMobile ? 50 : 72;
+        const targetWidth = innerEl ? innerEl.offsetWidth : (isMobile ? window.innerWidth - 32 : clamp(window.innerWidth - 64, 280, 1240));
 
-          const initialDropW = 28;
-          const initialDropH = 42;
-          const dropTopStart = topOffset + (targetHeight - initialDropH) / 2;
+        const initialDropW = 28;
+        const initialDropH = 42;
+        const dropTopStart = topOffset + (targetHeight - initialDropH) / 2;
 
-          drop.style.display = 'block';
+        if (drop) drop.style.display = 'block';
 
-          if (phase2 >= 1) {
-            // ── PHASE 3: Pill is fully formed — Drop IS the Pill Border (NEVER DISAPPEARS!) ───
+        if (phase2 >= 1) {
+          // ── PHASE 3: Fully Formed Pill — Continuous Living Border ────────
+          if (drop) {
             drop.style.width = `${targetWidth}px`;
             drop.style.height = `${targetHeight}px`;
             drop.style.top = `${topOffset}px`;
             drop.style.transform = 'translateX(-50%) translateY(0px)';
             drop.style.borderRadius = '999px';
+          }
+          if (dropBody) {
+            dropBody.style.opacity = '0';
+            dropBody.style.display = 'none';
+          }
+          if (dropBorder) {
+            dropBorder.style.opacity = '1';
+          }
+          if (innerEl) {
+            innerEl.style.background = 'rgba(255, 255, 255, 0.86)';
+            innerEl.style.backdropFilter = 'blur(20px) saturate(180%)';
+            (innerEl.style as any).webkitBackdropFilter = 'blur(20px) saturate(180%)';
+            innerEl.style.boxShadow = '0 12px 35px -8px rgba(0, 0, 0, 0.08), 0 4px 12px -2px rgba(0, 0, 0, 0.03)';
+          }
 
-            if (dropBody) {
-              dropBody.style.opacity = '0';
-              dropBody.style.display = 'none';
-            }
-            if (dropBorder) {
-              dropBorder.style.opacity = '1';
-            }
-
-          } else if (phase2 < 0.05) {
-            // ── PHASE 1: Sleek Glowing Electric Orange Teardrop (28x42px) ───
+        } else if (phase2 < 0.05) {
+          // ── PHASE 1: Sleek Glowing Electric Orange Teardrop Falling ──────
+          if (drop) {
             drop.style.width = `${initialDropW}px`;
             drop.style.height = `${initialDropH}px`;
             drop.style.top = `${dropTopStart}px`;
             drop.style.borderRadius = '0';
             drop.style.transform = `translateX(-50%) translateY(${-110 + phase1 * 110}px)`;
+          }
 
-            if (dropBody) {
-              dropBody.style.display = 'block';
-              dropBody.style.clipPath =
-                'path("M 14 0 C 14 0 1 14 1 26 C 1 35 7 42 14 42 C 21 42 27 35 27 26 C 27 14 14 0 14 0 Z")';
-              dropBody.style.background =
-                'radial-gradient(ellipse at 38% 26%, #ffffff 0%, #ffbe7a 20%, #fa4529 55%, #c52509 100%)';
-              dropBody.style.filter =
-                'drop-shadow(0 0 8px rgba(255, 130, 80, 0.95)) drop-shadow(0 0 18px rgba(250, 69, 41, 0.85)) drop-shadow(0 0 32px rgba(250, 69, 41, 0.5))';
-              dropBody.style.opacity = String(clamp(phase1 * 3, 0, 1));
-            }
+          if (dropBody) {
+            dropBody.style.display = 'block';
+            dropBody.style.clipPath =
+              'path("M 14 0 C 14 0 1 14 1 26 C 1 35 7 42 14 42 C 21 42 27 35 27 26 C 27 14 14 0 14 0 Z")';
+            dropBody.style.background =
+              'radial-gradient(ellipse at 38% 26%, #ffffff 0%, #ffbe7a 20%, #fa4529 55%, #c52509 100%)';
+            dropBody.style.filter =
+              'drop-shadow(0 0 8px rgba(255, 130, 80, 0.95)) drop-shadow(0 0 18px rgba(250, 69, 41, 0.85)) drop-shadow(0 0 32px rgba(250, 69, 41, 0.5))';
+            dropBody.style.opacity = String(clamp(phase1 * 3, 0, 1));
+          }
 
-            if (dropBorder) {
-              dropBorder.style.opacity = '0';
-            }
+          if (dropBorder) {
+            dropBorder.style.opacity = '0';
+          }
 
-          } else {
-            // ── PHASE 2: Teardrop morphs & expands outer border into pill ───
-            const t = (phase2 - 0.05) / 0.95; // normalize 0 → 1
-            const dropW = initialDropW + t * (targetWidth - initialDropW);
-            const dropH = initialDropH + t * (targetHeight - initialDropH);
-            const currentTop = dropTopStart - t * (dropTopStart - topOffset);
+          if (innerEl) {
+            innerEl.style.background = 'transparent';
+            innerEl.style.backdropFilter = 'none';
+            (innerEl.style as any).webkitBackdropFilter = 'none';
+            innerEl.style.boxShadow = 'none';
+          }
 
+        } else {
+          // ── PHASE 2: Expanding Boundary Around Existing Stationary Elements ───
+          const t = (phase2 - 0.05) / 0.95; // 0 → 1
+          const dropW = initialDropW + t * (targetWidth - initialDropW);
+          const dropH = initialDropH + t * (targetHeight - initialDropH);
+          const currentTop = dropTopStart - t * (dropTopStart - topOffset);
+
+          if (drop) {
             drop.style.borderRadius = '999px';
             drop.style.width = `${dropW}px`;
             drop.style.height = `${dropH}px`;
             drop.style.top = `${currentTop}px`;
             drop.style.transform = 'translateX(-50%) translateY(0px)';
+          }
 
-            // Fill dissolves into transparency
-            const fillAlpha = Math.max(0, 1 - t * 1.5);
-            if (dropBody) {
-              dropBody.style.display = 'block';
-              dropBody.style.clipPath = 'none';
-              dropBody.style.borderRadius = '999px';
-              dropBody.style.background = `radial-gradient(ellipse at 50% 50%, rgba(255, 170, 100, ${fillAlpha * 0.9}) 0%, rgba(250, 69, 41, ${fillAlpha}) 50%, rgba(190, 30, 8, ${fillAlpha}) 100%)`;
-              dropBody.style.filter = `drop-shadow(0 0 ${8 + t * 8}px rgba(250, 69, 41, ${fillAlpha * 0.6}))`;
-              dropBody.style.opacity = String(fillAlpha);
-            }
+          // Molten drop fill dissolves
+          const fillAlpha = Math.max(0, 1 - t * 1.5);
+          if (dropBody) {
+            dropBody.style.display = 'block';
+            dropBody.style.clipPath = 'none';
+            dropBody.style.borderRadius = '999px';
+            dropBody.style.background = `radial-gradient(ellipse at 50% 50%, rgba(255, 170, 100, ${fillAlpha * 0.9}) 0%, rgba(250, 69, 41, ${fillAlpha}) 50%, rgba(190, 30, 8, ${fillAlpha}) 100%)`;
+            dropBody.style.filter = `drop-shadow(0 0 ${8 + t * 8}px rgba(250, 69, 41, ${fillAlpha * 0.6}))`;
+            dropBody.style.opacity = String(fillAlpha);
+          }
 
-            // The moving electric border smoothly expands with the capsule
-            if (dropBorder) {
-              dropBorder.style.opacity = String(Math.min(1, t * 1.3));
-            }
+          // Moving electric border wraps around the elements
+          if (dropBorder) {
+            dropBorder.style.opacity = '1';
+          }
+
+          // Frosted glass background smoothly forms underneath the stationary elements
+          if (innerEl) {
+            const bgAlpha = t * 0.86;
+            const blurVal = t * 20;
+            const shadowAlpha = t * 0.08;
+            innerEl.style.background = `rgba(255, 255, 255, ${bgAlpha})`;
+            innerEl.style.backdropFilter = `blur(${blurVal}px) saturate(180%)`;
+            (innerEl.style as any).webkitBackdropFilter = `blur(${blurVal}px) saturate(180%)`;
+            innerEl.style.boxShadow = `0 12px 35px -8px rgba(0, 0, 0, ${shadowAlpha}), 0 4px 12px -2px rgba(0, 0, 0, ${shadowAlpha * 0.4})`;
           }
         }
       }
-
 
 
       // ── Active section scrollspy ────────────────────────────────────────────
@@ -257,7 +287,7 @@ const Navbar: React.FC<NavbarProps> = ({ onMenuToggle }) => {
 
         <div className="ptf-navbar-inner">
           {/* Left Links */}
-          <div className="ptf-navbar-links" style={{ justifyContent: 'flex-start' }} data-aos="fade-up" data-aos-delay="100" data-aos-duration="1000">
+          <div className="ptf-navbar-links" style={{ justifyContent: 'flex-start' }}>
             {navItems.map((item) => {
               const isActive = activeSection === item.href;
               return (
@@ -277,7 +307,7 @@ const Navbar: React.FC<NavbarProps> = ({ onMenuToggle }) => {
           </div>
 
           {/* Centered Logo */}
-          <a href="#home" className="ptf-navbar-logo text-center" style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', height: '100%' }} data-aos="fade-up" data-aos-delay="0" data-aos-duration="1000">
+          <a href="#home" className="ptf-navbar-logo text-center" style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', height: '100%' }}>
             <img 
               src="/logo.png" 
               alt="ABDUL SAMI." 
@@ -286,7 +316,7 @@ const Navbar: React.FC<NavbarProps> = ({ onMenuToggle }) => {
           </a>
 
           {/* Desktop Actions (Right) - LinkedIn and GitHub first */}
-          <div className="ptf-navbar-actions" style={{ justifyContent: 'flex-end', marginLeft: 'auto', gap: '22px' }} data-aos="fade-up" data-aos-delay="200" data-aos-duration="1000">
+          <div className="ptf-navbar-actions" style={{ justifyContent: 'flex-end', marginLeft: 'auto', gap: '22px' }}>
             <a href="https://www.linkedin.com/in/abdulsami-se-ai?utm_source=share_via&utm_content=profile&utm_medium=member_android" target="_blank" rel="noreferrer" className="ptf-social-icon">
               <LinkedinIcon style={{ width: '20px', height: '20px' }} />
             </a>
@@ -314,12 +344,6 @@ const Navbar: React.FC<NavbarProps> = ({ onMenuToggle }) => {
               style={{
                 display: 'inline-flex',
                 alignItems: 'center',
-                gap: '6px',
-                padding: '6px 14px',
-                borderRadius: '30px',
-                border: '1.5px solid var(--ptf-black-color)',
-                backgroundColor: 'transparent',
-                color: 'var(--ptf-black-color)',
                 fontSize: '12px',
                 fontWeight: 700,
                 letterSpacing: '0.5px',
