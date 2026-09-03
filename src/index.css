@@ -399,7 +399,7 @@ img {
   }
 }
 
-/* Mobile Nav Drawer - Premium Off-Canvas */
+/* Mobile Nav Drawer - Premium Off-Canvas with Smooth Bidirectional Slide */
 .ptf-mobile-drawer-overlay {
   position: fixed !important;
   top: 0;
@@ -410,12 +410,16 @@ img {
   backdrop-filter: blur(4px);
   z-index: 9999;
   touch-action: none;
-  animation: fadeInOverlay 0.4s ease-out forwards;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 0.4s cubic-bezier(0.25, 1, 0.35, 1), visibility 0.4s cubic-bezier(0.25, 1, 0.35, 1);
 }
 
-@keyframes fadeInOverlay {
-  from { opacity: 0; }
-  to { opacity: 1; }
+.ptf-mobile-drawer-overlay.is-open {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
 }
 
 .ptf-mobile-drawer {
@@ -435,12 +439,16 @@ img {
   display: flex;
   flex-direction: column;
   transform: translateX(100%);
-  animation: slideInRight 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+  visibility: hidden;
+  pointer-events: none;
+  transition: transform 0.42s cubic-bezier(0.25, 1, 0.35, 1), visibility 0.42s cubic-bezier(0.25, 1, 0.35, 1);
+  will-change: transform;
 }
 
-@keyframes slideInRight {
-  from { transform: translateX(100%); }
-  to { transform: translateX(0); }
+.ptf-mobile-drawer.is-open {
+  transform: translateX(0);
+  visibility: visible;
+  pointer-events: auto;
 }
 
 .ptf-mobile-drawer-links {

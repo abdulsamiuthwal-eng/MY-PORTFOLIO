@@ -237,115 +237,120 @@ const Navbar: React.FC<NavbarProps> = ({ onMenuToggle }) => {
         </div>
       </div>
 
+      {/* Mobile Drawer Overlay */}
+      <div 
+        className={`ptf-mobile-drawer-overlay ${isOpen ? 'is-open' : ''}`} 
+        onClick={() => toggleMenu(false)}
+        aria-hidden={!isOpen}
+      />
+
       {/* Mobile Drawer */}
-      {isOpen && (
-        <>
-          <div className="ptf-mobile-drawer-overlay" onClick={() => toggleMenu(false)}></div>
-          <div className="ptf-mobile-drawer">
-            {/* Header inside drawer with elegant thin Close button */}
-            <div className="ptf-mobile-drawer-header" style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '5px' }}>
-              <button 
-                onClick={() => toggleMenu(false)} 
-                style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--ptf-black-color)', padding: '5px' }}
-                aria-label="Close Menu"
-              >
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" style={{ width: '36px', height: '36px' }}>
-                  <line x1="18" y1="6" x2="6" y2="18"></line>
-                  <line x1="6" y1="6" x2="18" y2="18"></line>
-                </svg>
-              </button>
-            </div>
+      <div 
+        className={`ptf-mobile-drawer ${isOpen ? 'is-open' : ''}`}
+        aria-hidden={!isOpen}
+      >
+        {/* Header inside drawer with elegant thin Close button */}
+        <div className="ptf-mobile-drawer-header" style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '5px' }}>
+          <button 
+            onClick={() => toggleMenu(false)} 
+            style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--ptf-black-color)', padding: '5px' }}
+            aria-label="Close Menu"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" style={{ width: '36px', height: '36px' }}>
+              <line x1="18" y1="6" x2="6" y2="18"></line>
+              <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+          </button>
+        </div>
 
-            {/* Navigation links vertically centered in the remaining space */}
-            <div className="ptf-mobile-drawer-links-container" style={{ margin: '0 0 auto 0' }}>
-              <div className="ptf-mobile-drawer-links" style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-                {navItems.map((item) => (
-                  <a
-                    key={item.label}
-                    href={item.href}
-                    className="ptf-mobile-nav-link"
-                    style={{ 
-                      display: 'flex', 
-                      justifyContent: 'space-between', 
-                      alignItems: 'center', 
-                      width: '100%', 
-                      fontSize: 'clamp(28px, 6.5vw, 36px)', 
-                      fontWeight: '700', 
-                      textTransform: 'none', 
-                      color: 'var(--ptf-black-color)', 
-                      padding: '7px 0',
-                      textDecoration: 'none'
-                    }}
-                    onClick={(e) => {
-                      toggleMenu(false);
-                      handleLinkClick(e, item.href);
-                    }}
-                  >
-                    <span>{item.label}</span>
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" style={{ width: '20px', height: '20px', color: 'var(--ptf-black-color)' }}>
-                      <polyline points="9 18 15 12 9 6"></polyline>
-                    </svg>
-                  </a>
-                ))}
-              </div>
-
-              {/* Mobile Drawer CV Button */}
+        {/* Navigation links vertically centered in the remaining space */}
+        <div className="ptf-mobile-drawer-links-container" style={{ margin: '0 0 auto 0' }}>
+          <div className="ptf-mobile-drawer-links" style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+            {navItems.map((item) => (
               <a
-                href="/AbdulSami_CV.pdf"
-                target="_blank"
-                rel="noopener noreferrer"
-                style={{
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  gap: '8px',
-                  padding: '10px 22px',
-                  borderRadius: '30px',
-                  backgroundColor: 'var(--ptf-black-color)',
-                  color: '#ffffff',
-                  fontSize: '13px',
-                  fontWeight: 600,
-                  textDecoration: 'none',
-                  marginTop: '18px',
-                  marginBottom: '8px',
-                  width: 'fit-content',
+                key={item.label}
+                href={item.href}
+                className="ptf-mobile-nav-link"
+                style={{ 
+                  display: 'flex', 
+                  justifyContent: 'space-between', 
+                  alignItems: 'center', 
+                  width: '100%', 
+                  fontSize: 'clamp(28px, 6.5vw, 36px)', 
+                  fontWeight: '700', 
+                  textTransform: 'none', 
+                  color: 'var(--ptf-black-color)', 
+                  padding: '7px 0',
+                  textDecoration: 'none'
+                }}
+                onClick={(e) => {
+                  toggleMenu(false);
+                  handleLinkClick(e, item.href);
                 }}
               >
-                <FileText size={14} />
-                <span>Download CV</span>
+                <span>{item.label}</span>
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" style={{ width: '20px', height: '20px', color: 'var(--ptf-black-color)' }}>
+                  <polyline points="9 18 15 12 9 6"></polyline>
+                </svg>
               </a>
-            </div>
-            
-            {/* Footer with Copyright and Circular Social icons pushed to bottom */}
-            <div className="ptf-mobile-drawer-footer" style={{ marginTop: 'auto', display: 'flex', flexDirection: 'column', gap: '14px', textAlign: 'left' }}>
-              <div className="ptf-mobile-drawer-copyright" style={{ fontSize: '13px', color: '#999999', lineHeight: '1.5', fontWeight: '400' }}>
-                <div>@2026 Sami. All Rights Reserved.</div>
-                <div style={{ marginTop: '4px' }}>Development by Sami.</div>
-              </div>
-              <div className="ptf-mobile-drawer-socials" style={{ gap: '12px', display: 'flex', justifyContent: 'flex-start', margin: '0' }}>
-                <a href="https://www.linkedin.com/in/abdulsami-se-ai?utm_source=share_via&utm_content=profile&utm_medium=member_android" target="_blank" rel="noreferrer" className="ptf-mobile-drawer-social-circle">
-                  <LinkedinIcon style={{ width: '16px', height: '16px' }} />
-                </a>
-                <a href="https://github.com/abdulsamiuthwal-eng" target="_blank" rel="noreferrer" className="ptf-mobile-drawer-social-circle">
-                  <GithubIcon style={{ width: '16px', height: '16px' }} />
-                </a>
-                <a href="https://wa.me/923073651919" target="_blank" rel="noreferrer" className="ptf-mobile-drawer-social-circle">
-                  <WhatsappIcon style={{ width: '16px', height: '16px' }} />
-                </a>
-                <a href="https://x.com/SamiUthwal" target="_blank" rel="noreferrer" className="ptf-mobile-drawer-social-circle">
-                  <TwitterIcon style={{ width: '16px', height: '16px' }} />
-                </a>
-                <a href="https://www.facebook.com/share/18texnGjjx/" target="_blank" rel="noreferrer" className="ptf-mobile-drawer-social-circle">
-                  <FacebookIcon style={{ width: '16px', height: '16px' }} />
-                </a>
-                <a href="https://www.instagram.com/sami.uthwal?igsh=eGtmdjAwaXZjZnk5" target="_blank" rel="noreferrer" className="ptf-mobile-drawer-social-circle">
-                  <InstagramIcon style={{ width: '16px', height: '16px' }} />
-                </a>
-              </div>
-            </div>
+            ))}
           </div>
-        </>
-      )}
+
+          {/* Mobile Drawer CV Button */}
+          <a
+            href="/AbdulSami_CV.pdf"
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '8px',
+              padding: '10px 22px',
+              borderRadius: '30px',
+              backgroundColor: 'var(--ptf-black-color)',
+              color: '#ffffff',
+              fontSize: '13px',
+              fontWeight: 600,
+              textDecoration: 'none',
+              marginTop: '18px',
+              marginBottom: '8px',
+              width: 'fit-content',
+            }}
+          >
+            <FileText size={14} />
+            <span>Download CV</span>
+          </a>
+        </div>
+        
+        {/* Footer with Copyright and Circular Social icons pushed to bottom */}
+        <div className="ptf-mobile-drawer-footer" style={{ marginTop: 'auto', display: 'flex', flexDirection: 'column', gap: '14px', textAlign: 'left' }}>
+          <div className="ptf-mobile-drawer-copyright" style={{ fontSize: '13px', color: '#999999', lineHeight: '1.5', fontWeight: '400' }}>
+            <div>@2026 Sami. All Rights Reserved.</div>
+            <div style={{ marginTop: '4px' }}>Development by Sami.</div>
+          </div>
+          <div className="ptf-mobile-drawer-socials" style={{ gap: '12px', display: 'flex', justifyContent: 'flex-start', margin: '0' }}>
+            <a href="https://www.linkedin.com/in/abdulsami-se-ai?utm_source=share_via&utm_content=profile&utm_medium=member_android" target="_blank" rel="noreferrer" className="ptf-mobile-drawer-social-circle">
+              <LinkedinIcon style={{ width: '16px', height: '16px' }} />
+            </a>
+            <a href="https://github.com/abdulsamiuthwal-eng" target="_blank" rel="noreferrer" className="ptf-mobile-drawer-social-circle">
+              <GithubIcon style={{ width: '16px', height: '16px' }} />
+            </a>
+            <a href="https://wa.me/923073651919" target="_blank" rel="noreferrer" className="ptf-mobile-drawer-social-circle">
+              <WhatsappIcon style={{ width: '16px', height: '16px' }} />
+            </a>
+            <a href="https://x.com/SamiUthwal" target="_blank" rel="noreferrer" className="ptf-mobile-drawer-social-circle">
+              <TwitterIcon style={{ width: '16px', height: '16px' }} />
+            </a>
+            <a href="https://www.facebook.com/share/18texnGjjx/" target="_blank" rel="noreferrer" className="ptf-mobile-drawer-social-circle">
+              <FacebookIcon style={{ width: '16px', height: '16px' }} />
+            </a>
+            <a href="https://www.instagram.com/sami.uthwal?igsh=eGtmdjAwaXZjZnk5" target="_blank" rel="noreferrer" className="ptf-mobile-drawer-social-circle">
+              <InstagramIcon style={{ width: '16px', height: '16px' }} />
+            </a>
+          </div>
+        </div>
+      </div>
     </nav>
   );
 };
