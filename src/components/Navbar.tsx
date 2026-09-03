@@ -127,7 +127,7 @@ const Navbar: React.FC<NavbarProps> = ({ onMenuToggle }) => {
               src="/logo.png" 
               alt="ABDUL SAMI." 
               style={{ 
-                height: isScrolled ? '46px' : '65px', 
+                height: isScrolled ? '34px' : '44px', 
                 width: 'auto', 
                 objectFit: 'contain',
                 transition: 'height 0.4s cubic-bezier(0.16, 1, 0.3, 1)'
