@@ -122,7 +122,11 @@ const TimelineItem: React.FC<TimelineItemProps> = ({
                       }
                     }}
                   >
-                    {isOffer ? <FileText size={14} /> : <Award size={14} color="#fa4529" />}
+                    {doc.label.includes('Certificate') ? (
+                      <Award size={14} color="#fa4529" />
+                    ) : (
+                      <FileText size={14} color={isOffer ? undefined : '#fa4529'} />
+                    )}
                     <span>{doc.label}</span>
                     {doc.credentialId && (
                       <span
@@ -202,6 +206,22 @@ const Timeline: React.FC = () => {
       label: 'Offer Letter',
       pdfUrl: '/internships/devforge/OfferLetter_ABDUL SAMI UTHWAL.pdf',
       issueDate: 'July 6, 2026',
+      verifyUrl: 'https://devforgelabs.netlify.app/',
+    },
+    {
+      type: 'certificate',
+      label: 'Completion Letter',
+      pdfUrl: '/internships/devforge/abdul-sami-uthwal-DFL-INT-2026-1360.pdf',
+      credentialId: 'DFL-INT-2026-1360',
+      issueDate: 'August 31, 2026',
+      verifyUrl: 'https://devforgelabs.netlify.app/',
+    },
+    {
+      type: 'certificate',
+      label: 'Completion Certificate',
+      pdfUrl: '/internships/devforge/abdul-sami-uthwal-DFL-INT-2026-1360-certificate.pdf',
+      credentialId: 'DFL-INT-2026-1360',
+      issueDate: 'August 31, 2026',
       verifyUrl: 'https://devforgelabs.netlify.app/',
     },
   ];
@@ -308,7 +328,7 @@ const Timeline: React.FC = () => {
                 title="AI/ML Intern"
                 institution="DEVFORGE (AI Innovation Track)"
                 institutionLink="https://devforgelabs.netlify.app/"
-                description="Developed an end-to-end Sentiment Analysis web application using Python, Scikit-learn, Pandas, NumPy, NLTK, TF-IDF, and FastAPI. Trained & evaluated ML models, built REST APIs, integrated frontend/backend, and deployed AI solutions following industry best practices."
+                description="Worked on autonomous AI agents, RAG pipelines, and machine learning workflows using Python, Scikit-learn, and FastAPI. Architected production-ready stateful agents and semantic search systems using LangGraph, FAISS, and Gemini LLMs, integrating tool automation and cloud deployments."
                 delay="0"
                 documents={devforgeDocs}
                 onOpenDoc={handleOpenDoc}
@@ -408,7 +428,7 @@ const Timeline: React.FC = () => {
                     }}
                   >
                     <ShieldCheck size={13} />
-                    {activeDoc.doc.type === 'offer' ? 'Official Offer Letter' : 'Verified Internship Certificate'}
+                    {activeDoc.doc.type === 'offer' ? 'Official Offer Letter' : activeDoc.doc.label.includes('Letter') ? 'Official Completion Letter' : 'Verified Internship Certificate'}
                   </span>
                   {activeDoc.doc.credentialId && (
                     <span

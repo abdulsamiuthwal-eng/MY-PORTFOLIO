@@ -94,7 +94,9 @@ public/internships/
 │   ├── Your Offer Letter _ Decode Labs.pdf    (Issued: Jul 25, 2026)
 │   └── DecodeLabs Internship Certificate.pdf  (Issued: Aug 26, 2026 | ID: AI086527)
 ├── devforge/
-│   └── OfferLetter_ABDUL SAMI UTHWAL.pdf      (Issued: Jul 6, 2026)
+│   ├── OfferLetter_ABDUL SAMI UTHWAL.pdf                    (Issued: Jul 6, 2026)
+│   ├── abdul-sami-uthwal-DFL-INT-2026-1360.pdf              (Issued: Aug 31, 2026 | ID: DFL-INT-2026-1360)
+│   └── abdul-sami-uthwal-DFL-INT-2026-1360-certificate.pdf  (Issued: Aug 31, 2026 | ID: DFL-INT-2026-1360)
 └── developerhub/
     ├── DHC Interns Offer Letters 8-412.pdf    (Issued: May 10, 2026 | ID: DHC-3562)
     └── Completion Certificates-267.pdf        (Issued: Jun 22, 2026 | ID: DHC-3562)
@@ -104,7 +106,7 @@ public/internships/
 1. 🥇 **DEVFORGE (AI Innovation Track)**
    - **Duration**: `Jul 2026 - Sep 2026`
    - **Role**: `AI/ML Intern`
-   - **Documents**: 📄 `Offer Letter`
+   - **Documents**: 📄 `Offer Letter` + 📋 `Completion Letter` + 🏆 `Completion Certificate` (Credential ID: `DFL-INT-2026-1360`)
    - **Verification Portal**: `https://devforgelabs.netlify.app/`
 2. 🥈 **DecodeLabs (Virtual Program)**
    - **Duration**: `Jul 2026 - Aug 2026`
