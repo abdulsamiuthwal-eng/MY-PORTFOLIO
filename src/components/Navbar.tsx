@@ -184,56 +184,32 @@ const Navbar: React.FC<NavbarProps> = ({ onMenuToggle }) => {
             </a>
           </div>
 
-          {/* Mobile Right Container (Direct CV Button + Hamburger Menu) */}
-          <div 
-            style={{ display: 'flex', alignItems: 'center', gap: '10px' }} 
-            className="d-md-none"
+          {/* Mobile Toggle */}
+          <button 
+            className="ptf-navbar-toggle" 
+            onClick={() => toggleMenu(!isOpen)} 
+            aria-label="Toggle Menu"
             data-aos="fade-up" 
             data-aos-delay="100" 
             data-aos-duration="1000"
           >
-            <a
-              href="/AbdulSami_CV.pdf"
-              target="_blank"
-              rel="noopener noreferrer"
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '4px',
-                padding: '4px 11px',
-                borderRadius: '20px',
-                border: '1.5px solid var(--ptf-black-color)',
-                backgroundColor: 'transparent',
-                color: 'var(--ptf-black-color)',
-                fontSize: '11px',
-                fontWeight: 700,
-                letterSpacing: '0.5px',
-                textDecoration: 'none',
-                fontFamily: 'var(--ptf-font-sans)',
-              }}
-            >
-              <span>CV</span>
-            </a>
-            {/* Mobile Toggle */}
-            <button className="ptf-navbar-toggle" onClick={() => toggleMenu(!isOpen)} aria-label="Toggle Menu">
-              {isOpen ? (
-                <X size={24} />
-              ) : (
-                <svg 
-                  xmlns="http://www.w3.org/2000/svg" 
-                  viewBox="0 0 24 24" 
-                  fill="none" 
-                  stroke="currentColor" 
-                  strokeWidth="2.5" 
-                  strokeLinecap="round" 
-                  style={{ width: '24px', height: '24px' }}
-                >
-                  <line x1="4" y1="8" x2="20" y2="8"></line>
-                  <line x1="4" y1="16" x2="20" y2="16"></line>
-                </svg>
-              )}
-            </button>
-          </div>
+            {isOpen ? (
+              <X size={24} />
+            ) : (
+              <svg 
+                xmlns="http://www.w3.org/2000/svg" 
+                viewBox="0 0 24 24" 
+                fill="none" 
+                stroke="currentColor" 
+                strokeWidth="2.5" 
+                strokeLinecap="round" 
+                style={{ width: '24px', height: '24px' }}
+              >
+                <line x1="4" y1="8" x2="20" y2="8"></line>
+                <line x1="4" y1="16" x2="20" y2="16"></line>
+              </svg>
+            )}
+          </button>
         </div>
       </div>
 
