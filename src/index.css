@@ -647,6 +647,17 @@ img {
 }
 
 /* Morph to Cross (Open State) */
+.ptf-navbar-toggle.is-open {
+  opacity: 1 !important;
+  transform: translate3d(0, 0, 0) !important;
+  visibility: visible !important;
+}
+
+.ptf-navbar-toggle.aos-animate {
+  opacity: 1 !important;
+  transform: translate3d(0, 0, 0) !important;
+}
+
 .ptf-navbar-toggle.is-open .ptf-burger-line-1 {
   top: 6px;
   transform: rotate(45deg);
