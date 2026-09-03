@@ -47,10 +47,17 @@ interface NavbarProps {
   onMenuToggle?: (isOpen: boolean) => void;
 }
 
+// Scroll thresholds for liquid drop animation phases
+const DROP_PHASE1_END = 80;  // Drop falls down (0 → 80px scroll)
+const DROP_PHASE2_END = 160; // Drop expands into pill (80 → 160px scroll)
+
+const clamp = (val: number, min: number, max: number) => Math.min(Math.max(val, min), max);
+
 const Navbar: React.FC<NavbarProps> = ({ onMenuToggle }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [activeSection, setActiveSection] = useState<string>('#home');
+  const navRef = React.useRef<HTMLElement>(null);
 
   const toggleMenu = (value: boolean) => {
     setIsOpen(value);
@@ -70,8 +77,88 @@ const Navbar: React.FC<NavbarProps> = ({ onMenuToggle }) => {
 
   useEffect(() => {
     const handleScroll = () => {
-      // Trigger pill as soon as user scrolls even slightly down (e.g. 20px) on any page/section
-      setIsScrolled(window.scrollY > 20);
+      const sy = window.scrollY;
+
+      // ── Pill state (only activate when drop has completed expansion) ───────
+      const isPillActive = sy >= DROP_PHASE2_END;
+      setIsScrolled(isPillActive);
+
+      // ── Liquid drop: compute phases ────────────────────────────────────────
+      const phase1 = clamp(sy / DROP_PHASE1_END, 0, 1);
+      const phase2 = clamp((sy - DROP_PHASE1_END) / (DROP_PHASE2_END - DROP_PHASE1_END), 0, 1);
+
+      // ── Directly drive drop element styles ────────────────────────────────
+      const drop = navRef.current?.querySelector('.ptf-liquid-drop') as HTMLElement | null;
+      if (drop) {
+        if (sy <= 2) {
+          drop.style.display = 'none';
+          drop.style.opacity = '0';
+        } else if (phase2 >= 1) {
+          drop.style.display = 'none';
+          drop.style.opacity = '0';
+        } else {
+          const isMobile = window.innerWidth <= 767;
+          const topOffset = isMobile ? 8 : 16;
+          const targetHeight = isMobile ? 50 : 72;
+          const innerEl = navRef.current?.querySelector('.ptf-navbar-inner') as HTMLElement | null;
+          const targetWidth = innerEl ? innerEl.offsetWidth : (isMobile ? window.innerWidth - 32 : clamp(window.innerWidth - 64, 280, 1240));
+
+          // Sleek, refined initial drop dimensions
+          const initialDropW = 28;
+          const initialDropH = 42;
+          const dropTopStart = topOffset + (targetHeight - initialDropH) / 2;
+
+          if (phase2 < 0.05) {
+            // ── PHASE 1: Sleek Glowing Electric Orange Teardrop (28x42px) ───
+            drop.style.width = `${initialDropW}px`;
+            drop.style.height = `${initialDropH}px`;
+            drop.style.top = `${dropTopStart}px`;
+            drop.style.borderRadius = '0';
+            drop.style.clipPath =
+              'path("M 14 0 C 14 0 1 14 1 26 C 1 35 7 42 14 42 C 21 42 27 35 27 26 C 27 14 14 0 14 0 Z")';
+            drop.style.background =
+              'radial-gradient(ellipse at 38% 26%, #ffffff 0%, #ffbe7a 20%, #fa4529 55%, #c52509 100%)';
+            drop.style.border = 'none';
+            drop.style.boxShadow = 'none';
+            drop.style.filter =
+              'drop-shadow(0 0 8px rgba(255, 130, 80, 0.95)) drop-shadow(0 0 18px rgba(250, 69, 41, 0.85)) drop-shadow(0 0 32px rgba(250, 69, 41, 0.5))';
+            drop.style.transform = `translateX(-50%) translateY(${-110 + phase1 * 110}px)`;
+            drop.style.opacity = String(clamp(phase1 * 3, 0, 1));
+            drop.style.display = 'block';
+
+          } else {
+            // ── PHASE 2: Teardrop morphs & expands outer border into pill ───
+            const t = (phase2 - 0.05) / 0.95; // normalize 0 → 1
+            const dropW = initialDropW + t * (targetWidth - initialDropW);
+            const dropH = initialDropH + t * (targetHeight - initialDropH);
+            const currentTop = dropTopStart - t * (dropTopStart - topOffset);
+
+            drop.style.clipPath = 'none';
+            drop.style.borderRadius = '999px';
+            drop.style.width = `${dropW}px`;
+            drop.style.height = `${dropH}px`;
+            drop.style.top = `${currentTop}px`;
+            drop.style.transform = 'translateX(-50%) translateY(0px)';
+
+            // Fill dissolves into transparency
+            const fillAlpha = Math.max(0, 1 - t * 1.8);
+            drop.style.background = `radial-gradient(ellipse at 50% 50%, rgba(255, 170, 100, ${fillAlpha * 0.9}) 0%, rgba(250, 69, 41, ${fillAlpha}) 50%, rgba(190, 30, 8, ${fillAlpha}) 100%)`;
+
+            // Glowing orange boundary expands outward into pill border
+            const ringAlpha = Math.min(1, t * 1.5);
+            drop.style.border = `2px solid rgba(250, 69, 41, ${ringAlpha})`;
+            drop.style.boxShadow = `0 0 ${10 + t * 12}px rgba(250, 69, 41, ${ringAlpha * 0.9}), inset 0 0 ${6 + t * 8}px rgba(250, 69, 41, ${ringAlpha * 0.5})`;
+            drop.style.filter = `drop-shadow(0 0 ${8 + t * 12}px rgba(250, 69, 41, ${ringAlpha * 0.7}))`;
+
+            drop.style.opacity = '1';
+            drop.style.display = 'block';
+          }
+        }
+      }
+
+
+
+      // ── Active section scrollspy ────────────────────────────────────────────
 
       const hash = window.location.hash;
       if (hash === '#contact-page') {
@@ -87,22 +174,17 @@ const Navbar: React.FC<NavbarProps> = ({ onMenuToggle }) => {
         { id: 'home', href: '#home' },
       ];
 
-      // Check if user reached near bottom of page
       if (window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 150) {
         setActiveSection('#project');
         return;
       }
 
       const scrollPosition = window.scrollY + 200;
-
       for (const sec of sections) {
         const el = document.getElementById(sec.id);
-        if (el) {
-          const top = el.offsetTop;
-          if (scrollPosition >= top) {
-            setActiveSection(sec.href);
-            return;
-          }
+        if (el && scrollPosition >= el.offsetTop) {
+          setActiveSection(sec.href);
+          return;
         }
       }
       setActiveSection('#home');
@@ -141,7 +223,10 @@ const Navbar: React.FC<NavbarProps> = ({ onMenuToggle }) => {
   };
 
   return (
-    <nav className={`ptf-navbar ${isScrolled ? 'is-scrolled' : ''}`}>
+    <nav ref={navRef} className={`ptf-navbar ${isScrolled ? 'is-scrolled' : ''}`}>
+      {/* Liquid Drop Overlay — scroll-driven teardrop → pill morph */}
+      <div className="ptf-liquid-drop" aria-hidden="true" />
+
       <div className="container-xxl">
         <div className="ptf-navbar-inner">
           {/* Left Links */}
