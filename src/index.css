@@ -697,6 +697,11 @@ img {
   -webkit-backdrop-filter: none !important;
 }
 
+.ptf-navbar.has-menu-open .ptf-navbar-logo {
+  pointer-events: none !important;
+  cursor: default !important;
+}
+
 .ptf-navbar.has-menu-open .ptf-liquid-drop {
   opacity: 0 !important;
   visibility: hidden !important;

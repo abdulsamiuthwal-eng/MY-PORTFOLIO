@@ -77,13 +77,18 @@ const Navbar: React.FC<NavbarProps> = ({ onMenuToggle }) => {
 
   useEffect(() => {
     const handleScroll = () => {
-      const sy = window.scrollY;      // ── Determine if pill should be active (starts at phase 2) ───────────
-      const isPillActive = sy > DROP_PHASE1_END;
+      const sy = window.scrollY;
+      const isMobile = window.innerWidth <= 767;
+      const phase1End = isMobile ? 110 : DROP_PHASE1_END;
+      const phase2End = isMobile ? 260 : DROP_PHASE2_END;
+
+      // ── Determine if pill should be active (starts at phase 2) ───────────
+      const isPillActive = sy > phase1End;
       setIsScrolled(isPillActive);
 
       // ── Liquid drop: compute phases ────────────────────────────────────────
-      const phase1 = clamp(sy / DROP_PHASE1_END, 0, 1);
-      const phase2 = clamp((sy - DROP_PHASE1_END) / (DROP_PHASE2_END - DROP_PHASE1_END), 0, 1);
+      const phase1 = clamp(sy / phase1End, 0, 1);
+      const phase2 = clamp((sy - phase1End) / (phase2End - phase1End), 0, 1);
 
       // ── Directly drive drop element and expanding pill inner styles ───────
       const drop = navRef.current?.querySelector('.ptf-liquid-drop') as HTMLElement | null;
@@ -323,6 +328,10 @@ const Navbar: React.FC<NavbarProps> = ({ onMenuToggle }) => {
             data-aos-delay="0"
             data-aos-duration="1000"
             onClick={(e) => {
+              if (isOpen) {
+                e.preventDefault();
+                return;
+              }
               setActiveSection('#home');
               handleLinkClick(e, '#home');
               if ((window as any).triggerSectionAnimation) {
