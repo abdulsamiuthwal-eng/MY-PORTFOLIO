@@ -381,12 +381,25 @@ img {
 }
 
 @media (max-width: 767px) {
+  .ptf-navbar-inner {
+    height: 70px;
+  }
   .ptf-navbar.is-scrolled {
-    top: 10px;
+    top: 8px;
   }
   .ptf-navbar.is-scrolled .ptf-navbar-inner {
-    height: 62px;
-    padding: 0 18px;
+    height: 46px !important;
+    padding: 0 16px;
+  }
+  .ptf-navbar.is-scrolled .ptf-navbar-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+  }
+  .ptf-navbar.is-scrolled .ptf-navbar-toggle svg {
+    width: 20px !important;
+    height: 20px !important;
   }
 }
 
@@ -404,10 +417,10 @@ img {
 
 @media (max-width: 767px) {
   .ptf-navbar-logo-img {
-    height: 30px !important;
+    height: 28px !important;
   }
   .ptf-navbar.is-scrolled .ptf-navbar-logo-img {
-    height: 24px !important;
+    height: 22px !important;
   }
 }
 
