@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { FileText, Award, ShieldCheck, Download, ExternalLink, X, CheckCircle2 } from 'lucide-react';
+import { FileText, Award, ShieldCheck, Download, ExternalLink, X, CheckCircle2, ChevronDown, ChevronUp } from 'lucide-react';
 
 interface TimelineDoc {
   type: 'offer' | 'certificate';
@@ -238,6 +238,58 @@ const Timeline: React.FC = () => {
     setActiveDoc({ doc, company, role });
   };
 
+  // Structured Experience items data (scalable & easy to maintain)
+  interface ExperienceItemData {
+    id: string;
+    year: string;
+    title: string;
+    institution: string;
+    institutionLink?: string;
+    description: string;
+    delay: string;
+    documents: TimelineDoc[];
+  }
+
+  const experiencesData: ExperienceItemData[] = [
+    {
+      id: 'devforge',
+      year: 'Jul 2026 - Sep 2026',
+      title: 'AI Engineering Internship',
+      institution: 'DEVFORGE (AI Innovation Track)',
+      institutionLink: 'https://devforgelabs.netlify.app/',
+      description: 'Worked on autonomous AI agents, RAG pipelines, and machine learning workflows using Python, Scikit-learn, and FastAPI. Architected production-ready stateful agents and semantic search systems using LangGraph, FAISS, and Gemini LLMs, integrating tool automation and cloud deployments.',
+      delay: '0',
+      documents: devforgeDocs,
+    },
+    {
+      id: 'decodelabs',
+      year: 'Jul 2026 - Aug 2026',
+      title: 'Internship — Artificial Intelligence (AI)',
+      institution: 'DecodeLabs (Virtual Program)',
+      institutionLink: 'https://www.decodelabs.tech/',
+      description: 'Completed hands-on projects and collaborative tasks in Artificial Intelligence (AI) and Python application development, focusing on clean code, modular problem-solving, NLP, rule-based systems, and Git version control.',
+      delay: '100',
+      documents: decodelabsDocs,
+    },
+    {
+      id: 'developerhub',
+      year: 'Apr 2026 - Jun 2026',
+      title: 'AI/ML Intern',
+      institution: 'Developers Hub (Engineering Cohort)',
+      institutionLink: 'https://developershubcorp.com/',
+      description: 'Worked on machine learning model development and AI workflows using Python, Scikit-learn, Pandas & NumPy. Built LLM-powered applications with LangChain and RAG pipelines, applied NLP techniques, and explored TensorFlow to improve model performance.',
+      delay: '200',
+      documents: developerHubDocs,
+    },
+  ];
+
+  // Configurable threshold: number of experiences displayed before collapse
+  const INITIAL_VISIBLE_COUNT = 2;
+  const [isExpanded, setIsExpanded] = useState(false);
+  const visibleExperiences = isExpanded ? experiencesData : experiencesData.slice(0, INITIAL_VISIBLE_COUNT);
+  const hasMore = experiencesData.length > INITIAL_VISIBLE_COUNT;
+  const hiddenCount = experiencesData.length - INITIAL_VISIBLE_COUNT;
+
   return (
     <section id="timeline" className="ptf-timeline-section">
       <div className="container-xxl">
@@ -309,40 +361,81 @@ const Timeline: React.FC = () => {
             >
               Experience & Internships
             </h3>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '40px' }}>
-              {/* 1st: DEVFORGE */}
-              <TimelineItem
-                year="Jul 2026 - Sep 2026"
-                title="AI Engineering Internship"
-                institution="DEVFORGE (AI Innovation Track)"
-                institutionLink="https://devforgelabs.netlify.app/"
-                description="Worked on autonomous AI agents, RAG pipelines, and machine learning workflows using Python, Scikit-learn, and FastAPI. Architected production-ready stateful agents and semantic search systems using LangGraph, FAISS, and Gemini LLMs, integrating tool automation and cloud deployments."
-                delay="0"
-                documents={devforgeDocs}
-                onOpenDoc={handleOpenDoc}
-              />
-              {/* 2nd: DecodeLabs */}
-              <TimelineItem
-                year="Jul 2026 - Aug 2026"
-                title="Internship — Artificial Intelligence (AI)"
-                institution="DecodeLabs (Virtual Program)"
-                institutionLink="https://www.decodelabs.tech/"
-                description="Completed hands-on projects and collaborative tasks in Artificial Intelligence (AI) and Python application development, focusing on clean code, modular problem-solving, NLP, rule-based systems, and Git version control."
-                delay="100"
-                documents={decodelabsDocs}
-                onOpenDoc={handleOpenDoc}
-              />
-              {/* 3rd: Developer Hub */}
-              <TimelineItem
-                year="Apr 2026 - Jun 2026"
-                title="AI/ML Intern"
-                institution="Developers Hub (Engineering Cohort)"
-                institutionLink="https://developershubcorp.com/"
-                description="Worked on machine learning model development and AI workflows using Python, Scikit-learn, Pandas & NumPy. Built LLM-powered applications with LangChain and RAG pipelines, applied NLP techniques, and explored TensorFlow to improve model performance."
-                delay="200"
-                documents={developerHubDocs}
-                onOpenDoc={handleOpenDoc}
-              />
+            <div id="timeline-experience-list" style={{ display: 'flex', flexDirection: 'column', gap: '40px' }}>
+              {visibleExperiences.map((exp, expIdx) => (
+                <div
+                  key={exp.id}
+                  style={
+                    expIdx >= INITIAL_VISIBLE_COUNT
+                      ? {
+                          animation: 'geminiFadeIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards',
+                        }
+                      : undefined
+                  }
+                >
+                  <TimelineItem
+                    year={exp.year}
+                    title={exp.title}
+                    institution={exp.institution}
+                    institutionLink={exp.institutionLink}
+                    description={exp.description}
+                    delay={exp.delay}
+                    documents={exp.documents}
+                    onOpenDoc={handleOpenDoc}
+                  />
+                </div>
+              ))}
+
+              {/* View More / Show Less Toggle Button */}
+              {hasMore && (
+                <div style={{ textAlign: 'center', marginTop: '10px' }}>
+                  <button
+                    type="button"
+                    onClick={() => setIsExpanded(!isExpanded)}
+                    aria-expanded={isExpanded}
+                    aria-controls="timeline-experience-list"
+                    style={{
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: '8px',
+                      padding: '10px 24px',
+                      borderRadius: '30px',
+                      border: '1px solid var(--ptf-border-color)',
+                      backgroundColor: '#ffffff',
+                      color: 'var(--ptf-black-color)',
+                      fontSize: '13px',
+                      fontWeight: 600,
+                      cursor: 'pointer',
+                      transition: 'all 0.25s cubic-bezier(0.25, 0.46, 0.45, 0.94)',
+                      boxShadow: '0 2px 8px rgba(0, 0, 0, 0.04)',
+                      fontFamily: 'var(--ptf-font-sans)',
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.borderColor = 'var(--ptf-accent-1)';
+                      e.currentTarget.style.color = 'var(--ptf-accent-1)';
+                      e.currentTarget.style.transform = 'translateY(-2px)';
+                      e.currentTarget.style.boxShadow = '0 6px 20px rgba(250, 69, 41, 0.12)';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.borderColor = 'var(--ptf-border-color)';
+                      e.currentTarget.style.color = 'var(--ptf-black-color)';
+                      e.currentTarget.style.transform = 'translateY(0)';
+                      e.currentTarget.style.boxShadow = '0 2px 8px rgba(0, 0, 0, 0.04)';
+                    }}
+                  >
+                    <span>
+                      {isExpanded
+                        ? 'Show Less'
+                        : `View More Experience (${hiddenCount} ${hiddenCount === 1 ? 'more' : 'more'})`}
+                    </span>
+                    {isExpanded ? (
+                      <ChevronUp size={15} style={{ transition: 'transform 0.2s ease' }} />
+                    ) : (
+                      <ChevronDown size={15} style={{ transition: 'transform 0.2s ease' }} />
+                    )}
+                  </button>
+                </div>
+              )}
             </div>
           </div>
         </div>
