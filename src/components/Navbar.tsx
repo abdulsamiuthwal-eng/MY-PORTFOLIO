@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { X } from 'lucide-react';
+import { X, FileText } from 'lucide-react';
 import { scrollToTop } from '../lib/scroll';
 
 const TwitterIcon = (props: React.SVGProps<SVGSVGElement>) => (
@@ -140,27 +140,94 @@ const Navbar: React.FC<NavbarProps> = ({ onMenuToggle }) => {
             <a href="https://www.instagram.com/sami.uthwal?igsh=eGtmdjAwaXZjZnk5" target="_blank" rel="noreferrer" className="ptf-social-icon">
               <InstagramIcon style={{ width: '20px', height: '20px' }} />
             </a>
+
+            {/* CV CTA Button */}
+            <a
+              href="/AbdulSami_CV.pdf"
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '6px',
+                padding: '6px 14px',
+                borderRadius: '30px',
+                border: '1.5px solid var(--ptf-black-color)',
+                backgroundColor: 'transparent',
+                color: 'var(--ptf-black-color)',
+                fontSize: '12px',
+                fontWeight: 700,
+                letterSpacing: '0.5px',
+                textDecoration: 'none',
+                fontFamily: 'var(--ptf-font-sans)',
+                transition: 'all 0.25s ease',
+                marginLeft: '6px',
+                whiteSpace: 'nowrap',
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.backgroundColor = 'var(--ptf-accent-1)';
+                e.currentTarget.style.borderColor = 'var(--ptf-accent-1)';
+                e.currentTarget.style.color = '#ffffff';
+                e.currentTarget.style.transform = 'translateY(-1px)';
+                e.currentTarget.style.boxShadow = '0 4px 14px rgba(250, 69, 41, 0.3)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.backgroundColor = 'transparent';
+                e.currentTarget.style.borderColor = 'var(--ptf-black-color)';
+                e.currentTarget.style.color = 'var(--ptf-black-color)';
+                e.currentTarget.style.transform = 'translateY(0)';
+                e.currentTarget.style.boxShadow = 'none';
+              }}
+            >
+              <FileText size={13} />
+              <span>CV</span>
+            </a>
           </div>
 
-          {/* Mobile Toggle */}
-          <button className="ptf-navbar-toggle" onClick={() => toggleMenu(!isOpen)} data-aos="fade-up" data-aos-delay="100" data-aos-duration="1000">
-            {isOpen ? (
-              <X size={24} />
-            ) : (
-              <svg 
-                xmlns="http://www.w3.org/2000/svg" 
-                viewBox="0 0 24 24" 
-                fill="none" 
-                stroke="currentColor" 
-                strokeWidth="2.5" 
-                strokeLinecap="round" 
-                style={{ width: '24px', height: '24px' }}
-              >
-                <line x1="4" y1="8" x2="20" y2="8"></line>
-                <line x1="4" y1="16" x2="20" y2="16"></line>
-              </svg>
-            )}
-          </button>
+          {/* Mobile Right Container (Direct CV Button + Hamburger Menu) */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }} className="d-md-none">
+            <a
+              href="/AbdulSami_CV.pdf"
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '4px',
+                padding: '4px 11px',
+                borderRadius: '20px',
+                border: '1.5px solid var(--ptf-black-color)',
+                backgroundColor: 'transparent',
+                color: 'var(--ptf-black-color)',
+                fontSize: '11px',
+                fontWeight: 700,
+                letterSpacing: '0.5px',
+                textDecoration: 'none',
+                fontFamily: 'var(--ptf-font-sans)',
+              }}
+            >
+              <span>CV</span>
+            </a>
+            {/* Mobile Toggle */}
+            <button className="ptf-navbar-toggle" onClick={() => toggleMenu(!isOpen)} aria-label="Toggle Menu">
+              {isOpen ? (
+                <X size={24} />
+              ) : (
+                <svg 
+                  xmlns="http://www.w3.org/2000/svg" 
+                  viewBox="0 0 24 24" 
+                  fill="none" 
+                  stroke="currentColor" 
+                  strokeWidth="2.5" 
+                  strokeLinecap="round" 
+                  style={{ width: '24px', height: '24px' }}
+                >
+                  <line x1="4" y1="8" x2="20" y2="8"></line>
+                  <line x1="4" y1="16" x2="20" y2="16"></line>
+                </svg>
+              )}
+            </button>
+          </div>
         </div>
       </div>
 
@@ -215,6 +282,32 @@ const Navbar: React.FC<NavbarProps> = ({ onMenuToggle }) => {
                   </a>
                 ))}
               </div>
+
+              {/* Mobile Drawer CV Button */}
+              <a
+                href="/AbdulSami_CV.pdf"
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: '8px',
+                  padding: '10px 22px',
+                  borderRadius: '30px',
+                  backgroundColor: 'var(--ptf-black-color)',
+                  color: '#ffffff',
+                  fontSize: '13px',
+                  fontWeight: 600,
+                  textDecoration: 'none',
+                  marginTop: '18px',
+                  marginBottom: '8px',
+                  width: 'fit-content',
+                }}
+              >
+                <FileText size={14} />
+                <span>Download CV</span>
+              </a>
             </div>
             
             {/* Footer with Copyright and Circular Social icons pushed to bottom */}
