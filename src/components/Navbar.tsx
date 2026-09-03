@@ -108,7 +108,9 @@ const Navbar: React.FC<NavbarProps> = ({ onMenuToggle }) => {
         const isMobile = window.innerWidth <= 767;
         const topOffset = isMobile ? 8 : 16;
         const targetHeight = isMobile ? 50 : 56;
-        const targetWidth = innerEl ? innerEl.offsetWidth : (isMobile ? window.innerWidth - 32 : clamp(window.innerWidth - 64, 280, 1240));
+        const targetWidth = isMobile
+          ? (window.innerWidth - 24)
+          : (innerEl ? innerEl.offsetWidth : clamp(window.innerWidth - 64, 280, 1240));
 
         const initialDropW = 26;
         const initialDropH = 38;
@@ -122,7 +124,7 @@ const Navbar: React.FC<NavbarProps> = ({ onMenuToggle }) => {
             drop.style.width = `${targetWidth}px`;
             drop.style.height = `${targetHeight}px`;
             drop.style.top = `${topOffset}px`;
-            drop.style.transform = 'translateX(-50%) translateY(0px)';
+            drop.style.transform = 'translate3d(-50%, 0, 0)';
             drop.style.borderRadius = '999px';
           }
           if (dropBody) {
@@ -134,8 +136,10 @@ const Navbar: React.FC<NavbarProps> = ({ onMenuToggle }) => {
           }
           if (innerEl) {
             innerEl.style.background = 'rgba(255, 255, 255, 0.16)';
-            innerEl.style.backdropFilter = 'blur(16px) saturate(150%)';
-            (innerEl.style as any).webkitBackdropFilter = 'blur(16px) saturate(150%)';
+            if (innerEl.style.backdropFilter !== 'blur(16px) saturate(150%)') {
+              innerEl.style.backdropFilter = 'blur(16px) saturate(150%)';
+              (innerEl.style as any).webkitBackdropFilter = 'blur(16px) saturate(150%)';
+            }
             innerEl.style.boxShadow = '0 8px 28px rgba(0, 0, 0, 0.08), inset 0 1px 1px rgba(255, 255, 255, 0.35)';
           }
 
@@ -146,17 +150,19 @@ const Navbar: React.FC<NavbarProps> = ({ onMenuToggle }) => {
             drop.style.height = `${initialDropH}px`;
             drop.style.top = `${dropTopStart}px`;
             drop.style.borderRadius = '0';
-            drop.style.transform = `translateX(-50%) translateY(${-110 + phase1 * 110}px)`;
+            drop.style.transform = `translate3d(-50%, ${-110 + phase1 * 110}px, 0)`;
           }
 
           if (dropBody) {
             dropBody.style.display = 'block';
             dropBody.style.clipPath =
               'path("M 13 0 C 13 0 1 12 1 23 C 1 31 6.5 38 13 38 C 19.5 38 25 31 25 23 C 25 12 13 0 13 0 Z")';
-            dropBody.style.background =
-              'radial-gradient(ellipse at 38% 26%, #ffffff 0%, #ffbe7a 20%, #fa4529 55%, #c52509 100%)';
-            dropBody.style.filter =
-              'drop-shadow(0 0 8px rgba(255, 130, 80, 0.95)) drop-shadow(0 0 18px rgba(250, 69, 41, 0.85)) drop-shadow(0 0 32px rgba(250, 69, 41, 0.5))';
+            if (!dropBody.style.background.includes('38% 26%')) {
+              dropBody.style.background =
+                'radial-gradient(ellipse at 38% 26%, #ffffff 0%, #ffbe7a 20%, #fa4529 55%, #c52509 100%)';
+              dropBody.style.filter =
+                'drop-shadow(0 0 8px rgba(255, 130, 80, 0.95)) drop-shadow(0 0 18px rgba(250, 69, 41, 0.85)) drop-shadow(0 0 32px rgba(250, 69, 41, 0.5))';
+            }
             dropBody.style.opacity = String(clamp(phase1 * 3, 0, 1));
           }
 
@@ -166,11 +172,12 @@ const Navbar: React.FC<NavbarProps> = ({ onMenuToggle }) => {
 
           if (innerEl) {
             innerEl.style.background = 'transparent';
-            innerEl.style.backdropFilter = 'none';
-            (innerEl.style as any).webkitBackdropFilter = 'none';
+            if (innerEl.style.backdropFilter !== 'none') {
+              innerEl.style.backdropFilter = 'none';
+              (innerEl.style as any).webkitBackdropFilter = 'none';
+            }
             innerEl.style.boxShadow = 'none';
           }
-
 
         } else {
           // ── PHASE 2: Expanding Boundary Around Existing Stationary Elements ───
@@ -184,7 +191,7 @@ const Navbar: React.FC<NavbarProps> = ({ onMenuToggle }) => {
             drop.style.width = `${dropW}px`;
             drop.style.height = `${dropH}px`;
             drop.style.top = `${currentTop}px`;
-            drop.style.transform = 'translateX(-50%) translateY(0px)';
+            drop.style.transform = 'translate3d(-50%, 0, 0)';
           }
 
           // Molten drop fill dissolves
@@ -193,8 +200,10 @@ const Navbar: React.FC<NavbarProps> = ({ onMenuToggle }) => {
             dropBody.style.display = 'block';
             dropBody.style.clipPath = 'none';
             dropBody.style.borderRadius = '999px';
-            dropBody.style.background = `radial-gradient(ellipse at 50% 50%, rgba(255, 170, 100, ${fillAlpha * 0.9}) 0%, rgba(250, 69, 41, ${fillAlpha}) 50%, rgba(190, 30, 8, ${fillAlpha}) 100%)`;
-            dropBody.style.filter = `drop-shadow(0 0 ${8 + t * 8}px rgba(250, 69, 41, ${fillAlpha * 0.6}))`;
+            if (!dropBody.style.background.includes('50% 50%')) {
+              dropBody.style.background = 'radial-gradient(ellipse at 50% 50%, rgba(255, 170, 100, 0.9) 0%, rgba(250, 69, 41, 1) 50%, rgba(190, 30, 8, 1) 100%)';
+              dropBody.style.filter = 'drop-shadow(0 0 12px rgba(250, 69, 41, 0.6))';
+            }
             dropBody.style.opacity = String(fillAlpha);
           }
 
@@ -206,10 +215,11 @@ const Navbar: React.FC<NavbarProps> = ({ onMenuToggle }) => {
           // Frosted glass background smoothly forms underneath the stationary elements
           if (innerEl) {
             const bgAlpha = t * 0.16;
-            const blurVal = t * 16;
             innerEl.style.background = `rgba(255, 255, 255, ${bgAlpha})`;
-            innerEl.style.backdropFilter = `blur(${blurVal}px) saturate(150%)`;
-            (innerEl.style as any).webkitBackdropFilter = `blur(${blurVal}px) saturate(150%)`;
+            if (innerEl.style.backdropFilter !== 'blur(16px) saturate(150%)') {
+              innerEl.style.backdropFilter = 'blur(16px) saturate(150%)';
+              (innerEl.style as any).webkitBackdropFilter = 'blur(16px) saturate(150%)';
+            }
             innerEl.style.boxShadow = `0 8px 28px rgba(0, 0, 0, ${t * 0.08}), inset 0 1px 1px rgba(255, 255, 255, ${t * 0.35})`;
           }
         }
@@ -248,12 +258,23 @@ const Navbar: React.FC<NavbarProps> = ({ onMenuToggle }) => {
       setActiveSection('#home');
     };
 
-    window.addEventListener('scroll', handleScroll, { passive: true });
+    let ticking = false;
+    const onScroll = () => {
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          handleScroll();
+          ticking = false;
+        });
+        ticking = true;
+      }
+    };
+
+    window.addEventListener('scroll', onScroll, { passive: true });
     window.addEventListener('hashchange', handleScroll);
     handleScroll();
 
     return () => {
-      window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener('scroll', onScroll);
       window.removeEventListener('hashchange', handleScroll);
     };
   }, []);
