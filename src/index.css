@@ -294,19 +294,29 @@ img {
   pointer-events: none;
 }
 
+.ptf-navbar .container-xxl {
+  max-width: 1650px;
+  padding: 0 16px;
+}
+
+
 @media (max-width: 767px) {
   .ptf-navbar {
     top: 8px;
   }
+  .ptf-navbar .container-xxl {
+    padding: 0 12px;
+  }
 }
+
 
 .ptf-navbar-inner {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  height: 72px;
+  height: 56px;
   border-radius: 999px;
-  padding: 0 32px;
+  padding: 0 28px;
   position: relative;
   pointer-events: auto;
   background: transparent;
@@ -345,8 +355,8 @@ img {
   top: 16px;
   left: 50%;
   transform: translateX(-50%);
-  width: 28px;
-  height: 42px;
+  width: 26px;
+  height: 38px;
   will-change: transform, width, height, border-radius, opacity;
   pointer-events: none;
   z-index: 1005;
@@ -444,19 +454,18 @@ img {
   }
 }
 
-/* Responsive Navbar Logo Sizing — Fixed consistent height */
+/* Responsive Navbar Logo Sizing — 1x prominent bold sizing */
 .ptf-navbar-logo-img {
-  height: 36px;
+  height: 38px;
   width: auto;
   object-fit: contain;
 }
 
 @media (max-width: 767px) {
   .ptf-navbar-logo-img {
-    height: 30px !important;
+    height: 32px !important;
   }
 }
-
 
 @media (min-width: 768px) {
   .ptf-navbar-inner {
@@ -505,7 +514,7 @@ img {
 }
 
 .ptf-nav-link {
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.12em;
@@ -514,6 +523,7 @@ img {
   position: relative;
   transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
+
 
 .ptf-nav-link:hover {
   color: var(--ptf-accent-1);

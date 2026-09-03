@@ -102,11 +102,11 @@ const Navbar: React.FC<NavbarProps> = ({ onMenuToggle }) => {
       } else {
         const isMobile = window.innerWidth <= 767;
         const topOffset = isMobile ? 8 : 16;
-        const targetHeight = isMobile ? 50 : 72;
+        const targetHeight = isMobile ? 50 : 56;
         const targetWidth = innerEl ? innerEl.offsetWidth : (isMobile ? window.innerWidth - 32 : clamp(window.innerWidth - 64, 280, 1240));
 
-        const initialDropW = 28;
-        const initialDropH = 42;
+        const initialDropW = 26;
+        const initialDropH = 38;
         const dropTopStart = topOffset + (targetHeight - initialDropH) / 2;
 
         if (drop) drop.style.display = 'block';
@@ -147,7 +147,7 @@ const Navbar: React.FC<NavbarProps> = ({ onMenuToggle }) => {
           if (dropBody) {
             dropBody.style.display = 'block';
             dropBody.style.clipPath =
-              'path("M 14 0 C 14 0 1 14 1 26 C 1 35 7 42 14 42 C 21 42 27 35 27 26 C 27 14 14 0 14 0 Z")';
+              'path("M 13 0 C 13 0 1 12 1 23 C 1 31 6.5 38 13 38 C 19.5 38 25 31 25 23 C 25 12 13 0 13 0 Z")';
             dropBody.style.background =
               'radial-gradient(ellipse at 38% 26%, #ffffff 0%, #ffbe7a 20%, #fa4529 55%, #c52509 100%)';
             dropBody.style.filter =
@@ -165,6 +165,7 @@ const Navbar: React.FC<NavbarProps> = ({ onMenuToggle }) => {
             (innerEl.style as any).webkitBackdropFilter = 'none';
             innerEl.style.boxShadow = 'none';
           }
+
 
         } else {
           // ── PHASE 2: Expanding Boundary Around Existing Stationary Elements ───
@@ -287,7 +288,14 @@ const Navbar: React.FC<NavbarProps> = ({ onMenuToggle }) => {
 
         <div className="ptf-navbar-inner">
           {/* Left Links */}
-          <div className="ptf-navbar-links" style={{ justifyContent: 'flex-start' }}>
+          <div 
+            className="ptf-navbar-links" 
+            style={{ justifyContent: 'flex-start' }}
+            data-aos="fade-up"
+            data-aos-once="true"
+            data-aos-delay="100"
+            data-aos-duration="1000"
+          >
             {navItems.map((item) => {
               const isActive = activeSection === item.href;
               return (
@@ -307,7 +315,22 @@ const Navbar: React.FC<NavbarProps> = ({ onMenuToggle }) => {
           </div>
 
           {/* Centered Logo */}
-          <a href="#home" className="ptf-navbar-logo text-center" style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', height: '100%' }}>
+          <a 
+            href="#home" 
+            className="ptf-navbar-logo text-center" 
+            style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', height: '100%', cursor: 'pointer' }}
+            data-aos="fade-up"
+            data-aos-once="true"
+            data-aos-delay="0"
+            data-aos-duration="1000"
+            onClick={(e) => {
+              setActiveSection('#home');
+              handleLinkClick(e, '#home');
+              if ((window as any).triggerSectionAnimation) {
+                (window as any).triggerSectionAnimation('#home');
+              }
+            }}
+          >
             <img 
               src="/logo.png" 
               alt="ABDUL SAMI." 
@@ -315,28 +338,36 @@ const Navbar: React.FC<NavbarProps> = ({ onMenuToggle }) => {
             />
           </a>
 
+
           {/* Desktop Actions (Right) - LinkedIn and GitHub first */}
-          <div className="ptf-navbar-actions" style={{ justifyContent: 'flex-end', marginLeft: 'auto', gap: '22px' }}>
+          <div 
+            className="ptf-navbar-actions" 
+            style={{ justifyContent: 'flex-end', marginLeft: 'auto', gap: '22px' }}
+            data-aos="fade-up"
+            data-aos-once="true"
+            data-aos-delay="200"
+            data-aos-duration="1000"
+          >
             <a href="https://www.linkedin.com/in/abdulsami-se-ai?utm_source=share_via&utm_content=profile&utm_medium=member_android" target="_blank" rel="noreferrer" className="ptf-social-icon">
-              <LinkedinIcon style={{ width: '20px', height: '20px' }} />
+              <LinkedinIcon style={{ width: '21px', height: '21px' }} />
             </a>
             <a href="https://github.com/abdulsamiuthwal-eng" target="_blank" rel="noreferrer" className="ptf-social-icon">
-              <GithubIcon style={{ width: '20px', height: '20px' }} />
+              <GithubIcon style={{ width: '21px', height: '21px' }} />
             </a>
             <a href="https://wa.me/923073651919" target="_blank" rel="noreferrer" className="ptf-social-icon">
-              <WhatsappIcon style={{ width: '20px', height: '20px' }} />
+              <WhatsappIcon style={{ width: '21px', height: '21px' }} />
             </a>
             <a href="https://x.com/SamiUthwal" target="_blank" rel="noreferrer" className="ptf-social-icon">
-              <TwitterIcon style={{ width: '20px', height: '20px' }} />
+              <TwitterIcon style={{ width: '21px', height: '21px' }} />
             </a>
             <a href="https://www.facebook.com/share/18texnGjjx/" target="_blank" rel="noreferrer" className="ptf-social-icon">
-              <FacebookIcon style={{ width: '20px', height: '20px' }} />
+              <FacebookIcon style={{ width: '21px', height: '21px' }} />
             </a>
             <a href="https://www.instagram.com/sami.uthwal?igsh=eGtmdjAwaXZjZnk5" target="_blank" rel="noreferrer" className="ptf-social-icon">
-              <InstagramIcon style={{ width: '20px', height: '20px' }} />
+              <InstagramIcon style={{ width: '21px', height: '21px' }} />
             </a>
 
-            {/* CV CTA Button */}
+            {/* CV CTA Button — Sleek Black Pill (1x Prominent) */}
             <a
               href="/AbdulSami_CV.pdf"
               target="_blank"
@@ -344,34 +375,42 @@ const Navbar: React.FC<NavbarProps> = ({ onMenuToggle }) => {
               style={{
                 display: 'inline-flex',
                 alignItems: 'center',
+                gap: '7px',
+                padding: '6px 16px',
+                borderRadius: '999px',
+                backgroundColor: '#111111',
+                color: '#ffffff',
+                border: '1.5px solid #111111',
                 fontSize: '12px',
                 fontWeight: 700,
-                letterSpacing: '0.5px',
+                letterSpacing: '0.06em',
                 textDecoration: 'none',
                 fontFamily: 'var(--ptf-font-sans)',
-                transition: 'all 0.25s ease',
-                marginLeft: '6px',
+                transition: 'all 0.25s cubic-bezier(0.16, 1, 0.3, 1)',
+                marginLeft: '8px',
                 whiteSpace: 'nowrap',
+                boxShadow: '0 2px 8px rgba(0, 0, 0, 0.18)',
               }}
               onMouseEnter={(e) => {
                 e.currentTarget.style.backgroundColor = 'var(--ptf-accent-1)';
                 e.currentTarget.style.borderColor = 'var(--ptf-accent-1)';
                 e.currentTarget.style.color = '#ffffff';
                 e.currentTarget.style.transform = 'translateY(-1px)';
-                e.currentTarget.style.boxShadow = '0 4px 14px rgba(250, 69, 41, 0.3)';
+                e.currentTarget.style.boxShadow = '0 4px 14px rgba(250, 69, 41, 0.35)';
               }}
               onMouseLeave={(e) => {
-                e.currentTarget.style.backgroundColor = 'transparent';
-                e.currentTarget.style.borderColor = 'var(--ptf-black-color)';
-                e.currentTarget.style.color = 'var(--ptf-black-color)';
+                e.currentTarget.style.backgroundColor = '#111111';
+                e.currentTarget.style.borderColor = '#111111';
+                e.currentTarget.style.color = '#ffffff';
                 e.currentTarget.style.transform = 'translateY(0)';
-                e.currentTarget.style.boxShadow = 'none';
+                e.currentTarget.style.boxShadow = '0 2px 8px rgba(0, 0, 0, 0.18)';
               }}
             >
-              <FileText size={13} />
+              <FileText size={14} style={{ strokeWidth: 2.2 }} />
               <span>CV</span>
             </a>
           </div>
+
 
           {/* Mobile Toggle */}
           <button 
