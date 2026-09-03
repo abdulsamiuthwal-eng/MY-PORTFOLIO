@@ -234,6 +234,18 @@ const Timeline: React.FC = () => {
     },
   ];
 
+  // FlyRank documents
+  const flyrankDocs: TimelineDoc[] = [
+    {
+      type: 'certificate',
+      label: 'Confirmation Letter',
+      pdfUrl: '/internships/flyrank/OFFICIAL INTERNSHIP CONFIRMATION.pdf',
+      credentialId: 'FR-D1-8F5C4-F6835',
+      issueDate: 'August 4, 2026',
+      verifyUrl: 'https://internship.flyrank.ai/verify?id=FR-D1-8F5C4-F6835',
+    },
+  ];
+
   const handleOpenDoc = (doc: TimelineDoc, company: string, role: string) => {
     setActiveDoc({ doc, company, role });
   };
@@ -252,13 +264,23 @@ const Timeline: React.FC = () => {
 
   const experiencesData: ExperienceItemData[] = [
     {
+      id: 'flyrank',
+      year: 'Jul 2026 - Present',
+      title: 'Machine Learning Engineering Intern',
+      institution: 'FlyRank (Machine Learning Track)',
+      institutionLink: 'https://internship.flyrank.ai/',
+      description: 'Engineered domain-validated Gradient Boosting ML models (F1: 0.783, ROC-AUC: 0.983) with GroupKFold evaluation to predict search ranking CTR opportunity gaps. Architected ResearchScout autonomous literature agent querying arXiv REST API in <900ms, handling semantic clustering, intent classification, and messy data wrangling.',
+      delay: '0',
+      documents: flyrankDocs,
+    },
+    {
       id: 'devforge',
       year: 'Jul 2026 - Sep 2026',
       title: 'AI Engineering Internship',
       institution: 'DEVFORGE (AI Innovation Track)',
       institutionLink: 'https://devforgelabs.netlify.app/',
       description: 'Worked on autonomous AI agents, RAG pipelines, and machine learning workflows using Python, Scikit-learn, and FastAPI. Architected production-ready stateful agents and semantic search systems using LangGraph, FAISS, and Gemini LLMs, integrating tool automation and cloud deployments.',
-      delay: '0',
+      delay: '100',
       documents: devforgeDocs,
     },
     {
@@ -268,7 +290,7 @@ const Timeline: React.FC = () => {
       institution: 'DecodeLabs (Virtual Program)',
       institutionLink: 'https://www.decodelabs.tech/',
       description: 'Completed hands-on projects and collaborative tasks in Artificial Intelligence (AI) and Python application development, focusing on clean code, modular problem-solving, NLP, rule-based systems, and Git version control.',
-      delay: '100',
+      delay: '200',
       documents: decodelabsDocs,
     },
     {
@@ -278,7 +300,7 @@ const Timeline: React.FC = () => {
       institution: 'Developers Hub (Engineering Cohort)',
       institutionLink: 'https://developershubcorp.com/',
       description: 'Worked on machine learning model development and AI workflows using Python, Scikit-learn, Pandas & NumPy. Built LLM-powered applications with LangChain and RAG pipelines, applied NLP techniques, and explored TensorFlow to improve model performance.',
-      delay: '200',
+      delay: '300',
       documents: developerHubDocs,
     },
   ];
@@ -515,7 +537,7 @@ const Timeline: React.FC = () => {
                     }}
                   >
                     <ShieldCheck size={13} />
-                    {activeDoc.doc.type === 'offer' ? 'Official Offer Letter' : activeDoc.doc.label.includes('Letter') ? 'Official Completion Letter' : 'Verified Internship Certificate'}
+                    {activeDoc.doc.type === 'offer' ? 'Official Offer Letter' : activeDoc.doc.label.includes('Confirmation') ? 'Official Confirmation Letter' : activeDoc.doc.label.includes('Letter') ? 'Official Completion Letter' : 'Verified Internship Certificate'}
                   </span>
                   {activeDoc.doc.credentialId && (
                     <span

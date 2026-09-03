@@ -59,15 +59,19 @@ EDUCATION:
    Institution: Ghazali Public High School, Jhang
 
 WORK EXPERIENCE:
-1. Internship — Artificial Intelligence (AI) — Jul 2026 to Aug 2026
-   Company: DecodeLabs (Online Internship) — decodelabs.tech/verification
-   Work: Designed and developed Python-based AI applications with a strong focus on clean code, modular problem-solving, NLP, rule-based systems, and Git version control. Verified Credential ID: AI086527.
+1. Machine Learning Engineering Intern — Jul 2026 to Present
+   Company: FlyRank (Machine Learning Track) — internship.flyrank.ai/verify?id=FR-D1-8F5C4-F6835
+   Work: Engineered domain-validated Gradient Boosting ML models (F1: 0.783, ROC-AUC: 0.983) with GroupKFold evaluation to predict search ranking CTR opportunity gaps. Architected ResearchScout autonomous literature agent querying arXiv REST API in <900ms, handling semantic clustering, intent classification, and messy data wrangling. Verified Credential ID: FR-D1-8F5C4-F6835.
 
 2. AI Engineering Internship — Jul 2026 to Sep 2026
    Company: DEVFORGE (Online Internship) — devforge-internship-portal.vercel.app/verify
    Work: Worked on autonomous AI agents, RAG pipelines, and machine learning workflows using Python, Scikit-learn, and FastAPI. Architected production-ready stateful agents and semantic search systems using LangGraph, FAISS, and Gemini LLMs, integrating tool automation and cloud deployments. Verified Credential ID: DFL-INT-2026-1360.
 
-3. AI/ML Intern — Apr 2026 to Jun 2026
+3. Internship — Artificial Intelligence (AI) — Jul 2026 to Aug 2026
+   Company: DecodeLabs (Online Internship) — decodelabs.tech/verification
+   Work: Designed and developed Python-based AI applications with a strong focus on clean code, modular problem-solving, NLP, rule-based systems, and Git version control. Verified Credential ID: AI086527.
+
+4. AI/ML Intern — Apr 2026 to Jun 2026
    Company: Developer Hub (Online Internship) — developershubcorp.com
    Work: Worked on machine learning model development and AI workflows using Python, Scikit-learn, Pandas & NumPy. Built LLM-powered applications with LangChain and RAG pipelines, applied NLP techniques, and explored TensorFlow to improve model performance. Verified Credential ID: DHC-3562.
 

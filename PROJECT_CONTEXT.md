@@ -90,6 +90,8 @@ All official internship documents are organized in `public/internships/`:
 
 ```text
 public/internships/
+├── flyrank/
+│   └── OFFICIAL INTERNSHIP CONFIRMATION.pdf (Issued: Aug 4, 2026 | ID: FR-D1-8F5C4-F6835)
 ├── decodelabs/
 │   ├── Your Offer Letter _ Decode Labs.pdf    (Issued: Jul 25, 2026)
 │   └── DecodeLabs Internship Certificate.pdf  (Issued: Aug 26, 2026 | ID: AI086527)
@@ -103,17 +105,22 @@ public/internships/
 ```
 
 ### Experience Items Order & Verification Portals:
-1. 🥇 **DEVFORGE (AI Innovation Track)**
+1. 🥇 **FlyRank (Machine Learning Track)**
+   - **Duration**: `Jul 2026 - Present`
+   - **Role**: `Machine Learning Engineering Intern`
+   - **Documents**: 📜 `Confirmation Letter` (Credential ID: `FR-D1-8F5C4-F6835`)
+   - **Verification Portal**: `https://internship.flyrank.ai/verify?id=FR-D1-8F5C4-F6835`
+2. 🥈 **DEVFORGE (AI Innovation Track)**
    - **Duration**: `Jul 2026 - Sep 2026`
    - **Role**: `AI Engineering Internship`
    - **Documents**: 📄 `Offer Letter` + 📋 `Completion Letter` + 🏆 `Completion Certificate` (Credential ID: `DFL-INT-2026-1360`)
    - **Verification Portal**: `https://devforge-internship-portal.vercel.app/verify`
-2. 🥈 **DecodeLabs (Virtual Program)**
+3. 🥉 **DecodeLabs (Virtual Program)**
    - **Duration**: `Jul 2026 - Aug 2026`
    - **Role**: `Internship — Artificial Intelligence (AI)`
    - **Documents**: 📄 `Offer Letter` + 🏆 `Completion Certificate` (Credential ID: `AI086527`)
    - **Verification Portal**: `https://www.decodelabs.tech/verification`
-3. 🥉 **Developers Hub (Engineering Cohort)**
+4. 🏅 **Developers Hub (Engineering Cohort)**
    - **Duration**: `Apr 2026 - Jun 2026`
    - **Role**: `AI/ML Intern`
    - **Documents**: 📄 `Offer Letter` + 🏆 `Completion Certificate` (Credential ID: `DHC-3562`)
